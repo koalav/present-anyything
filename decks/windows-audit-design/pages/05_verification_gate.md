@@ -8,7 +8,7 @@ layout: section
 class: diagram-slide
 ---
 
-# 승인 흐름
+# 검증 승인 흐름
 
 ```mermaid
 %%{init: {'themeVariables': {'fontSize': '12px'}, 'flowchart': {'nodeSpacing': 18, 'rankSpacing': 26, 'diagramPadding': 6, 'curve': 'linear'}}}%%
@@ -39,7 +39,7 @@ flowchart LR
 
 ## Reviewer
 
-검토 대상:
+검토 초점:
 
 - 결론의 보안 논리
 - 영향 범위
@@ -52,7 +52,7 @@ flowchart LR
 
 ## Verifier
 
-검토 대상:
+검토 초점:
 
 - raw evidence 존재 여부
 - 경로, 버전, 자산 식별 정확성
@@ -71,7 +71,7 @@ flowchart LR
 class: diagram-slide
 ---
 
-# 상태 머신
+# 상태 전이
 
 ```mermaid
 %%{init: {'themeVariables': {'fontSize': '12px'}, 'flowchart': {'nodeSpacing': 18, 'rankSpacing': 26, 'diagramPadding': 6, 'curve': 'linear'}}}%%

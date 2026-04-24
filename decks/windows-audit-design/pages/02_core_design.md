@@ -8,21 +8,21 @@ layout: section
 layout: two-cols
 ---
 
-# 권장 기본 구조
+# 권장 운영 구조
 
 - 짧은 `AGENTS.md`
 - `PLANS.md` / 실행계획
 - `docs/status`, `docs/evidence`, `docs/findings`, `docs/reports`
 - 반복 절차는 skills
-- 병렬·전문화 구간만 subagents
+- 병렬·전문화가 필요한 구간에만 subagents
 - Reviewer / Verifier 게이트
 - read-only 우선 MCP + allowlist
 - GitHub Projects + sub-issues + dependencies
-- Windows 결정론적 검사 도구
+- Windows용 결정론적 검사 도구
 
 ::right::
 
-# 왜 이 구조인가
+# 이 구조를 권장하는 이유
 
 - LLM 컨텍스트 오염 감소
 - 장기 작업 상태 복원 가능
@@ -64,12 +64,12 @@ layout: two-cols
 </div>
 
 <div class="mt-10 p-4 border rounded">
-<b>운영 기준:</b> AGENTS.md는 목차와 원칙만 둡니다. 실제 감사 상태와 증거는 docs/가 source of truth입니다.
+<b>운영 기준:</b> `AGENTS.md`에는 목차와 원칙만 두고, 실제 감사 상태와 증거는 `docs/`를 source of truth로 관리합니다.
 </div>
 
 ---
 
-# 원칙 2: skill 우선, subagent는 제한적으로
+# 원칙 2: Skill 우선, Subagent는 제한적으로
 
 | 구분 | 적합한 사용처 | 예시 |
 |---|---|---|
@@ -79,5 +79,5 @@ layout: two-cols
 | Tool script | 결정론적 증거 생성 | BinSkim, Sigcheck, AccessChk, Procmon, Autoruns |
 
 <div class="mt-8">
-Subagent 수는 늘릴수록 관리 비용과 토큰 비용이 증가합니다. 반복 절차는 skill로 고정하고, 실제 역할 분리가 필요한 구간만 subagent를 사용합니다.
+Subagent 수가 늘수록 관리 비용과 토큰 비용이 함께 증가합니다. 반복 절차는 skill로 고정하고, 실제로 역할 분리가 필요한 구간에만 subagent를 사용합니다.
 </div>

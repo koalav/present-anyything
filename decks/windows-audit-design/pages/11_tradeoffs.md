@@ -2,11 +2,11 @@
 layout: section
 ---
 
-# 11. 더 좋은 대안이 있을 수 있는 경우
+# 11. 다른 구조가 더 적합한 경우
 
 ---
 
-# 현재 구조가 가장 잘 맞는 경우
+# 현재 구조가 특히 잘 맞는 조건
 
 - 감사 범위가 넓음
 - installer / updater / service / IPC / ACL / runtime이 모두 포함됨
@@ -21,10 +21,10 @@ layout: section
 
 | 대안 | 더 나은 경우 | 단점 |
 |---|---|---|
-| Single agent + skills + reviewer | 범위가 작고 병렬성이 낮음 | 복잡한 감사에서 컨텍스트 혼잡 |
-| Custom workflow / orchestrator-worker | 규제·감사상 상태기계가 필요 | 구현과 유지보수 비용 증가 |
-| Repo-centric scanner 보강 | 코드 저장소 중심 취약점 탐지가 핵심 | runtime/host inspection 커버리지 약함 |
-| Full multi-agent | 병렬 분석이 많고 도메인이 명확히 분리 | 비용, 지연, 조정 복잡도 증가 |
+| Single agent + skills + reviewer | 범위가 작고 병렬성이 낮음 | 복잡한 감사에서는 컨텍스트 혼잡이 커짐 |
+| Custom workflow / orchestrator-worker | 규제·감사상 상태기계가 필요함 | 구현과 유지보수 비용이 증가 |
+| Repo-centric scanner 보강 | 코드 저장소 중심 취약점 탐지가 핵심 | runtime/host inspection 커버리지가 약함 |
+| Full multi-agent | 병렬 분석이 많고 도메인이 명확히 분리됨 | 비용, 지연, 조정 복잡도가 증가 |
 
 ---
 class: diagram-slide

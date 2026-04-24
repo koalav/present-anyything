@@ -1,8 +1,9 @@
 ---
 theme: default
-title: LLM 기반 Windows 애플리케이션 보안감사 운영 구조
+title: LLM 기반 Windows 애플리케이션 보안 감사 운영 구조
 info: |
-  Windows 애플리케이션 보안감사를 LLM, skills, subagents, MCP, 결정론적 Windows 도구로 운영하기 위한 설계안.
+  Windows 애플리케이션 보안 감사를 LLM, skills, subagents, MCP,
+  결정론적 Windows 도구로 운영하기 위한 설계안.
 class: text-left
 transition: slide-left
 drawings:
@@ -10,16 +11,16 @@ drawings:
 mdc: true
 ---
 
-# LLM 기반 Windows 애플리케이션 보안감사 운영 구조
+# LLM 기반 Windows 애플리케이션 보안 감사 운영 구조
 
 ## 체크리스트 · 작업 보고 · Subagent 검증 게이트 설계
 
 <div class="mt-8 text-lg opacity-80">
-Windows 앱 보안감사를 장기·증적 중심 워크플로로 운영하기 위한 Slidev 자료
+Windows 앱 보안 감사를 장기 작업·증적 중심 워크플로로 운영하기 위한 Slidev 자료
 </div>
 
 <div class="mt-16 text-sm opacity-60">
-작성일: 2026-04-24 · 기준: Windows 앱 보안감사, LLM 에이전트 운영, MCP 보안 통제
+작성일: 2026-04-24 · 범위: Windows 앱 보안 감사, LLM 에이전트 운영, MCP 보안 통제
 </div>
 
 ---

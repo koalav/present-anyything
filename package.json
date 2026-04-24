@@ -4,11 +4,13 @@
   "type": "module",
   "scripts": {
     "dev:semgrep": "slidev decks/semgrep-android-local/slides.md",
+    "dev:indirect-prompt": "slidev decks/indirect-prompt-injection/slides.md",
     "dev:windows-design": "slidev decks/windows-audit-design/slides.md",
     "build:semgrep": "node scripts/build-deck.js semgrep-android-local",
+    "build:indirect-prompt": "node scripts/build-deck.js indirect-prompt-injection",
     "build:windows-design": "node scripts/build-deck.js windows-audit-design",
     "build:index": "node scripts/build-index.js",
-    "build": "npm run clean && npm run build:semgrep && npm run build:windows-design && npm run build:index",
+    "build": "npm run clean && npm run build:semgrep && npm run build:indirect-prompt && npm run build:windows-design && npm run build:index",
     "clean": "node scripts/clean.js"
   },
   "devDependencies": {

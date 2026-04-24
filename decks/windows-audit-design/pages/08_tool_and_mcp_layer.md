@@ -2,7 +2,7 @@
 layout: section
 ---
 
-# 8. Tool / MCP 계층
+# 8. 도구 · MCP 계층
 
 ---
 class: diagram-slide
@@ -34,7 +34,7 @@ flowchart LR
 | Binary hardening | BinSkim | ASLR/DEP/CFG 등 컴파일·링커 보안 설정 확인 |
 | Signing | Sigcheck | Authenticode, timestamp, certificate chain 확인 |
 | ACL / 권한 | AccessChk | 파일, 레지스트리, 서비스, 오브젝트 권한 확인 |
-| Runtime behavior | Procmon | 파일/레지스트리/프로세스/스레드 활동 추적 |
+| Runtime behavior | Procmon | 파일, 레지스트리, 프로세스, 스레드 활동 추적 |
 | Persistence | Autoruns | 자동 시작 위치, 서비스, scheduled task 등 확인 |
 | Source analysis | CodeQL | 코드 기반 취약점 variant 탐색 |
 

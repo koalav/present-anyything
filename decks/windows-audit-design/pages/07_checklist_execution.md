@@ -2,18 +2,18 @@
 layout: section
 ---
 
-# 7. 체크리스트 순차 실행 방식
+# 7. 체크리스트를 순차적으로 실행하는 방식
 
 ---
 
 # 실행 단위
 
-체크리스트는 한 번에 실행하지 않습니다.
+체크리스트는 한 번에 모두 실행하지 않습니다.
 
 <div class="mt-8 grid grid-cols-2 gap-8">
 <div>
 
-## 도메인 기준
+## 도메인 단위
 
 - UAC / privilege
 - DLL loading
@@ -26,7 +26,7 @@ layout: section
 </div>
 <div>
 
-## 자산 기준
+## 자산 단위
 
 - main executable
 - updater
@@ -71,4 +71,4 @@ Final Status: In Review
 6. Reviewer가 논리 검토
 7. Verifier가 증거 검증
 8. Coordinator가 상태 확정
-9. Verified만 report 반영
+9. Verified 항목만 보고서에 반영

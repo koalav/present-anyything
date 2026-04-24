@@ -10,12 +10,12 @@ layout: section
 
 | 위험 | 설명 | 완화 |
 |---|---|---|
-| Prompt injection | 외부 문서/로그가 agent 지시를 오염 | tool result를 명령으로 해석 금지 |
-| Tool misuse | 에이전트가 과도한 권한 도구 실행 | read-only allowlist, approval gate |
+| Prompt injection | 외부 문서나 로그가 agent의 지시 해석을 오염 | tool result를 명령으로 해석하지 않기 |
+| Tool misuse | 에이전트가 과도한 권한의 도구를 실행 | read-only allowlist, approval gate |
 | Evidence contamination | raw evidence와 요약이 뒤섞임 | raw/normalized 분리 |
-| False positive | LLM이 그럴듯한 결론 생성 | reviewer/verifier 이중 게이트 |
-| Exfiltration | 민감 파일/토큰 노출 | path allowlist, network 제한 |
-| Irreversible action | 삭제/수정/실행으로 환경 훼손 | 격리 VM, snapshot, explicit approval |
+| False positive | LLM이 그럴듯한 결론을 생성 | reviewer/verifier 이중 게이트 |
+| Exfiltration | 민감 파일이나 토큰이 노출 | path allowlist, network 제한 |
+| Irreversible action | 삭제, 수정, 실행으로 환경이 훼손 | 격리 VM, snapshot, explicit approval |
 
 ---
 class: diagram-slide

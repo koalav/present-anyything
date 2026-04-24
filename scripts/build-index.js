@@ -1,6 +1,7 @@
 import fs from "fs";
 import path from "path";
 import { outputRoot, repoName } from "./site-config.js";
+import { copyPublicAssets } from "./copy-public.js";
 
 const decks = [
   {
@@ -8,26 +9,32 @@ const decks = [
     path: "semgrep-android-local/",
     description: "Semgrep CE CLI와 로컬 룰만으로 Android 보안 후보를 찾는 운영 방식",
     toc: [
-      "1p 발표 개요와 목적",
-      "2p 전체 발표 구조",
-      "3p 범위와 전제 조건",
-      "4p 로컬 룰 운영 흐름",
-      "5p 권장 디렉터리 구조",
-      "6p 실제 사용 명령",
-      "7p PendingIntent 샘플 소스",
-      "8p LegacySecurity 샘플 소스",
-      "9p 터미널 출력 예시",
-      "10p JSON/SARIF 출력 활용",
-      "11p Semgrep 이후 AI 입력 예시",
-      "12p AI 가이드 문제 정의",
-      "13p AI 가이드 위험 평가",
-      "14p AI 가이드 권장 가이드라인",
-      "15p AI 가이드 코드 개선",
-      "16p AI 가이드 실전 검토 절차",
-      "17p 로컬 룰팩 구성 맵",
-      "18p~28p 주요 룰 상세",
-      "29p 룰 운영 시 주의점",
-      "30p Takeaways"
+      "1p 표지",
+      "2p 이번 deck의 범위",
+      "3p 로컬 실행 구조",
+      "4p~8p Sample 1: implicit PendingIntent",
+      "9p~13p Sample 2: weak hash / signature",
+      "14p AI 입력 템플릿",
+      "15p Takeaways"
+    ]
+  },
+  {
+    name: "Indirect Prompt Injection과 Lethal Trifecta",
+    path: "indirect-prompt-injection/",
+    description: "Agentic AI에서 prompt injection을 구조적으로 제한하는 설계 원칙과 방어 패턴",
+    toc: [
+      "1p 문제 제기와 핵심 주장",
+      "2p Indirect Prompt Injection 정의",
+      "3p Lethal Trifecta",
+      "4p 공격 흐름 예시",
+      "5p 왜 프롬프트만으로 못 막나",
+      "6p Rule of Two 관점",
+      "7p CaMeL 개념",
+      "8p CaMeL 구조도",
+      "9p 방어 패턴들",
+      "10p 실무 적용 레이어",
+      "11p 필드 사례",
+      "12p 결론과 참고 자료"
     ]
   },
   {
@@ -55,6 +62,7 @@ const decks = [
 ];
 
 fs.mkdirSync(outputRoot, { recursive: true });
+copyPublicAssets();
 
 const html = `<!doctype html>
 <html lang="ko" data-palette="slate-gray">

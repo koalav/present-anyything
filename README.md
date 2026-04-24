@@ -17,7 +17,8 @@ npm install
 
 ```bash
 npm run dev:semgrep
-npm run dev:windows
+npm run dev:indirect-prompt
+npm run dev:windows-design
 ```
 
 ## 정적 빌드
@@ -26,8 +27,10 @@ npm run dev:windows
 npm run build
 ```
 
-빌드 결과는 `docs/`에 생성됩니다.
+빌드 결과는 `docs/`에 생성됩니다. 각 deck은 정적 HTML로 출력되고, 같은 과정에서 PDF도 미리 export 되어 `docs/downloads/`에 함께 생성됩니다.
 build 시 GitHub Pages base path는 `GITHUB_REPOSITORY`, `GITHUB_PAGES_REPO`, 또는 `git remote origin`에서 repository 이름을 읽어 자동 결정합니다.
+
+각 deck 화면에는 고정형 `PDF 다운로드` 버튼이 표시되며, 이 버튼은 미리 export 된 PDF 파일로 연결됩니다.
 
 ## GitHub Pages 배포
 
@@ -52,7 +55,9 @@ https://{github_user}.github.io/{repository_name}/
 
 ```text
 /present-anyything/semgrep-android-local/
-/present-anyything/windows-audit/
+/present-anyything/indirect-prompt-injection/
+/present-anyything/windows-audit-design/
+/present-anyything/downloads/semgrep-android-local.pdf
 ```
 
 root pages 저장소인 `{github_user}.github.io`를 사용하는 경우에는 base path를 `/` 기준으로 다시 조정해야 합니다.
@@ -63,21 +68,25 @@ root pages 저장소인 `{github_user}.github.io`를 사용하는 경우에는 b
 decks/
   semgrep-android-local/
     slides.md
-    assets/
-  windows-audit/
+  indirect-prompt-injection/
     slides.md
-    assets/
+  windows-audit-design/
+    slides.md
 scripts/
+  build-deck.js
   build-index.js
 public/
   images/
+  palette.js
 .github/
   workflows/
     deploy.yml
 docs/
   index.html
   semgrep-android-local/
-  windows-audit/
+  indirect-prompt-injection/
+  windows-audit-design/
+  downloads/
 ```
 
 ## 검증

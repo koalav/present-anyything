@@ -2,11 +2,11 @@
 layout: section
 ---
 
-# 14. 참고 출처
+# 14. 참고 자료
 
 ---
 
-# 설계·에이전트 운영 참고
+# 설계·에이전트 운영 참고 자료
 
 - OpenAI Codex Best Practices  
   https://developers.openai.com/codex/learn/best-practices
@@ -25,7 +25,7 @@ layout: section
 
 ---
 
-# GitHub·MCP·상태관리 참고
+# GitHub·MCP·상태 관리 참고 자료
 
 - GitHub Copilot Agent Skills  
   https://docs.github.com/en/copilot/concepts/agents/about-agent-skills
@@ -42,7 +42,7 @@ layout: section
 
 ---
 
-# 보안감사·Windows 도구 참고
+# 보안 감사·Windows 도구 참고 자료
 
 - NIST SP 800-218 SSDF  
   https://csrc.nist.gov/pubs/sp/800/218/final
@@ -65,7 +65,7 @@ layout: section
 
 ---
 
-# Slidev 작성 참고
+# Slidev 작성 참고 자료
 
 - Slidev Syntax Guide  
   https://sli.dev/guide/syntax

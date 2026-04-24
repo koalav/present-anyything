@@ -47,10 +47,14 @@ function detectRepoName() {
 
 export const repoName = detectRepoName();
 
-export function getDeckBase(deckName) {
+export function getSiteBase() {
   if (/\.github\.io$/i.test(repoName)) {
-    return `/${deckName}/`;
+    return "/";
   }
 
-  return `/${repoName}/${deckName}/`;
+  return `/${repoName}/`;
+}
+
+export function getDeckBase(deckName) {
+  return `${getSiteBase()}${deckName}/`;
 }

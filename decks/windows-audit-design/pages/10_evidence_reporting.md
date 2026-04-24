@@ -28,7 +28,7 @@ docs/evidence/<run-id>/
 
 ---
 
-# Finding 템플릿
+# Finding 템플릿 예시
 
 ```markdown
 # F-001: 사용자 쓰기 가능 경로 기반 DLL 로딩 위험
@@ -43,7 +43,7 @@ Updater.exe v1.2.3
 Updater.exe가 일반 사용자 쓰기 가능 경로에서 DLL을 로드한다.
 
 ## 영향
-로컬 권한 상승 또는 앱 무결성 훼손 가능성.
+로컬 권한 상승 또는 앱 무결성 훼손 가능성
 
 ## 재현 절차
 1. 표준 사용자로 실행
@@ -61,7 +61,7 @@ Updater.exe가 일반 사용자 쓰기 가능 경로에서 DLL을 로드한다.
 
 ---
 
-# 보고서 원칙
+# 보고서 작성 원칙
 
 - Verified finding만 본문에 포함
 - Draft와 Evidence Gap은 별도 부록
