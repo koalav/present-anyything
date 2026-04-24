@@ -1,0 +1,19 @@
+{
+  "name": "present-anything",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev:semgrep": "slidev decks/semgrep-android-local/slides.md",
+    "dev:windows": "slidev decks/windows-audit/slides.md",
+    "build:semgrep": "node scripts/build-deck.js semgrep-android-local",
+    "build:windows": "node scripts/build-deck.js windows-audit",
+    "build:index": "node scripts/build-index.js",
+    "build": "npm run clean && npm run build:semgrep && npm run build:windows && npm run build:index",
+    "clean": "node scripts/clean.js"
+  },
+  "devDependencies": {
+    "@slidev/cli": "latest",
+    "@slidev/theme-default": "latest",
+    "playwright-chromium": "latest"
+  }
+}
