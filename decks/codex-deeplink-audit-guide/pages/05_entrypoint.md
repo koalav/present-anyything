@@ -1,5 +1,24 @@
+---
+layout: section
+---
+
 # 엔트리포인트 구조
 
-- 두 console script는 같은 `main`으로 연결된다
-- 실제 진입점은 `deeplink_audit_cli.main:main`이다
-- 명령 이름은 달라도 내부 실행 경로는 같다
+```mermaid
+flowchart TB
+    A[pyproject.toml] --> B[android-security-analyzer]
+    A --> C[deeplink-audit]
+    B --> D[deeplink_audit_cli.main:main]
+    C --> D
+    D --> E[서브커맨드 파서]
+    E --> F[doctor]
+    E --> G[static]
+    E --> H[semgrep]
+    E --> I[dynamic]
+    E --> J[report]
+    E --> K[analyze]
+    E --> L[init]
+```
+
+- 이름은 두 개지만 내부 진입점은 하나다.
+- 그래서 alias가 달라도 동일한 실행 흐름을 탄다.

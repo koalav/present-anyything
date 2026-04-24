@@ -1,6 +1,23 @@
-# init 명령이 하는 일
+---
+layout: section
+---
 
-- 대상 repo에 도구 세트를 복사한다
-- Codex용 설정 파일을 함께 넣는다
-- local plugin을 설치한다
-- marketplace 등록까지 마친다
+# init 명령의 역할
+
+```mermaid
+sequenceDiagram
+    participant User as 사용자
+    participant CLI as CLI
+    participant Repo as 대상 Repo
+    participant Codex as Codex 설정
+    participant Plugin as Local Plugin
+
+    User->>CLI: init --target <repo> --agent codex
+    CLI->>Repo: tools/security/android-security-analyzer 복사
+    CLI->>Codex: .codex 설정 복사
+    CLI->>Plugin: plugins/android-security-analyzer 설치
+    CLI->>Repo: marketplace.json, AGENTS.md, registry 반영
+    CLI-->>User: Codex에서 사용할 준비 완료
+```
+
+- `init`은 분석을 수행하는 명령이 아니라, 분석을 위한 실행 환경을 repo에 심는 단계다.

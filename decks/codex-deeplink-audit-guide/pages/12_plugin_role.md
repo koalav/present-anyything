@@ -1,5 +1,21 @@
-# plugin은 무엇을 하나
+---
+layout: section
+---
 
-- Codex가 접근할 도구 묶음을 알려준다
-- 어떤 기능을 쓸 수 있는지 연결한다
-- 결과적으로 CLI와 산출물을 함께 활용하게 한다
+# plugin이 하는 일
+
+```mermaid
+sequenceDiagram
+    participant Codex as Codex
+    participant Plugin as Local Plugin
+    participant CLI as CLI
+    participant Files as Reports and Evidence
+
+    Codex->>Plugin: 사용 가능한 기능 조회
+    Plugin->>CLI: 적절한 명령 실행 유도
+    CLI-->>Files: report와 evidence 생성
+    Files-->>Codex: 결과 읽기
+```
+
+- plugin은 Codex와 CLI 사이의 연결점이다.
+- plugin이 분석 로직을 대신 구현하는 것은 아니다.
