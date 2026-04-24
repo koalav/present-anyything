@@ -31,16 +31,6 @@ const decks = [
     ]
   },
   {
-    name: "Windows Application Security Audit",
-    path: "windows-audit/",
-    description: "Windows 애플리케이션 감사 체크리스트와 검증 흐름",
-    toc: [
-      "1p 감사 개요",
-      "2p 주요 점검 영역",
-      "3p 감사 흐름"
-    ]
-  },
-  {
     name: "LLM 기반 Windows 애플리케이션 보안감사 운영 구조",
     path: "windows-audit-design/",
     description: "LLM 기반 운영 구조, 에이전트 역할, 검증 게이트, 증적 보고 체계",
