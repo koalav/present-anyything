@@ -13,6 +13,15 @@ mdc: true
 
 <style>
   @import "../../global.css";
+
+  .slidev-layout .shiki,
+  .slidev-layout .shiki code,
+  .slidev-layout .shiki span,
+  .slidev-layout .slidev-code,
+  .slidev-layout .slidev-code * {
+    font-family: "Noto Sans KR", "D2Coding", "Fira Code", ui-monospace, SFMono-Regular, Menlo, monospace !important;
+    font-variant-ligatures: none;
+  }
 </style>
 
 # Semgrep CE로 Android 보안 점검
@@ -31,10 +40,12 @@ mdc: true
 ```text
 문제 설명
 → 문제 코드
+→ 안전한 기본형 / 비교 코드
 → Semgrep 규칙 설명
-→ 검출 방식 / 결과
+→ 검출 결과
 → 오탐 사례
 → AI 분류 기준
+→ AI 검토 입력
 ```
 
 ---
@@ -199,35 +210,6 @@ rules:
 - 실제 위험도는 2차 분류에서 봅니다.
 - 즉, "mutable이 정말 필요한가", "Intent가 explicit인가", "추가 red flag가 있는가"를 사람이나 AI가 이어서 판단합니다.
 
----
-class: text-sm
----
-
-# 예시 1: Semgrep이 어떻게 검출하나
-
-```text
-탐지 순서
-1. PendingIntent.getActivity/getBroadcast/getService 호출을 찾는다.
-2. flags 안에 FLAG_MUTABLE이 들어 있는지 본다.
-3. finding을 낸 뒤, 2차로 explicit 여부 / requestCode / URI grant / 민감 action을 review한다.
-```
-
-```kotlin
-val deleteIntent = Intent("com.example.ACTION_DELETE_FILE")
-...
-return PendingIntent.getBroadcast(
-    context, 0, deleteIntent,
-    PendingIntent.FLAG_MUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
-) // 탐지 지점
-```
-
-- 이 룰은 "mutable 자체가 정당한가"를 먼저 묻는 리뷰용 규칙입니다.
-- 그 다음 단계에서 implicit 여부, `requestCode = 0`, `FLAG_GRANT_*`, `FLAG_ONE_SHOT` 필요성을 같이 봅니다.
-
----
-class: text-sm
----
-
 # 예시 1: 검출 결과
 
 ```text
@@ -294,6 +276,36 @@ class: text-sm
 4. URI grant, 민감 action, 내부 receiver/service의 extra 신뢰 여부를 함께 본다.
 5. 실제로 필요 없는 mutable이면 true positive로, 합법적 시스템 use case면 allowlist 후보로 기록한다.
 ```
+
+---
+class: text-sm
+---
+
+# 예시 1: AI 검토 입력 템플릿
+
+```text
+다음 Semgrep finding이 실제 취약점인지, 오탐인지 Android 코드리뷰 관점에서 판별해줘.
+
+- check_id: android-pendingintent-flag-mutable
+- file: app/src/main/kotlin/com/example/PendingIntentLab.kt:12
+- rule_intent: mutable PendingIntent 1차 수집
+- code:
+  return PendingIntent.getBroadcast(
+      context,
+      0,
+      deleteIntent,
+      PendingIntent.FLAG_MUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
+  )
+
+추가 요청:
+1. 실제 취약점 / 오탐 / 추가 확인 필요 중 하나로 분류
+2. 그렇게 판단한 근거 3개
+3. explicit 여부, requestCode, URI grant, 민감 action 관점에서 더 확인할 call path
+4. 규칙 튜닝 포인트 1개와 코드리뷰 코멘트 3줄
+```
+
+- sample 1에서는 `FLAG_MUTABLE` 자체보다 implicit `Intent`, `URI grant`, 민감 action이 함께 붙는지까지 봐야 합니다.
+- AI에게는 "실제로 mutable이 필요한 use case인가"를 먼저 묻게 하는 편이 분류 효율이 좋습니다.
 
 ---
 
@@ -407,7 +419,7 @@ $ semgrep scan --metrics=off \
 class: text-sm
 ---
 
-# 예시 2: 오탐 사례와 AI 분류
+# 예시 2: 오탐 사례
 
 ```java
 package com.example;
@@ -426,6 +438,12 @@ class CertificateScreen {
 - 이 코드는 SHA-1을 쓰지만, 예를 들어 "기존 운영 문서와 맞춰 보기 위한 표시용 지문값"이라면 보안 의사결정일 수도, 아닐 수도 있습니다.
 - Semgrep은 사용 목적을 알 수 없기 때문에 우선 후보로 잡는 편이 맞습니다.
 
+---
+class: text-sm
+---
+
+# 예시 2: AI 분류 포인트
+
 ```text
 AI 분류 포인트
 1. 해시 결과가 if/allow/deny/verify로 이어지는지 본다.
@@ -438,30 +456,26 @@ AI 분류 포인트
 class: text-sm
 ---
 
-# AI 검토 입력 템플릿
+# 예시 2: AI 검토 입력 템플릿
 
 ```text
-다음 Semgrep finding이 실제 취약점인지, 오탐인지 Android 코드리뷰 관점에서 판별해줘.
+다음 Semgrep finding이 실제 취약점인지, 오탐인지 Java 코드리뷰 관점에서 판별해줘.
 
-- check_id: android-pendingintent-flag-mutable
-- file: app/src/main/kotlin/com/example/PendingIntentLab.kt:12
-- rule_intent: mutable PendingIntent 1차 수집
+- check_id: java-android-weak-hash-md5-sha1
+- file: app/src/main/java/com/example/LegacyCrypto.java:8
+- rule_intent: 약한 해시 / 서명 알고리즘 1차 수집
 - code:
-  return PendingIntent.getBroadcast(
-      context,
-      0,
-      deleteIntent,
-      PendingIntent.FLAG_MUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
-  )
+  byte[] actual = MessageDigest.getInstance("SHA-1").digest(manifest);
+  return Arrays.equals(actual, expectedDigest);
 
 추가 요청:
 1. 실제 취약점 / 오탐 / 추가 확인 필요 중 하나로 분류
 2. 그렇게 판단한 근거 3개
-3. explicit 여부, requestCode, URI grant, 민감 action 관점에서 더 열어봐야 할 helper / call path
-4. 코드리뷰 코멘트 3줄과 규칙 튜닝 아이디어 1개
+3. 이 값이 trust decision, UI 표시, 호환성 경로 중 어디에 쓰이는지 더 확인할 함수 / call path
+4. SHA-256 이상 대체 방향과 규칙 튜닝 아이디어 1개
 ```
 
-- AI는 "설명 생성기"보다 "근거 기반 분류 보조"로 쓰는 편이 더 안정적입니다.
+- sample 2에서는 "약한 알고리즘을 썼다"보다 "그 결과가 실제 보안 판단에 쓰이는가"를 먼저 가려내는 것이 중요합니다.
 - `check_id`, 호출 코드, 주변 함수, helper 이름까지 함께 주는 것이 중요합니다.
 
 ---

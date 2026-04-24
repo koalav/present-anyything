@@ -13,9 +13,9 @@ const decks = [
     description: "Semgrep CE CLI와 로컬 룰만으로 Android 보안 후보를 찾는 운영 방식",
     toc: [
       "도입: 발표 범위와 로컬 실행 구조",
-      "예시 1 묶음: PendingIntent 토큰 성격, mutable red flag, 문제 코드, 검출 결과, AI 분류",
-      "예시 2 묶음: weak hash 점검, 규칙, 문제 코드, 검출 결과, AI 분류",
-      "마무리: AI 검토 입력 템플릿과 정리"
+      "예시 1 묶음: PendingIntent 토큰 성격, mutable red flag, 문제 코드, 검출 결과, AI 분류, AI 검토 입력",
+      "예시 2 묶음: weak hash 점검, 문제 코드, 규칙, 검출 결과, AI 분류, AI 검토 입력",
+      "마무리: 정리"
     ]
   },
   {
@@ -98,6 +98,25 @@ const decks = [
       "Skill 설계와 Evidence Bundle",
       "리스크와 통제",
       "결론과 참고 자료"
+    ]
+  },
+  {
+    name: "MCP로 구성하는 AI 기반 모바일 앱 보안 감사",
+    path: "mobile-audit-mcp-origin/",
+    description: "원본 슬라이드 흐름에 가깝게 정리한 상세 deck. 특정 OS 언급을 줄이고 모바일 앱 감사 구조 중심으로 재구성",
+    toc: [
+      "기본 지식 10장",
+      "구축 4장",
+      "Android MCP 3장",
+      "JADX 3장",
+      "Frida 3장",
+      "Ghidra 3장",
+      "WebView와 브라우저 3장",
+      "스캔 도구 3장",
+      "네트워크와 운영 확장 3장",
+      "감사 시스템 5장",
+      "Skill 설계 4장",
+      "운영 통제와 결론 5장"
     ]
   }
 ];
