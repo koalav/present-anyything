@@ -10,7 +10,7 @@ transition: slide-left
 mdc: true
 ---
 
-# Semgrep CE 로컬 룰로 Android 점검
+# Semgrep CE Android 로컬 룰 점검
 
 Registry 없이, Pro 없이, 로컬 rule pack만으로 Android 보안 후보를 추출하는 운영 방식을 정리합니다.
 
