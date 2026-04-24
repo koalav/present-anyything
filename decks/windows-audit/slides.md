@@ -3,7 +3,10 @@ theme: default
 title: Windows Application Security Audit
 transition: slide-left
 mdc: true
-css: ../../styles.css
+---
+src: ../../global.css
+---
+
 ---
 
 # Windows Application Security Audit
