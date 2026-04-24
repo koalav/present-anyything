@@ -57,42 +57,54 @@ semgrep scan --metrics=off \
 
 # Sample 1: 무엇을 점검하나
 
-## `android-pendingintent-implicit`
+## `android-pendingintent-flag-mutable`
 
-- 명시적 `Intent`는 `Intent(context, DetailActivity::class.java)` 또는 `setComponent()` / `setPackage()`로 대상 컴포넌트가 고정됩니다.
-- 암시적 `Intent`는 action, data, category만으로 대상을 런타임에 찾습니다.
-- `PendingIntent`는 다른 시점이나 다른 프로세스에서 실행될 수 있어, 대상이 불분명하면 리뷰와 통제가 어려워집니다.
-
-```kotlin
-// 위험한 예: action만 있고 대상이 고정되지 않음
-val riskyIntent = Intent("com.example.ACTION_VIEW_DETAIL")
-val riskyPi = PendingIntent.getActivity(
-    context, 4412, riskyIntent, PendingIntent.FLAG_UPDATE_CURRENT
-)
-
-// 비교적 안전한 예: same-app explicit component + immutable
-val safeIntent = Intent(context, DetailActivity::class.java).apply {
-    setPackage(context.packageName)
-}
-val safePi = PendingIntent.getActivity(
-    context, 4412, safeIntent,
-    PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
-)
-```
-
-- 위험도가 높은 경우:
-  - 승인, 결제, 주문 상세, deep link 재진입처럼 민감한 흐름을 암시적 `PendingIntent`로 위임하는 경우
-  - exported component가 있을 수 있는 action을 broad하게 열어두는 경우
-- 비교적 안전한 경우:
-  - same-app explicit component + `FLAG_IMMUTABLE` + 목적이 분명한 requestCode를 함께 쓰는 경우
-  - 호출부만 봐도 "어디로 가는지"와 "어떻게 바뀔 수 없는지"가 드러나는 경우
+- `PendingIntent`는 단순한 `Intent` 복사본이 아니라, **내 앱 권한으로 나중에 실행할 수 있는 시스템 토큰**에 가깝습니다.
+- 다른 앱이나 시스템 UI에 넘겨도, 실행 시에는 원래 `PendingIntent`를 만든 앱 정체성으로 동작할 수 있습니다.
+- 그래서 review 포인트는 "이 Intent가 어디로 가는가"뿐 아니라, "누가 나중에 어떤 값을 채워 실행할 수 있는가"까지 봐야 합니다.
 
 ```text
-핵심 질문
-- 이 PendingIntent는 명시적 대상인가?
-- 외부 앱이 가로챌 여지가 있는가?
-- 이 호출부만 보면 안전성을 확신할 수 있는가?
+App A creates PendingIntent
+-> System UI or App B stores token
+-> Later send() / notification action
+-> Action runs with App A identity
 ```
+
+---
+
+# Sample 1: 어떤 조합이 위험한가
+
+| 패턴 | 왜 위험한가 |
+|---|---|
+| `FLAG_MUTABLE`을 불필요하게 사용 | 받은 쪽이 `fillInIntent()`로 미채워진 필드를 바꿀 수 있습니다. |
+| `FLAG_MUTABLE` + empty / implicit `Intent` | action, data, component, extras가 변형될 여지가 커집니다. |
+| `requestCode = 0` 반복 + `FLAG_UPDATE_CURRENT` | 기존 토큰과 충돌하거나 extras가 섞일 수 있습니다. |
+| `content://` + URI grant 결합 | 의도치 않은 URI read/write 권한 흐름으로 이어질 수 있습니다. |
+| 민감 작업인데 `FLAG_ONE_SHOT` 없음 | 삭제, 승인, 결제 같은 1회성 작업이 재실행될 수 있습니다. |
+| notification action이 바로 민감 작업 수행 | 잠금화면·외부 표면과 결합될 때 오용 여지가 생깁니다. |
+
+- 특히 `FLAG_MUTABLE` + implicit `Intent` 조합은 위험도가 높습니다.
+- Android 14 / target SDK 34+에서는 이 조합이 기본적으로 막히는 방향으로 강화되었습니다.
+
+---
+class: text-sm
+---
+
+# Sample 1: 코드 리뷰 빨간불 패턴
+
+```kotlin
+PendingIntent.getActivity(context, 0, Intent(), PendingIntent.FLAG_MUTABLE)
+PendingIntent.getBroadcast(context, 0, Intent("SOME_ACTION"), PendingIntent.FLAG_MUTABLE)
+PendingIntent.getService(context, 0, intent, PendingIntent.FLAG_MUTABLE)
+PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT)
+PendingIntent.getBroadcast(context, 0, intent, PendingIntent.FLAG_CANCEL_CURRENT)
+```
+
+- 같이 보면 더 위험한 조건:
+  - `setClass`, `setComponent`, `setPackage`가 없음
+  - `FLAG_GRANT_READ_URI_PERMISSION` / `WRITE`가 붙음
+  - 내부 `Receiver` / `Service`가 extras를 그대로 신뢰함
+  - 민감 작업인데 `FLAG_ONE_SHOT`과 만료 개념이 없음
 
 ---
 class: text-sm
@@ -104,24 +116,58 @@ class: text-sm
 package com.example
 
 class PendingIntentLab {
-    fun build(context: Context): PendingIntent {
-        val detailIntent = Intent("com.example.ACTION_VIEW_DETAIL").apply {
-            putExtra("orderId", "ord-4412")
+    fun buildDangerousDelete(context: Context, sensitiveFileUri: Uri): PendingIntent {
+        val deleteIntent = Intent("com.example.ACTION_DELETE_FILE").apply {
+            data = sensitiveFileUri
+            addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+            putExtra("fileId", "report-4412")
         }
 
-        return PendingIntent.getActivity(
+        return PendingIntent.getBroadcast(
             context,
-            4412,
-            detailIntent,
-            PendingIntent.FLAG_UPDATE_CURRENT
+            0,
+            deleteIntent,
+            PendingIntent.FLAG_MUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
         )
     }
 }
 ```
 
-- action string만 있고 대상 `Activity`가 명시되지 않았습니다.
-- 보안 리뷰 관점에서는 "어느 component로 가는지"가 코드에서 즉시 드러나지 않습니다.
-- 주문 상세, 승인, 결제 같은 민감 flow에서는 더 보수적으로 봐야 합니다.
+- `FLAG_MUTABLE`: 받은 쪽이 미채워진 필드나 extras를 보강할 수 있습니다.
+- `Intent("ACTION")`: explicit component가 아니라 implicit `Intent`입니다.
+- `requestCode = 0`: 다른 토큰과 충돌하기 쉬운 기본값입니다.
+- `FLAG_UPDATE_CURRENT`: 이전 토큰 보유자도 새 extras로 실행할 수 있습니다.
+- `content://` grant까지 함께 있으면 URI 권한 흐름도 같이 검토해야 합니다.
+
+---
+class: text-sm
+---
+
+# Sample 1: 비교적 안전한 기본형
+
+```kotlin
+val intent = Intent(context, DeleteConfirmActivity::class.java).apply {
+    action = "com.example.ACTION_DELETE_FILE"
+    setPackage(context.packageName)
+    putExtra("fileId", fileId)
+}
+
+val pi = PendingIntent.getActivity(
+    context,
+    notificationId,
+    intent,
+    PendingIntent.FLAG_IMMUTABLE or
+        PendingIntent.FLAG_UPDATE_CURRENT or
+        PendingIntent.FLAG_ONE_SHOT
+)
+```
+
+- 기본 안전선:
+  - explicit component
+  - `FLAG_IMMUTABLE`
+  - unique `requestCode`
+  - 최소 extras
+  - 실제 삭제/승인은 대상 화면이나 receiver에서 다시 검증
 
 ---
 class: text-sm
@@ -131,21 +177,23 @@ class: text-sm
 
 ```yaml
 rules:
-  - id: android-pendingintent-implicit
+  - id: android-pendingintent-flag-mutable
     languages: [java, kotlin]
     severity: ERROR
     message: >
-      암시적 Intent를 PendingIntent로 래핑하고 있습니다.
-      setComponent() 또는 setPackage()로 명시적 대상을 지정하십시오.
+      Mutable PendingIntent입니다.
+      대부분은 FLAG_IMMUTABLE을 사용해야 하며, mutable이 꼭 필요하면
+      explicit component/package, unique requestCode, 최소 extras를 함께 검토하십시오.
     patterns:
       - pattern: PendingIntent.get$METHOD($CTX, $REQ, $INTENT, $FLAGS)
-      - pattern-not-inside: $INTENT.setComponent(...)
-      - pattern-not-inside: $INTENT.setPackage(...)
+      - metavariable-regex:
+          metavariable: $FLAGS
+          regex: ((?i).*FLAG_MUTABLE.*)
 ```
 
-- `pattern`: `PendingIntent.getActivity/getBroadcast/getService` 호출을 수집합니다.
-- `pattern-not-inside`: 같은 함수 안에서 `setComponent`, `setPackage`가 보이면 제외합니다.
-- 이 규칙은 "명시적 대상을 만들었는가"를 보는 구조 기반 룰입니다.
+- 이 규칙은 의도적으로 넓게 `FLAG_MUTABLE` 사용처를 1차 수집합니다.
+- 실제 위험도는 2차 triage에서 봅니다.
+- 즉, "mutable이 정말 필요한가", "Intent가 explicit인가", "추가 red flag가 있는가"를 사람이나 AI가 이어서 판단합니다.
 
 ---
 class: text-sm
@@ -156,19 +204,21 @@ class: text-sm
 ```text
 탐지 순서
 1. PendingIntent.getActivity/getBroadcast/getService 호출을 찾는다.
-2. 같은 함수 안에 setComponent() / setPackage()가 있는지 본다.
-3. 없으면 "대상이 코드에 드러나지 않는 PendingIntent 후보"로 표시한다.
+2. flags 안에 FLAG_MUTABLE이 들어 있는지 본다.
+3. finding을 낸 뒤, 2차로 explicit 여부 / requestCode / URI grant / 민감 action을 review한다.
 ```
 
 ```kotlin
-val detailIntent = Intent("com.example.ACTION_VIEW_DETAIL")   // 대상 미고정
-return PendingIntent.getActivity(
-    context, 4412, detailIntent, PendingIntent.FLAG_UPDATE_CURRENT
-)                                                          // 탐지 지점
+val deleteIntent = Intent("com.example.ACTION_DELETE_FILE")
+...
+return PendingIntent.getBroadcast(
+    context, 0, deleteIntent,
+    PendingIntent.FLAG_MUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
+) // 탐지 지점
 ```
 
-- 이 룰은 "Intent가 어디서 왔는가"보다 "대상이 코드에 명시되어 있는가"를 봅니다.
-- 헬퍼 함수 안에서 explicit intent로 바뀌면 호출부만 보고는 오탐이 날 수 있습니다.
+- 이 룰은 "mutable 자체가 정당한가"를 먼저 묻는 review rule입니다.
+- 그 다음 단계에서 implicit 여부, `requestCode = 0`, `FLAG_GRANT_*`, `FLAG_ONE_SHOT` 필요성을 같이 봅니다.
 
 ---
 class: text-sm
@@ -187,45 +237,45 @@ $ semgrep scan --metrics=off \
 └────────────────┘
 
     app/src/main/kotlin/com/example/PendingIntentLab.kt
-   ❯❯❱ android-pendingintent-implicit
-          암시적 Intent를 PendingIntent로 래핑하고 있습니다.
-          setComponent() 또는 setPackage()로 명시적 대상을 지정하십시오.
+   ❯❯❱ android-pendingintent-flag-mutable
+          Mutable PendingIntent입니다.
+          대부분은 FLAG_IMMUTABLE을 사용해야 하며, mutable이 꼭 필요하면
+          explicit component/package, unique requestCode, 최소 extras를 함께 검토하십시오.
 
-          9┆ return PendingIntent.getActivity(
+         12┆ return PendingIntent.getBroadcast(
 ```
 
-- 여기서는 분석자가 "실제 대상 component", "민감 action 여부", "명시적 intent로 바꿀 수 있는지"를 바로 확인하면 됩니다.
+- 여기서 바로 보는 질문:
+  - 이 mutable이 정말 필요한가
+  - `Intent`가 explicit인가
+  - `requestCode`, `URI grant`, `민감 action`이 같이 붙어 있는가
 
 ---
 class: text-sm
 ---
 
-# Sample 1: 오탐 사례
+# Sample 1: 합법적인 mutable 예외 사례
 
 ```kotlin
-object SecureIntents {
-    fun orderDetail(context: Context, orderId: String): Intent =
-        Intent(context, DetailActivity::class.java).apply {
+object ReplyActionFactory {
+    fun buildReply(context: Context, threadId: Int): PendingIntent {
+        val replyIntent = Intent(context, ReplyReceiver::class.java).apply {
+            action = "com.example.ACTION_INLINE_REPLY"
             setPackage(context.packageName)
-            putExtra("orderId", orderId)
         }
-}
 
-class SafeNotificationBuilder {
-    fun build(context: Context): PendingIntent {
-        val explicitIntent = SecureIntents.orderDetail(context, "ord-4412")
-        return PendingIntent.getActivity(
+        return PendingIntent.getBroadcast(
             context,
-            4412,
-            explicitIntent,
-            PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
+            threadId,
+            replyIntent,
+            PendingIntent.FLAG_MUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
         )
     }
 }
 ```
 
-- 이 호출부만 보면 `setComponent()` / `setPackage()`가 보이지 않아 룰이 잡을 수 있습니다.
-- 하지만 실제로는 헬퍼 함수 내부에서 same-app explicit intent를 만들고 있어 false positive일 수 있습니다.
+- notification inline reply처럼 시스템이 `RemoteInput` 결과를 채워야 하는 경우에는 mutable이 실제로 필요할 수 있습니다.
+- 이 경우에도 component/package는 고정하고, mutable 필요성이 코드리뷰에서 설명 가능해야 합니다.
 
 ---
 class: text-sm
@@ -234,11 +284,11 @@ class: text-sm
 # Sample 1: AI triage 포인트
 
 ```text
-1. explicitIntent를 만드는 헬퍼 함수 구현을 확인한다.
-2. 반환된 Intent가 explicit constructor / setPackage를 쓰는지 확인한다.
-3. 반환 뒤에 다시 action-only intent로 덮어쓰지 않는지 확인한다.
-4. 실제로 안전하면 "rule false positive"로 분류한다.
-5. 반복 패턴이면 sanitizer/wrapper allowlist 후보로 기록한다.
+1. 이 use case가 inline reply / bubble / alarm 등으로 mutable이 정말 필요한지 확인한다.
+2. Intent가 explicit component 또는 package로 고정돼 있는지 확인한다.
+3. requestCode가 고유한지, FLAG_UPDATE_CURRENT가 민감 extra를 덮어쓰지 않는지 본다.
+4. URI grant, 민감 action, 내부 receiver/service의 extra 신뢰 여부를 함께 본다.
+5. 실제로 필요 없는 mutable이면 true positive로, 합법적 시스템 use case면 allowlist 후보로 기록한다.
 ```
 
 ---
@@ -389,18 +439,21 @@ class: text-sm
 ```text
 다음 Semgrep finding이 실제 취약점인지, false positive인지 Android 코드리뷰 관점에서 판별해줘.
 
-- check_id: android-pendingintent-implicit
-- file: app/src/main/kotlin/com/example/PendingIntentLab.kt:9
-- rule_intent: implicit PendingIntent 탐지
+- check_id: android-pendingintent-flag-mutable
+- file: app/src/main/kotlin/com/example/PendingIntentLab.kt:12
+- rule_intent: mutable PendingIntent 1차 수집
 - code:
-  return PendingIntent.getActivity(
-      context, 4412, explicitIntent, PendingIntent.FLAG_IMMUTABLE
+  return PendingIntent.getBroadcast(
+      context,
+      0,
+      deleteIntent,
+      PendingIntent.FLAG_MUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
   )
 
 추가 요청:
 1. true positive / false positive / 추가 확인 필요 중 하나로 분류
 2. 그렇게 판단한 근거 3개
-3. 더 열어봐야 할 helper / call path
+3. explicit 여부, requestCode, URI grant, 민감 action 관점에서 더 열어봐야 할 helper / call path
 4. 코드리뷰 코멘트 3줄
 5. 규칙 튜닝 아이디어 1개
 ```
@@ -412,6 +465,8 @@ class: text-sm
 
 # Summary
 
-- 암시적 `PendingIntent`는 대상 컴포넌트가 코드에 드러나지 않아, 민감한 흐름에서는 명시적 대상 지정 여부를 먼저 확인해야 합니다.
+- `PendingIntent`는 나중에 내 앱 정체성으로 실행될 수 있는 토큰이므로, `FLAG_MUTABLE` 사용은 기본적으로 의심하고 봐야 합니다.
+- 기본 안전선은 `explicit + immutable + unique requestCode + 최소 extras + receiver 측 재검증`입니다.
+- `FLAG_MUTABLE`이 정말 필요한지, implicit `Intent` / URI grant / `FLAG_UPDATE_CURRENT` / 민감 action이 같이 붙는지 확인하는 것이 핵심입니다.
 - 약한 해시·서명 탐지는 빠르게 후보를 수집하는 데 유용하지만, 실제 보안 의사결정에 쓰이는지는 별도 확인이 필요합니다.
 - Semgrep은 구조 기반 후보 추출에 적합하고, 최종 판정은 코드 문맥 확인과 AI/사람 triage를 함께 써야 정확도가 올라갑니다.

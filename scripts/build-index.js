@@ -13,7 +13,7 @@ const decks = [
     description: "Semgrep CE CLI와 로컬 룰만으로 Android 보안 후보를 찾는 운영 방식",
     toc: [
       "도입: 발표 범위와 로컬 실행 구조",
-      "Sample 1 묶음: implicit PendingIntent 점검, rule, 위험 코드, output, AI triage",
+      "Sample 1 묶음: PendingIntent 토큰 성격, mutable red flag, 위험 코드, output, AI triage",
       "Sample 2 묶음: weak hash 점검, rule, 위험 코드, output, AI triage",
       "마무리: AI 입력 템플릿과 summary"
     ]
