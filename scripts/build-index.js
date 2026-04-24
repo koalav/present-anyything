@@ -1,7 +1,6 @@
 import fs from "fs";
 import path from "path";
-
-const outputRoot = "docs";
+import { outputRoot, repoName } from "./site-config.js";
 
 const decks = [
   {
@@ -13,6 +12,11 @@ const decks = [
     name: "Windows Application Security Audit",
     path: "windows-audit/",
     description: "Windows 애플리케이션 감사 체크리스트와 검증 흐름"
+  },
+  {
+    name: "LLM 기반 Windows 애플리케이션 보안감사 운영 구조",
+    path: "windows-audit-design/",
+    description: "LLM 기반 운영 구조, 에이전트 역할, 검증 게이트, 증적 보고 체계"
   }
 ];
 
@@ -154,7 +158,7 @@ const html = `<!doctype html>
     <section class="hero">
       <div class="eyebrow">Slidev Static Site</div>
       <h1>Presentation Index</h1>
-      <p class="lead">GitHub Pages에서 정적으로 제공되는 Slidev deck 목록입니다. 첫 번째 deck은 Semgrep CE 로컬 룰 기반 Android 점검 흐름을 다룹니다.</p>
+      <p class="lead">GitHub Pages에서 정적으로 제공되는 Slidev deck 목록입니다. 현재 build base는 <code>${repoName}</code> 저장소 이름을 기준으로 계산됩니다.</p>
     </section>
     <section class="deck-list">
       ${decks

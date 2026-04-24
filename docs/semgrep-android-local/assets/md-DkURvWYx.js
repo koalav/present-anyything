@@ -1,0 +1,10 @@
+import{_ as o}from"./slidev/CodeBlockWrapper.vue_vue_type_script_setup_true_lang-vIbRdBY6.js";import{o as p,b as d,w as e,g as s,d as u,m as c,D as l,v as m,x as f,z as a}from"./modules/vue-0DkHb0vD.js";import{I as g}from"./slidev/default-CG62_HyD.js";import{u as k,f as _}from"./slidev/context-KSz2rl8a.js";import"./modules/unplugin-icons-CrxfDbIS.js";import"./index-CCmBmYGG.js";import"./modules/shiki-BdEeu8M_.js";const N={__name:"slides.md__slidev_5",setup(x){const{$clicksContext:t,$frontmatter:i}=k();return t.setup(),(h,n)=>{const r=o;return p(),d(g,m(f(a(_)(a(i),4))),{default:e(()=>[n[1]||(n[1]=s("h1",null,"권장 디렉터리 구조",-1)),u(r,c({},{title:"",ranges:[]}),{default:e(()=>[...n[0]||(n[0]=[s("pre",{class:"shiki shiki-themes vitesse-dark vitesse-light slidev-code",style:{"--shiki-dark":"#dbd7caee","--shiki-light":"#393a34","--shiki-dark-bg":"#121212","--shiki-light-bg":"#ffffff"}},[s("code",{class:"language-text"},[s("span",{class:"line"},[s("span",null,"android-project/")]),l(`
+`),s("span",{class:"line"},[s("span",null,"├── app/")]),l(`
+`),s("span",{class:"line"},[s("span",null,"│   ├── build.gradle.kts")]),l(`
+`),s("span",{class:"line"},[s("span",null,"│   └── src/main/")]),l(`
+`),s("span",{class:"line"},[s("span",null,"│       ├── AndroidManifest.xml")]),l(`
+`),s("span",{class:"line"},[s("span",null,"│       ├── java/...")]),l(`
+`),s("span",{class:"line"},[s("span",null,"│       └── kotlin/...")]),l(`
+`),s("span",{class:"line"},[s("span",null,"├── rules/")]),l(`
+`),s("span",{class:"line"},[s("span",null,"│   └── android-local.yml")]),l(`
+`),s("span",{class:"line"},[s("span",null,"└── .semgrepignore")])])],-1)])]),_:1},16),n[2]||(n[2]=s("ul",null,[s("li",null,[l("제외 권장: "),s("code",null,"build/"),l(", "),s("code",null,".gradle/"),l(", "),s("code",null,"generated/"),l(", "),s("code",null,"src/test/"),l(", "),s("code",null,"src/androidTest/")]),s("li",null,[l("대용량 리소스나 산출물은 "),s("code",null,".semgrepignore"),l("로 빼서 노이즈와 시간을 줄임")])],-1))]),_:1},16)}}};export{N as default};
