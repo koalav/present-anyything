@@ -26,8 +26,4 @@ layout: section
 
 # Q&A
 
-- Windows 환경에서의 설치 이슈
-- Android 앱 감사에 적합한 도구 조합
-- MCP 권한 통제 방식
-- Skill을 팀 표준으로 운영하는 방법
-- AI가 만든 Finding 초안을 어떻게 검증할지
+설치, 권한 통제, 팀 운영 방식, Finding 검증 절차를 중심으로 이어서 논의합니다.

@@ -8,7 +8,7 @@ layout: section
 layout: two-cols
 ---
 
-# Skill이 담당하는 것
+# Skill은 절차를 정한다
 
 - 단계별 도구 선택 기준
 - 승인 필요 작업 정의
@@ -18,7 +18,7 @@ layout: two-cols
 
 ::right::
 
-# Evidence Bundle이 담당하는 것
+# Evidence Bundle은 결과를 남긴다
 
 - 스크린샷
 - Logcat
@@ -43,4 +43,4 @@ evidence/{app}/{date}/
 
 - 증거가 표준화되어야 재검증이 쉬워진다
 - Finding에는 증거 경로와 재현 절차가 함께 있어야 한다
-- AI는 초안을 쓰고, 사람은 영향도와 확정 여부를 판단한다
+- AI는 초안을 정리하고, 사람은 영향도와 확정 여부를 판단한다

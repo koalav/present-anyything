@@ -38,5 +38,5 @@ layout: two-cols
 
 <div class="mt-8 text-lg">
 정적 분석의 역할은 <b>깊게 볼 위치를 좁히는 것</b>이다.
-그 다음 단계에서 Android MCP, Frida, Burp 결과와 연결해야 한다.
+그 다음 단계에서 Android MCP, Frida, Burp 결과와 연결한다.
 </div>

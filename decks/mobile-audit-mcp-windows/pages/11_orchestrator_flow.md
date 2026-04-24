@@ -12,14 +12,14 @@ class: diagram-slide
 
 ```mermaid
 flowchart LR
-    A[Scope] --> B[Android baseline]
-    B --> C[Static analysis]
-    C --> D[Dynamic analysis]
-    D --> E[Native analysis]
-    E --> F[Web and network]
-    F --> G[Evidence normalization]
-    G --> H[MASVS mapping]
-    H --> I[Finding draft]
+    A[범위 확인] --> B[기본 정보]
+    B --> C[정적 분석]
+    C --> D[동적 분석]
+    D --> E[네이티브 분석]
+    E --> F[웹·네트워크]
+    F --> G[증거 정리]
+    G --> H[MASVS 매핑]
+    H --> I[Finding 초안]
 ```
 
 ---

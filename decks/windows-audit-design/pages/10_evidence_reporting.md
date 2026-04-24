@@ -28,36 +28,30 @@ docs/evidence/<run-id>/
 
 ---
 
-# Finding 템플릿 예시
+# Finding 템플릿 핵심 필드
 
-```markdown
-# F-001: 사용자 쓰기 가능 경로 기반 DLL 로딩 위험
+<div class="grid grid-cols-2 gap-6 mt-6">
+  <div class="box">
+    <h3 class="mt-0">본문에 꼭 들어갈 것</h3>
+    <ul>
+      <li>ID, 상태, 대상 자산과 버전</li>
+      <li>한 줄 요약과 영향</li>
+      <li>재현 절차 2~3단계</li>
+    </ul>
+  </div>
+  <div class="box">
+    <h3 class="mt-0">검증 정보에 꼭 들어갈 것</h3>
+    <ul>
+      <li>raw evidence 경로</li>
+      <li>normalized summary 경로</li>
+      <li>Reviewer / Verifier 결과</li>
+    </ul>
+  </div>
+</div>
 
-## 상태
-Verified
-
-## 대상
-Updater.exe v1.2.3
-
-## 요약
-Updater.exe가 일반 사용자 쓰기 가능 경로에서 DLL을 로드한다.
-
-## 영향
-로컬 권한 상승 또는 앱 무결성 훼손 가능성
-
-## 재현 절차
-1. 표준 사용자로 실행
-2. 지정 경로에 테스트 DLL 배치
-3. Procmon으로 DLL load 확인
-
-## 증적
-- raw: docs/evidence/<run-id>/raw/procmon-updater.pml
-- normalized: docs/evidence/<run-id>/normalized/dll-loads.csv
-
-## 검증 결과
-- Reviewer: Pass
-- Verifier: Pass
-```
+<div class="mt-8 p-4 border rounded">
+핵심은 긴 문서를 쓰는 것이 아니라, <b>주장·재현 절차·증거 경로</b>가 한 화면에서 바로 이어지게 만드는 것입니다.
+</div>
 
 ---
 

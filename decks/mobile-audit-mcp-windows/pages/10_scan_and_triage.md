@@ -24,5 +24,5 @@ layout: section
 
 <div class="text-xl leading-relaxed">
 자동 스캐닝 도구는 <b>Finding 확정 도구가 아니라 후보 생성 도구</b>다.
-AI는 이 후보를 요약하고 우선순위를 잡는 데 도움을 준다.
+AI는 이 후보를 묶고 우선순위를 정리하는 데 도움을 준다.
 </div>

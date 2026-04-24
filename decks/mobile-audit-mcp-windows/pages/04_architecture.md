@@ -12,23 +12,23 @@ class: diagram-slide
 
 ```mermaid
 flowchart LR
-    U[Auditor] --> H[Agent Client]
-    H --> SK[Audit Skill]
+    U[감사자] --> H[감사 Agent]
+    H --> SK[감사 절차]
     H --> MC[MCP Servers]
-    H --> BI[Built-in CLI Tools]
+    H --> BI[기본 도구]
     MC --> A[Android MCP]
     MC --> J[JADX MCP]
     MC --> F[Frida MCP]
     MC --> G[Ghidra MCP]
-    MC --> W[Chrome and Burp MCP]
-    BI --> S[Shell and Read and Edit]
+    MC --> W[Chrome·Burp MCP]
+    BI --> S[파일·셸 작업]
     A --> E[Evidence Store]
     J --> E
     F --> E
     G --> E
     W --> E
     S --> E
-    E --> R[Findings and Report]
+    E --> R[Finding 초안·보고서]
 ```
 
 ---

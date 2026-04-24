@@ -3,7 +3,7 @@ theme: default
 title: Semgrep CE Local Rules for Android
 info: |
   Semgrep CE CLI와 로컬 룰 2개만으로 Android 보안 후보를 찾고,
-  false positive를 AI로 어떻게 줄일지 설명하는 발표 자료입니다.
+  오탐을 AI로 어떻게 줄일지 설명하는 발표 자료입니다.
 class: text-center
 drawings:
   persist: false
@@ -17,7 +17,7 @@ mdc: true
 
 # Semgrep CE로 Android 보안 점검
 
-로컬 룰 2개로 후보를 검출하고, false positive triage를 AI로 보강하는 운영 흐름을 정리합니다.
+로컬 룰 2개로 후보를 검출하고, 오탐 분류를 AI로 보강하는 운영 흐름을 정리합니다.
 
 ---
 
@@ -30,11 +30,11 @@ mdc: true
 
 ```text
 문제 설명
-→ 위험한 sample 코드
-→ Semgrep rule 설명
-→ 검출 방식 / output
-→ false positive sample
-→ AI triage 방법
+→ 문제 코드
+→ Semgrep 규칙 설명
+→ 검출 방식 / 결과
+→ 오탐 사례
+→ AI 분류 기준
 ```
 
 ---
@@ -55,17 +55,17 @@ semgrep scan --metrics=off \
 ```
 
 - 발표용 룰 파일에는 룰 `2개`만 둡니다.
-- 목적은 "정답 탐지기"가 아니라, 후보를 빠르게 추출하고 triage 시간을 줄이는 데 있습니다.
+- 목적은 "완성형 판정기"가 아니라, 후보를 빠르게 추출하고 분류 시간을 줄이는 데 있습니다.
 
 ---
 
-# Sample 1: 무엇을 점검하나
+# 예시 1: 무엇을 점검하나
 
 ## `android-pendingintent-flag-mutable`
 
 - `PendingIntent`는 단순한 `Intent` 복사본이 아니라, **내 앱 권한으로 나중에 실행할 수 있는 시스템 토큰**에 가깝습니다.
 - 다른 앱이나 시스템 UI에 넘겨도, 실행 시에는 원래 `PendingIntent`를 만든 앱 정체성으로 동작할 수 있습니다.
-- 그래서 review 포인트는 "이 Intent가 어디로 가는가"뿐 아니라, "누가 나중에 어떤 값을 채워 실행할 수 있는가"까지 봐야 합니다.
+- 그래서 리뷰 포인트는 "이 Intent가 어디로 가는가"뿐 아니라, "누가 나중에 어떤 값을 채워 실행할 수 있는가"까지 보는 데 있습니다.
 
 ```text
 App A creates PendingIntent
@@ -76,7 +76,7 @@ App A creates PendingIntent
 
 ---
 
-# Sample 1: 어떤 조합이 위험한가
+# 예시 1: 어떤 조합이 위험한가
 
 | 패턴 | 왜 위험한가 |
 |---|---|
@@ -94,7 +94,7 @@ App A creates PendingIntent
 class: text-sm
 ---
 
-# Sample 1: 코드 리뷰 빨간불 패턴
+# 예시 1: 코드 리뷰 빨간불 패턴
 
 ```kotlin
 PendingIntent.getActivity(context, 0, Intent(), PendingIntent.FLAG_MUTABLE)
@@ -114,7 +114,7 @@ PendingIntent.getBroadcast(context, 0, intent, PendingIntent.FLAG_CANCEL_CURRENT
 class: text-sm
 ---
 
-# Sample 1: 위험한 sample 코드
+# 예시 1: 문제 코드
 
 ```kotlin
 package com.example
@@ -147,7 +147,7 @@ class PendingIntentLab {
 class: text-sm
 ---
 
-# Sample 1: 비교적 안전한 기본형
+# 예시 1: 비교적 안전한 기본형
 
 ```kotlin
 val intent = Intent(context, DeleteConfirmActivity::class.java).apply {
@@ -177,7 +177,7 @@ val pi = PendingIntent.getActivity(
 class: text-sm
 ---
 
-# Sample 1: Semgrep rule
+# 예시 1: Semgrep 규칙
 
 ```yaml
 rules:
@@ -196,14 +196,14 @@ rules:
 ```
 
 - 이 규칙은 의도적으로 넓게 `FLAG_MUTABLE` 사용처를 1차 수집합니다.
-- 실제 위험도는 2차 triage에서 봅니다.
+- 실제 위험도는 2차 분류에서 봅니다.
 - 즉, "mutable이 정말 필요한가", "Intent가 explicit인가", "추가 red flag가 있는가"를 사람이나 AI가 이어서 판단합니다.
 
 ---
 class: text-sm
 ---
 
-# Sample 1: Semgrep이 어떻게 검출하나
+# 예시 1: Semgrep이 어떻게 검출하나
 
 ```text
 탐지 순서
@@ -221,14 +221,14 @@ return PendingIntent.getBroadcast(
 ) // 탐지 지점
 ```
 
-- 이 룰은 "mutable 자체가 정당한가"를 먼저 묻는 review rule입니다.
+- 이 룰은 "mutable 자체가 정당한가"를 먼저 묻는 리뷰용 규칙입니다.
 - 그 다음 단계에서 implicit 여부, `requestCode = 0`, `FLAG_GRANT_*`, `FLAG_ONE_SHOT` 필요성을 같이 봅니다.
 
 ---
 class: text-sm
 ---
 
-# Sample 1: Semgrep output
+# 예시 1: 검출 결과
 
 ```text
 $ semgrep scan --metrics=off \
@@ -258,7 +258,7 @@ $ semgrep scan --metrics=off \
 class: text-sm
 ---
 
-# Sample 1: 합법적인 mutable 예외 사례
+# 예시 1: 합법적인 mutable 예외 사례
 
 ```kotlin
 object ReplyActionFactory {
@@ -285,7 +285,7 @@ object ReplyActionFactory {
 class: text-sm
 ---
 
-# Sample 1: AI triage 포인트
+# 예시 1: AI 분류 포인트
 
 ```text
 1. 이 use case가 inline reply / bubble / alarm 등으로 mutable이 정말 필요한지 확인한다.
@@ -297,11 +297,11 @@ class: text-sm
 
 ---
 
-# Sample 2: 무엇을 점검하나
+# 예시 2: 무엇을 점검하나
 
-## `java-android-weak-hash-md1-sha1`
+## `java-android-weak-hash-md5-sha1`
 
-- 점검 대상: `SHA-1`, `MD1`, `HmacSHA1`, `SHA1withRSA` 같은 구식 알고리즘 사용
+- 점검 대상: `SHA-1`, `MD5`, `HmacSHA1`, `SHA1withRSA` 같은 구식 알고리즘 사용
 - 문제 상황: 무결성 검증, 서명 검증, 토큰 서명, 업데이트 검증에 그대로 사용
 - 왜 위험한가:
   - 충돌 공격 관점에서 현대 기준에 맞지 않음
@@ -319,7 +319,7 @@ class: text-sm
 class: text-sm
 ---
 
-# Sample 2: 위험한 sample 코드
+# 예시 2: 문제 코드
 
 ```java
 package com.example;
@@ -348,18 +348,18 @@ class LegacyCrypto {
 class: text-sm
 ---
 
-# Sample 2: Semgrep rule
+# 예시 2: Semgrep 규칙
 
 ```yaml
 rules:
-  - id: java-android-weak-hash-md1-sha1
+  - id: java-android-weak-hash-md5-sha1
     languages: [java]
     severity: ERROR
     message: >
-      MD1·SHA-1 계열의 약한 해시 또는 서명 알고리즘 사용입니다.
+      MD5·SHA-1 계열의 약한 해시 또는 서명 알고리즘 사용입니다.
       SHA-256 이상 또는 최신 권장 알고리즘으로 교체하십시오.
     pattern-either:
-      - pattern: MessageDigest.getInstance("MD1")
+      - pattern: MessageDigest.getInstance("MD5")
       - pattern: MessageDigest.getInstance("SHA1")
       - pattern: MessageDigest.getInstance("SHA-1")
       - pattern: Mac.getInstance("HmacSHA1")
@@ -370,14 +370,14 @@ rules:
 
 - `pattern-either`: 해시, HMAC, 전자서명 초기화 지점을 넓게 수집합니다.
 - 장점: 단순하고 빠르게 찾을 수 있습니다.
-- 한계: "보안 검증"에 쓰는지, "표시/호환용"인지는 구분하지 못합니다.
-- 그래서 이 룰은 AI triage와 특히 궁합이 좋습니다.
+- 한계: "보안 검증"에 쓰는지, "표시용"인지는 구분하지 못합니다.
+- 그래서 이 룰은 AI 분류 단계와 함께 쓰기 좋습니다.
 
 ---
 class: text-sm
 ---
 
-# Sample 2: Semgrep output
+# 예시 2: 검출 결과
 
 ```text
 $ semgrep scan --metrics=off \
@@ -390,24 +390,24 @@ $ semgrep scan --metrics=off \
 └────────────────┘
 
     app/src/main/java/com/example/LegacyCrypto.java
-   ❯❯❱ java-android-weak-hash-md1-sha1
-          MD1·SHA-1 계열의 약한 해시 또는 서명 알고리즘 사용입니다.
+   ❯❯❱ java-android-weak-hash-md5-sha1
+          MD5·SHA-1 계열의 약한 해시 또는 서명 알고리즘 사용입니다.
           SHA-256 이상 또는 최신 권장 알고리즘으로 교체하십시오.
 
           8┆ byte[] actual = MessageDigest.getInstance("SHA-1").digest(manifest);
 
-   ❯❯❱ java-android-weak-hash-md1-sha1
+   ❯❯❱ java-android-weak-hash-md5-sha1
          13┆ return Signature.getInstance("SHA1withRSA");
 ```
 
 - 분석자는 "이 값이 실제 보안 판단에 쓰이는가"를 먼저 봐야 합니다.
-- 이 구분을 사람이 직접 하거나 AI에게 맡기면 triage 속도를 높일 수 있습니다.
+- 이 구분을 사람이 직접 하거나 AI에게 맡기면 분류 속도를 높일 수 있습니다.
 
 ---
 class: text-sm
 ---
 
-# Sample 2: 오탐 사례와 AI triage
+# 예시 2: 오탐 사례와 AI 분류
 
 ```java
 package com.example;
@@ -423,25 +423,25 @@ class CertificateScreen {
 }
 ```
 
-- 이 코드는 SHA-1을 쓰지만, 예를 들어 "기존 운영 문서와 맞춰 보기 위한 표시용 fingerprint"라면 보안 의사결정일 수도, 아닐 수도 있습니다.
+- 이 코드는 SHA-1을 쓰지만, 예를 들어 "기존 운영 문서와 맞춰 보기 위한 표시용 지문값"이라면 보안 의사결정일 수도, 아닐 수도 있습니다.
 - Semgrep은 사용 목적을 알 수 없기 때문에 우선 후보로 잡는 편이 맞습니다.
 
 ```text
-AI triage 포인트
+AI 분류 포인트
 1. 해시 결과가 if/allow/deny/verify로 이어지는지 본다.
 2. 결과가 UI 표시, 로그, 마이그레이션 보고서로만 가는지 확인한다.
-3. trust decision이 아니라면 low priority 또는 compatibility note로 내린다.
-4. trust decision이면 true positive로 분류하고 SHA-256 이상 대체 코드를 제안한다.
+3. 신뢰 판단이 아니라면 낮은 우선순위 또는 호환성 메모로 내린다.
+4. 신뢰 판단이라면 실제 취약점으로 분류하고 SHA-256 이상 대체 코드를 제안한다.
 ```
 
 ---
 class: text-sm
 ---
 
-# AI 입력 템플릿
+# AI 검토 입력 템플릿
 
 ```text
-다음 Semgrep finding이 실제 취약점인지, false positive인지 Android 코드리뷰 관점에서 판별해줘.
+다음 Semgrep finding이 실제 취약점인지, 오탐인지 Android 코드리뷰 관점에서 판별해줘.
 
 - check_id: android-pendingintent-flag-mutable
 - file: app/src/main/kotlin/com/example/PendingIntentLab.kt:12
@@ -455,22 +455,21 @@ class: text-sm
   )
 
 추가 요청:
-1. true positive / false positive / 추가 확인 필요 중 하나로 분류
+1. 실제 취약점 / 오탐 / 추가 확인 필요 중 하나로 분류
 2. 그렇게 판단한 근거 3개
 3. explicit 여부, requestCode, URI grant, 민감 action 관점에서 더 열어봐야 할 helper / call path
-4. 코드리뷰 코멘트 3줄
-5. 규칙 튜닝 아이디어 1개
+4. 코드리뷰 코멘트 3줄과 규칙 튜닝 아이디어 1개
 ```
 
-- AI는 "설명 생성기"보다 "근거 기반 triage 보조"로 쓰는 편이 더 안정적입니다.
+- AI는 "설명 생성기"보다 "근거 기반 분류 보조"로 쓰는 편이 더 안정적입니다.
 - `check_id`, 호출 코드, 주변 함수, helper 이름까지 함께 주는 것이 중요합니다.
 
 ---
 
-# Summary
+# 정리
 
 - `PendingIntent`는 나중에 내 앱 정체성으로 실행될 수 있는 토큰이므로, `FLAG_MUTABLE` 사용은 기본적으로 의심하고 봐야 합니다.
 - 기본 안전선은 `explicit + immutable + unique requestCode + 최소 extras + receiver 측 재검증`입니다.
 - `FLAG_MUTABLE`이 정말 필요한지, implicit `Intent` / URI grant / `FLAG_UPDATE_CURRENT` / 민감 action이 같이 붙는지 확인하는 것이 핵심입니다.
 - 약한 해시·서명 탐지는 빠르게 후보를 수집하는 데 유용하지만, 실제 보안 의사결정에 쓰이는지는 별도 확인이 필요합니다.
-- Semgrep은 구조 기반 후보 추출에 적합하고, 최종 판정은 코드 문맥 확인과 AI/사람 triage를 함께 써야 정확도가 올라갑니다.
+- Semgrep은 구조 기반 후보 추출에 적합하고, 최종 판정은 코드 문맥 확인과 AI·사람 분류를 함께 써야 정확도가 올라갑니다.

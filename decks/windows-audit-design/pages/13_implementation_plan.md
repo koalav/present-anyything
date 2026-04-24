@@ -33,7 +33,7 @@ layout: section
 - Auditor별 작업 범위 제한
 - Reviewer / Verifier read-only 운영
 - finding candidate → verified 전이 테스트
-- false positive 반려 시나리오 테스트
+- 오탐 반려 시나리오 테스트
 
 ---
 

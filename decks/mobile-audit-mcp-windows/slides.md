@@ -20,7 +20,7 @@ mdc: true
 ## MCP · Tool · Skill · Evidence 기반 운영 구조
 
 <div class="mt-8 text-lg opacity-80">
-Windows에서 Android 앱 보안 감사를 AI Agent와 MCP 도구체인으로 구성하는 방법을 정리한 Slidev 자료
+Windows에서 Android 앱 보안 감사를 MCP 도구와 Skill 절차로 운영하는 방법을 설명합니다.
 </div>
 
 <div class="mt-16 text-sm opacity-60">

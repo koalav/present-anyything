@@ -13,6 +13,7 @@ mdc: true
 
 <style>
   @import "../../global.css";
+  @import "./styles/index.css";
 </style>
 
 # LLM 기반 Windows 애플리케이션 보안 감사 운영 구조

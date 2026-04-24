@@ -28,7 +28,7 @@ layout: two-cols
 - 장기 작업 상태 복원 가능
 - 절차 재사용성 확보
 - 감사 결과의 증거성 강화
-- false positive와 evidence gap 축소
+- 오탐과 증거 부족 사례 축소
 - MCP/tool misuse 위험 완화
 - 사람이 리뷰 가능한 산출물 유지
 
@@ -64,7 +64,7 @@ layout: two-cols
 </div>
 
 <div class="mt-10 p-4 border rounded">
-<b>운영 기준:</b> `AGENTS.md`에는 목차와 원칙만 두고, 실제 감사 상태와 증거는 `docs/`를 source of truth로 관리합니다.
+<b>운영 기준:</b> `AGENTS.md`에는 원칙만 두고, 실제 감사 상태와 증거는 `docs/`를 기준 문서로 관리합니다.
 </div>
 
 ---

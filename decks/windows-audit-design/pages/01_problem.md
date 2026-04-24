@@ -10,14 +10,14 @@ layout: two-cols
 
 # Windows 앱 보안 감사의 난점
 
-- 감사 대상 표면이 넓음
+- 감사 대상이 넓고 복잡함
   - EXE / DLL / MSI / MSIX
   - 서비스, scheduled task, COM, shell extension
   - installer / updater / helper process
 - 증적이 여러 위치에 흩어져 있음
   - 파일, 레지스트리, 이벤트 로그, 프로세스 트레이스
 - LLM 단독 판단은 재현성과 감사 추적성이 약함
-- 체크리스트만으로는 실행 상태를 추적하기 어려움
+- 체크리스트만으로는 실제 실행 상태를 따라가기 어려움
 
 ::right::
 

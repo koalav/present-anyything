@@ -26,6 +26,6 @@ layout: section
 ```text
 예시 요청:
 LoginManager.validateUser 호출 인자와 반환값을 추적하고
-성공/실패 흐름만 요약해줘.
+성공/실패 흐름만 짧게 요약해줘.
 민감값 원문은 출력하지 마.
 ```
