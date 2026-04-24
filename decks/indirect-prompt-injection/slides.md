@@ -12,6 +12,8 @@ mdc: true
 ---
 
 <style>
+  @import "../../global.css";
+
   .slidev-layout h1 {
     font-size: 1.9rem;
     line-height: 1.1;

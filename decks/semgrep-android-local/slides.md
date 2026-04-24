@@ -11,6 +11,10 @@ transition: slide-left
 mdc: true
 ---
 
+<style>
+  @import "../../global.css";
+</style>
+
 # Semgrep CE로 Android 보안 점검
 
 로컬 룰 2개로 후보를 검출하고, false positive triage를 AI로 보강하는 운영 흐름을 정리합니다.

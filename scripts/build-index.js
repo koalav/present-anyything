@@ -52,6 +52,28 @@ const decks = [
       "14p 도입 로드맵",
       "15p 참고 출처"
     ]
+  },
+  {
+    name: "Windows 환경에서 MCP로 구성하는 AI 기반 모바일 앱 보안 감사",
+    path: "mobile-audit-mcp-windows/",
+    description: "Windows 기반 Android 앱 감사용 MCP 도구체인, Skill 운영, 증거 기반 보고 구조",
+    toc: [
+      "발표 목표와 범위",
+      "Agent, MCP, Tool, Skill 구분",
+      "Windows 테스트 랩 구성",
+      "전체 아키텍처",
+      "Android MCP 적용",
+      "JADX와 정적 분석",
+      "Frida와 런타임 검증",
+      "Ghidra와 네이티브 분석",
+      "WebView, 브라우저, 네트워크 분석",
+      "자동 스캐닝과 초벌 분류",
+      "AI Mobile Audit Orchestrator 흐름",
+      "Skill과 Evidence Bundle",
+      "운영 통제",
+      "결론과 Q&A",
+      "참고 자료"
+    ]
   }
 ];
 

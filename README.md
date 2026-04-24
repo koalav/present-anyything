@@ -19,6 +19,7 @@ npm install
 npm run dev:semgrep
 npm run dev:indirect-prompt
 npm run dev:windows-design
+npm run dev:mobile-audit-mcp
 ```
 
 ## 정적 빌드
@@ -57,6 +58,7 @@ https://{github_user}.github.io/{repository_name}/
 /present-anyything/semgrep-android-local/
 /present-anyything/indirect-prompt-injection/
 /present-anyything/windows-audit-design/
+/present-anyything/mobile-audit-mcp-windows/
 /present-anyything/downloads/semgrep-android-local.pdf
 ```
 
@@ -71,6 +73,8 @@ decks/
   indirect-prompt-injection/
     slides.md
   windows-audit-design/
+    slides.md
+  mobile-audit-mcp-windows/
     slides.md
 scripts/
   build-deck.js

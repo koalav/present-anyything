@@ -1,9 +1,11 @@
-@import url("https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css");
+@import "@fontsource/noto-sans-kr/400.css";
+@import "@fontsource/noto-sans-kr/500.css";
+@import "@fontsource/noto-sans-kr/700.css";
 
 :root {
-  --slidev-font-sans: "Pretendard", "Noto Sans KR", "Apple SD Gothic Neo", "Malgun Gothic", sans-serif;
-  --slidev-font-serif: "Pretendard", "Noto Sans KR", "Apple SD Gothic Neo", "Malgun Gothic", sans-serif;
-  --slidev-font-mono: "Pretendard", "Noto Sans KR", "Apple SD Gothic Neo", "Malgun Gothic", sans-serif;
+  --slidev-font-sans: "Noto Sans KR", "Apple SD Gothic Neo", "Malgun Gothic", sans-serif;
+  --slidev-font-serif: "Noto Sans KR", "Apple SD Gothic Neo", "Malgun Gothic", sans-serif;
+  --slidev-font-mono: "Fira Code", "Noto Sans KR", "D2Coding", ui-monospace, SFMono-Regular, Menlo, monospace;
 
   --c-bg: #f8fafc;
   --c-surface: #ffffff;
@@ -103,6 +105,7 @@ body,
 }
 
 .slidev-layout code {
+  font-family: var(--slidev-font-mono);
   background: var(--c-surface-soft);
   color: var(--c-text);
   border: 1px solid var(--c-border);
@@ -112,6 +115,7 @@ body,
 
 .slidev-layout pre,
 .slidev-code {
+  font-family: var(--slidev-font-mono);
   background: var(--c-surface-soft) !important;
   color: var(--c-text);
   border: 1px solid var(--c-border);

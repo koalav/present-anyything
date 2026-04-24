@@ -11,6 +11,10 @@ drawings:
 mdc: true
 ---
 
+<style>
+  @import "../../global.css";
+</style>
+
 # LLM 기반 Windows 애플리케이션 보안 감사 운영 구조
 
 ## 체크리스트 · 작업 보고 · Subagent 검증 게이트 설계

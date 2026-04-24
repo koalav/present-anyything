@@ -115,7 +115,7 @@ runSlidev([
   "--wait-until",
   "networkidle",
   "--wait",
-  "1500",
+  "3000",
   "--timeout",
   "180000"
 ]);
