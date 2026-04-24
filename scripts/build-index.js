@@ -71,7 +71,7 @@ const decks = [
     path: "codex-deeplink-audit-guide/",
     description: "CLI 설치, repo 셋업, Codex 활용, skill과 plugin 동작 방식을 사용자 가이드 톤으로 정리한 deck",
     toc: [
-      "Goals",
+      "발표 목표",
       "설치와 init",
       "repo 구조",
       "Codex 설정과 plugin 등록",

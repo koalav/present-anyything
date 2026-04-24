@@ -23,9 +23,6 @@ CLI 설치, init 셋업, Codex 활용 흐름, 산출물 확인 방법
 </div>
 
 ---
-src: ./pages/01_title.md
----
----
 src: ./pages/02_goals.md
 ---
 ---

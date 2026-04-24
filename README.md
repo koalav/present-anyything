@@ -20,9 +20,35 @@ npm run dev:semgrep
 npm run dev:indirect-prompt
 npm run dev:windows-design
 npm run dev:mobile-audit-mcp
-npm run dev:mobile-audit-mcp-origin
 npm run dev:codex-deeplink-audit-guide
 ```
+
+## 발표 소스 Markdown 위치
+
+실제로 수정해야 하는 원본 Markdown은 `docs/`가 아니라 `decks/` 아래에 있습니다.
+`docs/`는 빌드 결과물이고, 발표 내용을 고칠 때는 아래 파일들을 수정한 뒤 다시 `npm run build`를 실행하면 됩니다.
+
+- `decks/semgrep-android-local/slides.md`
+  - Semgrep 발표는 현재 단일 `slides.md` 파일로 관리합니다.
+- `decks/indirect-prompt-injection/slides.md`
+  - Indirect Prompt Injection 발표도 단일 `slides.md` 파일로 관리합니다.
+- `decks/windows-audit-design/slides.md`
+  - deck 엔트리 파일입니다.
+- `decks/windows-audit-design/pages/*.md`
+  - Windows 감사 발표의 실제 슬라이드 본문 파일입니다.
+- `decks/mobile-audit-mcp-origin/slides.md`
+  - deck 엔트리 파일입니다.
+- `decks/mobile-audit-mcp-origin/pages/*.md`
+  - 모바일 MCP 발표의 실제 슬라이드 본문 파일입니다.
+- `decks/codex-deeplink-audit-guide/slides.md`
+  - deck 엔트리 파일입니다.
+- `decks/codex-deeplink-audit-guide/pages/*.md`
+  - Codex Deeplink Guide 발표의 실제 슬라이드 본문 파일입니다.
+
+요약하면:
+
+- 단일 파일 deck: `semgrep-android-local`, `indirect-prompt-injection`
+- 분리형 deck: `windows-audit-design`, `mobile-audit-mcp-origin`, `codex-deeplink-audit-guide`
 
 ## 정적 빌드
 
@@ -60,7 +86,6 @@ https://{github_user}.github.io/{repository_name}/
 /present-anyything/semgrep-android-local/
 /present-anyything/indirect-prompt-injection/
 /present-anyything/windows-audit-design/
-/present-anyything/mobile-audit-mcp-windows/
 /present-anyything/mobile-audit-mcp-origin/
 /present-anyything/codex-deeplink-audit-guide/
 /present-anyything/downloads/semgrep-android-local.pdf
@@ -78,12 +103,13 @@ decks/
     slides.md
   windows-audit-design/
     slides.md
-  mobile-audit-mcp-windows/
-    slides.md
+    pages/
   mobile-audit-mcp-origin/
     slides.md
+    pages/
   codex-deeplink-audit-guide/
     slides.md
+    pages/
 scripts/
   build-deck.js
   build-index.js

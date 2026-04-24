@@ -1,7 +1,3 @@
----
-layout: section
----
-
 # 주요 산출물
 
 - static-report.json

@@ -1,8 +1,4 @@
----
-layout: section
----
-
-# 대상 repo에 생기는 구조
+# 대상 repo에 추가되는 구조
 
 ```text
 tools/security/android-security-analyzer/

@@ -1,8 +1,4 @@
----
-layout: section
----
-
-# 먼저 설치하는 것
+# 먼저 설치할 것
 
 ```bash
 pip3 install -e .

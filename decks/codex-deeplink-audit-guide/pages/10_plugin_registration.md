@@ -1,8 +1,4 @@
----
-layout: section
----
-
-# local plugin 등록 방식
+# 로컬 plugin 등록 방식
 
 - `plugins/android-security-analyzer` 경로 사용
 - `marketplace.json`에 local source로 등록
