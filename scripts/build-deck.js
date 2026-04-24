@@ -1,5 +1,6 @@
 import path from "path";
 import { spawnSync } from "child_process";
+import { getDeckBase, outputRoot } from "./site-config.js";
 
 const deckName = process.argv[2];
 
@@ -8,11 +9,10 @@ if (!deckName) {
   process.exit(1);
 }
 
-const repoName = "present-anything";
 const rootDir = process.cwd();
 const entry = path.resolve(rootDir, "decks", deckName, "slides.md");
-const outDir = path.resolve(rootDir, "docs", deckName);
-const base = `/${repoName}/${deckName}/`;
+const outDir = path.resolve(rootDir, outputRoot, deckName);
+const base = getDeckBase(deckName);
 
 const result = spawnSync(
   process.platform === "win32" ? "npx.cmd" : "npx",

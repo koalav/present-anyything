@@ -1,9 +1,10 @@
 import fs from "fs";
 import path from "path";
+import { outputRoot } from "./site-config.js";
 
 const rootDir = process.cwd();
 const decksDir = path.join(rootDir, "decks");
-const targets = [path.join(rootDir, "docs"), path.join(rootDir, "dist")];
+const targets = [path.join(rootDir, outputRoot), path.join(rootDir, "dist")];
 
 if (fs.existsSync(decksDir)) {
   for (const deckName of fs.readdirSync(decksDir)) {

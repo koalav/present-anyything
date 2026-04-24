@@ -27,6 +27,7 @@ npm run build
 ```
 
 빌드 결과는 `docs/`에 생성됩니다.
+build 시 GitHub Pages base path는 `GITHUB_REPOSITORY`, `GITHUB_PAGES_REPO`, 또는 `git remote origin`에서 repository 이름을 읽어 자동 결정합니다.
 
 ## GitHub Pages 배포
 
@@ -47,11 +48,11 @@ GitHub 저장소 설정에서 다음을 확인해야 합니다.
 https://{github_user}.github.io/{repository_name}/
 ```
 
-이 저장소는 repository 이름을 `present-anything`으로 가정하고 Slidev build에 다음 base path를 사용합니다.
+예를 들어 repository 이름이 `present-anyything`이면 다음 base path를 사용합니다.
 
 ```text
-/present-anything/semgrep-android-local/
-/present-anything/windows-audit/
+/present-anyything/semgrep-android-local/
+/present-anyything/windows-audit/
 ```
 
 root pages 저장소인 `{github_user}.github.io`를 사용하는 경우에는 base path를 `/` 기준으로 다시 조정해야 합니다.
