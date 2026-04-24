@@ -3,19 +3,19 @@ import path from "path";
 import { outputRoot, repoName } from "./site-config.js";
 import { copyPublicAssets } from "./copy-public.js";
 
+// Keep static TOC metadata section-oriented instead of page-number-oriented.
+// These two decks are still changing, so the index should summarize the flow
+// without claiming exact slide counts or page ranges.
 const decks = [
   {
     name: "Semgrep CE Local Rules for Android",
     path: "semgrep-android-local/",
     description: "Semgrep CE CLI와 로컬 룰만으로 Android 보안 후보를 찾는 운영 방식",
     toc: [
-      "1p 표지",
-      "2p 이번 deck의 범위",
-      "3p 로컬 실행 구조",
-      "4p~8p Sample 1: implicit PendingIntent",
-      "9p~13p Sample 2: weak hash / signature",
-      "14p AI 입력 템플릿",
-      "15p Takeaways"
+      "도입: 발표 범위와 로컬 실행 구조",
+      "Sample 1 묶음: implicit PendingIntent 점검, rule, 위험 코드, output, AI triage",
+      "Sample 2 묶음: weak hash 점검, rule, 위험 코드, output, AI triage",
+      "마무리: AI 입력 템플릿과 summary"
     ]
   },
   {
@@ -23,18 +23,12 @@ const decks = [
     path: "indirect-prompt-injection/",
     description: "Agentic AI에서 prompt injection을 구조적으로 제한하는 설계 원칙과 방어 패턴",
     toc: [
-      "1p 문제 제기와 핵심 주장",
-      "2p Indirect Prompt Injection 정의",
-      "3p Lethal Trifecta",
-      "4p 공격 흐름 예시",
-      "5p 왜 프롬프트만으로 못 막나",
-      "6p Rule of Two 관점",
-      "7p CaMeL 개념",
-      "8p CaMeL 구조도",
-      "9p 방어 패턴들",
-      "10p 실무 적용 레이어",
-      "11p 필드 사례",
-      "12p 결론과 참고 자료"
+      "도입: 문제 제기, Indirect Prompt Injection 정의, Lethal Trifecta",
+      "위협 전개: 공격 흐름과 프롬프트 방어의 한계",
+      "설계 원칙: Rule of Two와 capability 분리",
+      "구조 패턴: CaMeL 개념과 아키텍처",
+      "실무 적용: 방어 패턴, 운영 레이어, 필드 사례",
+      "마무리: 결론과 참고 자료"
     ]
   },
   {

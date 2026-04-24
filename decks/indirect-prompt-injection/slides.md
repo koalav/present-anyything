@@ -2,335 +2,566 @@
 theme: default
 title: Indirect Prompt Injection과 Lethal Trifecta
 info: |
-  Indirect Prompt Injection과 Lethal Trifecta를 중심으로,
-  Agentic AI를 구조적으로 안전하게 설계하는 방법을 설명하는 20~25분 발표용 deck.
+  Agentic AI에서 간접 프롬프트 인젝션이 왜 구조적 문제인지 설명하고,
+  Lethal Trifecta와 Rule of Two를 기준으로 안전한 설계 패턴을 정리하는 발표 자료.
 class: text-left
+transition: slide-left
 drawings:
   persist: false
-transition: slide-left
 mdc: true
 ---
 
+<style>
+  .slidev-layout h1 {
+    font-size: 1.9rem;
+    line-height: 1.1;
+    margin-bottom: 0.8rem;
+  }
+
+  .slidev-layout h2 {
+    font-size: 1.15rem;
+    line-height: 1.35;
+    margin-top: 0.3rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .slidev-layout p,
+  .slidev-layout li,
+  .slidev-layout td,
+  .slidev-layout th {
+    font-size: 0.98rem;
+    line-height: 1.5;
+  }
+
+  .slidev-layout ul {
+    margin-top: 0.55rem;
+  }
+
+  .slidev-layout li {
+    margin: 0.22rem 0;
+  }
+
+  .deck-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 16px;
+    margin-top: 16px;
+  }
+
+  .triple-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 14px;
+    margin-top: 16px;
+  }
+
+  .card {
+    border: 1px solid #dbe4f0;
+    border-radius: 18px;
+    padding: 16px 18px;
+    background: #f8fafc;
+  }
+
+  .card h3 {
+    margin: 0 0 8px;
+    font-size: 1rem;
+    line-height: 1.35;
+  }
+
+  .mini {
+    font-size: 0.9rem;
+    color: #475569;
+    line-height: 1.45;
+  }
+
+  .strong {
+    font-weight: 700;
+    color: #0f172a;
+  }
+
+  .flow-box {
+    margin-top: 18px;
+    padding: 16px 18px;
+    border-radius: 18px;
+    background: #0f172a;
+    color: #e2e8f0;
+    font-family: "Fira Code", ui-monospace, SFMono-Regular, Menlo, monospace;
+    font-size: 0.9rem;
+    line-height: 1.7;
+    white-space: pre-wrap;
+  }
+
+  .risk-center {
+    margin-top: 14px;
+    border-radius: 18px;
+    padding: 16px 18px;
+    background: #fee2e2;
+    border: 1px solid #fecaca;
+    color: #7f1d1d;
+  }
+
+  .step-list {
+    display: grid;
+    gap: 10px;
+    margin-top: 16px;
+  }
+
+  .step {
+    padding: 12px 14px;
+    border-radius: 16px;
+    border: 1px solid #dbe4f0;
+    background: #ffffff;
+  }
+
+  .kicker {
+    display: inline-block;
+    margin-bottom: 14px;
+    padding: 6px 10px;
+    border-radius: 999px;
+    background: #e2e8f0;
+    color: #334155;
+    font-size: 0.82rem;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
+  }
+
+  .closing {
+    font-size: 1.05rem;
+    line-height: 1.7;
+    color: #334155;
+    max-width: 820px;
+  }
+
+  @media (max-width: 900px) {
+    .deck-grid,
+    .triple-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>
+
+---
+class: text-center
+---
+
 # Indirect Prompt Injection과 Lethal Trifecta
+
 ## Agentic AI를 안전하게 설계하는 법
 
-- 핵심 주장: 더 강한 프롬프트보다, 위험 조합이 한 경로에 동시에 성립하지 않게 설계해야 합니다.
-- 왜 지금 중요한가:
-  - 브라우저, 이메일, 문서, MCP, 사내 API가 한 자연어 루프에 연결됩니다.
-  - 에이전트는 "읽기"와 "행동"을 같은 세션에서 결합하기 쉽습니다.
-  - 따라서 기존 앱보다 데이터 유출과 무단 액션 경로가 짧아집니다.
+<div class="mt-10 text-lg opacity-80">
+비신뢰 입력 처리, 민감 데이터 접근, 외부 전송·상태변경 액션이<br>
+한 세션과 한 경로에 동시에 결합되면 구조적으로 취약해집니다.
+</div>
 
-```text
-사용자 요청
--> LLM planning
--> 문서/메일/웹 검색
--> 내부 데이터 접근
--> 외부 전송 또는 상태 변경
-```
-
----
-class: text-sm
----
-
-# 2. Indirect Prompt Injection 정의
-
-- 정의:
-  - 사용자가 직접 입력하지 않은 웹페이지, 이메일, 티켓, PDF, 문서 안의 지시가
-    agent context에 들어와 행동을 바꾸는 공격입니다.
-- 차이점:
-  - 직접 prompt injection은 사용자가 악성 지시를 넣습니다.
-  - indirect prompt injection은 "읽은 콘텐츠"가 agent를 오염시킵니다.
-- 실제로 위험한 이유:
-  - 에이전트는 신뢰되지 않은 콘텐츠를 요약, 분류, 실행 판단의 근거로 사용합니다.
-  - 문서 안의 숨은 지시가 툴 호출, 데이터 조회, 외부 전송으로 이어질 수 있습니다.
-
-| 입력원 | 에이전트가 흔히 하는 일 | 위험 |
-|---|---|---|
-| 이메일, 티켓 | 요약, 우선순위 분류 | 악성 지시가 후속 행동 유도 |
-| 웹페이지, 위키 | 조사, 리서치 | 외부 텍스트가 내부 정책보다 강하게 작동 |
-| PDF, 첨부파일 | 추출, 정리 | 문맥 오염 후 액션 결정 |
+<div class="mt-14 text-sm opacity-60">
+핵심 메시지: 더 강한 프롬프트보다 더 강한 경계와 권한 분리가 먼저입니다.
+</div>
 
 ---
 
-# 3. Lethal Trifecta
+# 왜 Agentic AI는 기존 앱보다 더 위험한가
 
-<div class="grid grid-cols-[1fr_auto_1fr] items-center gap-4 mt-8">
-  <div class="space-y-4">
-    <div class="rounded-2xl border border-sky-200 bg-sky-50 px-4 py-5 text-center">
-      <strong class="block text-sky-900">Untrusted content</strong>
-      <span class="text-sm text-sky-800">웹, 이메일, 문서, 티켓</span>
-    </div>
-    <div class="rounded-2xl border border-sky-200 bg-sky-50 px-4 py-5 text-center">
-      <strong class="block text-sky-900">Private or sensitive data</strong>
-      <span class="text-sm text-sky-800">사내 문서, 메일함, DB, 비밀값</span>
-    </div>
-    <div class="rounded-2xl border border-sky-200 bg-sky-50 px-4 py-5 text-center">
-      <strong class="block text-sky-900">External communication or action</strong>
-      <span class="text-sm text-sky-800">이메일, Slack, API 호출, 상태 변경</span>
-    </div>
+<div class="deck-grid">
+  <div class="card">
+    <h3>하나의 자연어 루프에 너무 많은 capability가 연결됨</h3>
+    <ul>
+      <li>브라우징, 이메일, 문서, DB, API, MCP를 한 세션에서 호출합니다.</li>
+      <li>사용자 요청과 외부 콘텐츠가 같은 context 창 안에서 섞입니다.</li>
+      <li>모델이 계획과 실행을 동시에 담당하면 판단 경계가 흐려집니다.</li>
+    </ul>
   </div>
-  <div class="text-4xl font-bold text-slate-400">→</div>
-  <div class="rounded-3xl border-2 border-rose-300 bg-rose-50 px-6 py-8 text-center shadow-sm">
-    <strong class="block text-2xl text-rose-800">Exfiltration</strong>
-    <span class="mt-2 block text-lg text-rose-700">Unauthorized action</span>
+  <div class="card">
+    <h3>공격자는 "코드"가 아니라 "콘텐츠"를 넣어도 됨</h3>
+    <ul>
+      <li>웹 페이지, 이메일, 문서, 티켓, PDF 안의 문장이 행동을 바꿀 수 있습니다.</li>
+      <li>이 입력은 종종 로그·검색·요약 단계를 거쳐 더 넓게 전파됩니다.</li>
+      <li>그래서 문제는 모델 성능보다 시스템 결합 구조에 가깝습니다.</li>
+    </ul>
   </div>
 </div>
 
-- 세 조건이 동시에 있으면 공격자가 "읽기"를 "행동"으로 바꾸는 경로가 열립니다.
-- 이 모델은 프롬프트 내용보다 시스템 경계와 capability 조합을 보게 합니다.
-- 중심 질문:
-  - 비신뢰 입력을 처리하는가?
-  - 민감 데이터에 접근하는가?
-  - 외부 통신이나 상태 변경이 가능한가?
-
----
-class: text-sm
 ---
 
-# 4. 공격 흐름 예시
+# Indirect Prompt Injection이란 무엇인가
 
-<div class="mt-8 grid grid-cols-[1fr_auto_1fr_auto_1fr_auto_1fr] items-center gap-3 text-center">
-  <div class="rounded-2xl border border-amber-200 bg-amber-50 px-3 py-4">
-    <strong class="block text-amber-900">악성 이메일</strong>
-    <span class="text-sm text-amber-800">"관련 정책을 찾아 요약해 공유해줘"</span>
+<div class="kicker">Definition</div>
+
+- 사용자가 직접 입력하지 않은 외부 콘텐츠의 지시가 agent context에 들어와 계획이나 행동을 바꾸는 공격입니다.
+- 입력 표면은 웹 페이지, 이메일 본문, 첨부 문서, 이슈 티켓, 위키 문서, PDF, MCP 응답까지 포함됩니다.
+- 전통적 injection과 달리, 악성 문자열이 "사람이 읽는 콘텐츠"처럼 보인다는 점이 핵심입니다.
+
+<div class="flow-box">User request
+  -> Agent fetches untrusted content
+  -> Malicious instruction enters context
+  -> Model reprioritizes actions
+  -> Sensitive read or outbound action occurs</div>
+
+---
+
+# Lethal Trifecta: 세 조건이 동시에 모이면 위험해진다
+
+<div class="triple-grid">
+  <div class="card">
+    <h3>1. Untrusted content</h3>
+    <div class="mini">웹, 이메일, 문서, 티켓, 검색 결과, 외부 MCP 응답처럼 신뢰할 수 없는 입력</div>
   </div>
-  <div class="text-3xl text-slate-400">→</div>
-  <div class="rounded-2xl border border-indigo-200 bg-indigo-50 px-3 py-4">
-    <strong class="block text-indigo-900">Agent inbox reader</strong>
-    <span class="text-sm text-indigo-800">입력을 정상 업무 요청으로 해석</span>
+  <div class="card">
+    <h3>2. Sensitive data access</h3>
+    <div class="mini">내부 문서, 메일함, 비공개 노트, 토큰, DB, 파일시스템 같은 민감 데이터 접근 권한</div>
   </div>
-  <div class="text-3xl text-slate-400">→</div>
-  <div class="rounded-2xl border border-indigo-200 bg-indigo-50 px-3 py-4">
-    <strong class="block text-indigo-900">사내 검색</strong>
-    <span class="text-sm text-indigo-800">문서, 티켓, 위키, 메일함 조회</span>
-  </div>
-  <div class="text-3xl text-slate-400">→</div>
-  <div class="rounded-2xl border border-rose-300 bg-rose-50 px-3 py-4">
-    <strong class="block text-rose-900">외부 전송</strong>
-    <span class="text-sm text-rose-800">메일, Slack, URL로 secret 포함 결과 전달</span>
-  </div>
-</div>
-
-1. 공격자는 이메일이나 문서 안에 간접 지시를 심습니다.
-2. agent는 그 입력을 정상 업무 요청으로 오해하고 내부 검색을 수행합니다.
-3. 요약 결과에 민감 정보가 포함되면 외부 채널로 전송할 수 있습니다.
-
-핵심은 "LLM이 속았는가"보다, 속았을 때도 왜 외부 전송까지 가능했는가입니다.
-
----
-class: text-sm
----
-
-# 5. 왜 프롬프트만으로 못 막나
-
-- 공격 문자열 탐지는 필요하지만 충분하지 않습니다.
-- 이유:
-  - 악성 지시는 자연어로 위장되며 정상 업무 요청과 섞입니다.
-  - 입력 정제만으로는 "어떤 툴을 쓸 수 있는가"를 통제하지 못합니다.
-  - 방어는 모델 설득보다 피해 범위 제한이 핵심입니다.
-
-| 접근 | 한계 | 더 중요한 대안 |
-|---|---|---|
-| stronger system prompt | 우회 가능, 문맥 오염 가능 | capability 분리 |
-| 입력 필터 | 탐지 회피 가능 | 민감 데이터 최소화 |
-| 블랙리스트 | 변형 공격에 취약 | risky action 승인/차단 |
-
-- 설계 원칙:
-  - 속아도 외부 전송이 안 되게 합니다.
-  - 읽어도 민감 데이터 전체가 한 번에 안 보이게 합니다.
-  - 행동하려면 별도 정책 엔진과 승인 단계를 지나게 합니다.
-
----
-
-# 6. 원칙: 세 가지를 동시에 주지 말 것
-
-## Rule of Two 관점
-
-| capability | 예시 | 허용 원칙 |
-|---|---|---|
-| 비신뢰 입력 처리 | 웹, 이메일, 문서, 티켓, PDF | 가능 |
-| 민감 데이터 접근 | 메일함, 사내 문서, CRM, secrets | 가능 |
-| 외부 전송 / 상태 변경 | send email, Slack, POST, ticket update | 가능 |
-
-단, 같은 세션과 같은 실행 경로에 세 가지가 모두 결합되지 않게 설계합니다.
-
-- 안전한 예:
-  - 비신뢰 입력 + 외부 액션은 가능하지만 민감 데이터는 없음
-  - 비신뢰 입력 + 민감 데이터는 가능하지만 외부 전송은 없음
-  - 민감 데이터 + 외부 액션은 가능하지만 입력원은 trusted form만 사용
-- 설계 질문:
-  - 이 경로를 둘로 쪼갤 수 있는가?
-  - read-only 단계와 action 단계가 분리되는가?
-
----
-class: text-sm
----
-
-# 7. 대표 구조: CaMeL
-
-- CaMeL은 prompt injection을 "더 잘 탐지"하기보다 "설계로 무력화"하는 쪽에 가깝습니다.
-- 역할 분리:
-  - `P-LLM`: trusted user request를 받아 계획과 제한된 코드 생성
-  - `Q-LLM`: untrusted content를 격리해 schema 수준으로만 추출
-  - `restricted interpreter`: 허용된 코드와 허용된 capability만 실행
-  - `policy / reference monitor`: control flow와 data flow를 검사
-
-```text
-trusted request는 planning 쪽으로
-untrusted content는 extraction 쪽으로
-둘을 섞는 지점에는 policy와 capability 제약을 둔다
-```
-
-- 의미:
-  - "문서 내용 이해"와 "행동 결정"을 같은 자유도 안에 두지 않습니다.
-
----
-
-# 8. CaMeL architecture
-
-<div class="mt-6 grid grid-cols-[1fr_auto_1fr_auto_1fr] items-start gap-4">
-  <div class="space-y-4">
-    <div class="rounded-2xl border border-lime-300 bg-lime-50 px-4 py-4 text-center">
-      <strong class="block text-lime-900">Trusted user request</strong>
-      <span class="text-sm text-lime-800">명시적으로 신뢰한 사용자 요청</span>
-    </div>
-    <div class="rounded-2xl border border-amber-300 bg-amber-50 px-4 py-4 text-center">
-      <strong class="block text-amber-900">Untrusted content</strong>
-      <span class="text-sm text-amber-800">웹, 이메일, 문서, 첨부파일</span>
-    </div>
-  </div>
-  <div class="pt-10 text-3xl text-slate-400">→</div>
-  <div class="space-y-4">
-    <div class="rounded-2xl border border-indigo-200 bg-indigo-50 px-4 py-4 text-center">
-      <strong class="block text-indigo-900">P-LLM</strong>
-      <span class="text-sm text-indigo-800">plan / restricted code 생성</span>
-    </div>
-    <div class="rounded-2xl border border-indigo-200 bg-indigo-50 px-4 py-4 text-center">
-      <strong class="block text-indigo-900">Q-LLM</strong>
-      <span class="text-sm text-indigo-800">schema extraction 전용</span>
-    </div>
-    <div class="rounded-2xl border border-indigo-200 bg-indigo-50 px-4 py-4 text-center">
-      <strong class="block text-indigo-900">Restricted interpreter</strong>
-      <span class="text-sm text-indigo-800">허용된 코드와 capability만 실행</span>
-    </div>
-  </div>
-  <div class="pt-20 text-3xl text-slate-400">→</div>
-  <div class="space-y-4">
-    <div class="rounded-2xl border-2 border-rose-300 bg-rose-50 px-4 py-4 text-center">
-      <strong class="block text-rose-900">Policy / reference monitor</strong>
-      <span class="text-sm text-rose-800">control flow와 data flow 검사</span>
-    </div>
-    <div class="grid grid-cols-2 gap-3">
-      <div class="rounded-2xl border border-slate-200 bg-slate-50 px-3 py-3 text-center text-sm text-slate-700">Search / retrieval</div>
-      <div class="rounded-2xl border border-slate-200 bg-slate-50 px-3 py-3 text-center text-sm text-slate-700">Internal docs / DB</div>
-      <div class="rounded-2xl border border-slate-200 bg-slate-50 px-3 py-3 text-center text-sm text-slate-700">Email / Slack / API</div>
-      <div class="rounded-2xl border border-slate-200 bg-slate-50 px-3 py-3 text-center text-sm text-slate-700">Audit log</div>
-    </div>
+  <div class="card">
+    <h3>3. External action</h3>
+    <div class="mini">외부 전송, 메시지 발송, 상태 변경, 시스템 명령 실행, 티켓 수정, 결제 요청</div>
   </div>
 </div>
 
-- Q-LLM은 내용을 읽되, 임의 행동을 직접 결정하지 않습니다.
-- 실제 tool access는 interpreter와 policy 경계를 통과해야 합니다.
-- 핵심 효과는 "입력 오염"과 "행동 권한"을 같은 레이어에 두지 않는 것입니다.
-
----
-class: text-sm
----
-
-# 9. 방어 패턴들
-
-| 패턴 | 목적 | 실무 적용 예 |
-|---|---|---|
-| Dual LLM | trusted / untrusted 처리 분리 | planning 모델과 extraction 모델 분리 |
-| Plan-Then-Execute | 계획과 실행 분리 | 먼저 plan 생성, 이후 policy 검토 후 실행 |
-| Code-Then-Execute | 자연어 직접 실행 축소 | 제한된 DSL 또는 restricted code만 허용 |
-| Context Minimization | 과도한 문맥 노출 축소 | 필요한 문서 조각만 retrieval |
-| Map-Reduce | 대량 문서를 분산 요약 | 민감 데이터 전체를 한 context에 몰지 않음 |
-| Action Selector | 위험 툴 분리 | 외부 전송은 별도 selector / approval 필요 |
-
-- 공통 목표는 같습니다.
-  - 모델 자유도를 줄입니다.
-  - 민감 capability를 늦게 부여합니다.
-  - 실패 시 blast radius를 작게 만듭니다.
+<div class="risk-center">
+  <div class="strong">중앙 위험</div>
+  <div class="mini">세 조건이 한 경로에서 합쳐지면 데이터 유출과 비인가 액션이 "모델이 속는 순간" 바로 실현될 수 있습니다.</div>
+</div>
 
 ---
 
-# 10. 실무 적용 방식과 방어 레이어
+# 공격 흐름 예시
 
-<div class="mt-8 grid grid-cols-[repeat(5,minmax(0,1fr))] items-center gap-3 text-center">
-  <div class="rounded-2xl border border-sky-200 bg-sky-50 px-3 py-4">
-    <strong class="block text-sky-900">Input isolation</strong>
-    <span class="text-sm text-sky-800">비신뢰 입력 분리</span>
+<div class="step-list">
+  <div class="step"><span class="strong">1.</span> 공격자가 악성 이메일이나 문서를 시스템 안으로 유입시킵니다.</div>
+  <div class="step"><span class="strong">2.</span> 사용자는 "이 메일 요약하고 관련 문서 찾아줘" 같은 정상 요청을 보냅니다.</div>
+  <div class="step"><span class="strong">3.</span> 에이전트는 메일 본문을 읽고 내부 검색 도구로 추가 문서를 가져옵니다.</div>
+  <div class="step"><span class="strong">4.</span> 악성 지시가 모델의 우선순위를 바꾸어 secret, token, 내부 링크를 요약에 포함시킵니다.</div>
+  <div class="step"><span class="strong">5.</span> 후속 단계에서 외부 메일, Slack, webhook, 브라우저 요청으로 데이터가 유출됩니다.</div>
+</div>
+
+---
+
+# 왜 "더 강한 프롬프트"만으로는 못 막는가
+
+<div class="deck-grid">
+  <div class="card">
+    <h3>프롬프트는 정책 선언이지 강제 경계가 아님</h3>
+    <ul>
+      <li>모델은 우선순위를 추론합니다. 선언한 규칙이 항상 이기지 않습니다.</li>
+      <li>긴 context와 다단계 작업에서는 지시 충돌과 오해가 누적됩니다.</li>
+      <li>악성 문장이 일반 업무 텍스트처럼 보이면 분리 자체가 어렵습니다.</li>
+    </ul>
   </div>
-  <div class="rounded-2xl border border-sky-200 bg-sky-50 px-3 py-4">
-    <strong class="block text-sky-900">Planning isolation</strong>
-    <span class="text-sm text-sky-800">계획과 실행 경계 분리</span>
-  </div>
-  <div class="rounded-2xl border border-sky-200 bg-sky-50 px-3 py-4">
-    <strong class="block text-sky-900">Policy enforcement</strong>
-    <span class="text-sm text-sky-800">허용된 흐름만 통과</span>
-  </div>
-  <div class="rounded-2xl border border-amber-300 bg-amber-50 px-3 py-4">
-    <strong class="block text-amber-900">Human approval</strong>
-    <span class="text-sm text-amber-800">위험 액션은 승인 필요</span>
-  </div>
-  <div class="rounded-2xl border border-sky-200 bg-sky-50 px-3 py-4">
-    <strong class="block text-sky-900">Audit log</strong>
-    <span class="text-sm text-sky-800">재현 가능한 trace 보관</span>
+  <div class="card">
+    <h3>근본 방어는 피해를 제한하는 구조</h3>
+    <ul>
+      <li>속더라도 민감 데이터와 외부 액션이 바로 연결되지 않게 해야 합니다.</li>
+      <li>도구 권한, context 범위, 승인 단계, egress를 시스템이 강제해야 합니다.</li>
+      <li>즉 핵심은 detection보다 impact containment입니다.</li>
+    </ul>
   </div>
 </div>
 
-- 체크리스트:
-  - tool별 read/write 분리
-  - egress allowlist
-  - per-tool scope와 최소 권한
-  - structured output 강제
-  - 승인 없는 외부 발송 금지
-  - 감사 로그와 재현 가능한 trace 보관
-
----
-class: text-sm
 ---
 
-# 11. 필드 사례: EchoLeak이 보여준 것
+# Rule of Two: 원칙 자체는 단순하다
 
-- EchoLeak은 M365 Copilot 계열 논의에서 자주 인용되는 사례입니다.
-- 중요한 점은 특정 제품 이슈보다도 공격 구조입니다.
+<div class="kicker">Meta Agents Rule of Two</div>
 
-| 단계 | 관찰 포인트 | 교훈 |
-|---|---|---|
-| 악성 입력 주입 | 이메일, 문서 등 일상 채널 사용 | 비신뢰 입력은 어디든 들어올 수 있음 |
-| 내부 데이터 접근 | agent가 사용자를 대신해 검색 | 권한 위임은 곧 공격면 확대 |
-| 외부 전송 가능성 | 응답 생성, 공유, 연결된 채널 | exfiltration은 별도 경계가 필요 |
+- 한 세션, 한 실행 경로, 한 자동화 단계에서 아래 세 가지를 동시에 주지 않습니다.
 
-- 따라서 검토 포인트도 구조 중심이어야 합니다.
-  - 어떤 입력이 trusted / untrusted 인가
-  - 어떤 데이터가 session에 들어오는가
-  - 어떤 액션이 승인 없이 가능한가
+<div class="triple-grid">
+  <div class="card">
+    <h3>비신뢰 입력 처리</h3>
+    <div class="mini">외부 콘텐츠를 읽고 해석하는 능력</div>
+  </div>
+  <div class="card">
+    <h3>민감 데이터 접근</h3>
+    <div class="mini">내부 비공개 정보에 접근하는 능력</div>
+  </div>
+  <div class="card">
+    <h3>외부 전송·상태변경</h3>
+    <div class="mini">외부로 보내거나 시스템 상태를 바꾸는 능력</div>
+  </div>
+</div>
+
+<div class="risk-center">
+  설계 목표는 "셋 중 최대 둘까지만 결합"입니다. 나머지 하나는 다른 단계나 다른 승인 경계 뒤로 밀어냅니다.
+</div>
 
 ---
-class: text-sm
+
+# Rule of Two: 설계에 적용하면 어떻게 달라지나
+
+| 작업 경로 | 허용 조합 | 이유 |
+| --- | --- | --- |
+| 문서 요약 전용 agent | 비신뢰 입력 + 제한된 읽기 | 외부 전송과 상태변경이 없으면 피해 범위가 줄어듦 |
+| 승인된 보고서 발송 agent | 정제된 내부 데이터 + 외부 전송 | 비신뢰 입력을 직접 읽지 않으면 injection surface를 낮춤 |
+| 코드 수정 agent | 비신뢰 입력 + 상태변경 | 민감 데이터 저장소 접근을 분리하면 exfiltration을 줄임 |
+| 관리자 agent | 민감 데이터 + 상태변경 | 외부 콘텐츠 ingestion을 끊고 승인 흐름을 강제해야 함 |
+
+- 한 agent가 모든 역할을 하게 두지 말고, 단계별 capability를 분리하는 편이 안전합니다.
+
 ---
 
-# 12. 결론과 참고 자료
+# 대표 구조: CaMeL 계열 접근
 
-## 결론
+<div class="deck-grid">
+  <div class="card">
+    <h3>Trusted request를 다루는 planner</h3>
+    <ul>
+      <li>사용자 요청을 읽고 plan, code, tool invocation 초안을 만듭니다.</li>
+      <li>외부 문서 원문을 그대로 읽지 않도록 범위를 좁힙니다.</li>
+      <li>권한 모델과 실행 가능한 action 집합을 명시적으로 받습니다.</li>
+    </ul>
+  </div>
+  <div class="card">
+    <h3>Untrusted content를 다루는 extractor</h3>
+    <ul>
+      <li>외부 콘텐츠는 schema 기반 필드 추출이나 요약으로만 전달합니다.</li>
+      <li>명령형 문장은 제거하고, 필요한 사실만 구조화된 값으로 넘깁니다.</li>
+      <li>planner는 정제 결과만 소비하고 원문과 섞이지 않습니다.</li>
+    </ul>
+  </div>
+</div>
 
-- LLM을 더 강하게 설득하는 것보다, LLM 주변 시스템을 신뢰 가능하게 만들어야 합니다.
-- Agent 보안은 prompt engineering 문제가 아니라 architecture와 security boundary 문제입니다.
-- 한 문장으로 정리하면:
+<div class="flow-box">User request -> Planner
+Untrusted content -> Extractor -> Structured fields
+Planner -> Restricted executor -> Tools under policy</div>
 
-> 비신뢰 입력, 민감 데이터 접근, 외부 전송/상태변경을 한 경로에 동시에 두지 마십시오.
+---
 
-## 참고 자료
+# 방어 패턴 1: Dual LLM 또는 입력 경계 분리
 
-- `CaMeL: Defeating Prompt Injections by Design` - 연구 논문
-- `CaMeL GitHub research artifact` - 연구 구현 자료
-- `Operationalizing CaMeL` - 운영 관점 해설
-- `Design Patterns for Securing LLM Agents against Prompt Injections` - 설계 패턴 자료
-- `Reversec 실습 예제` - 실습/교육 자료
-- `Simon Willison, Lethal Trifecta` - 개념 정리 글
-- `Meta, Agents Rule of Two` - 운영 가이드 성격 자료
-- `OWASP AI Agent Security Cheat Sheet` - 보안 체크리스트
-- `OWASP MCP Security Cheat Sheet` - MCP 연동 보안 가이드
-- `OpenAI agent safety guidance` - 에이전트 안전 설계 가이드
+<div class="deck-grid">
+  <div class="card">
+    <h3>어떻게 나누나</h3>
+    <ul>
+      <li>Planner는 trusted user request만 읽습니다.</li>
+      <li>Extractor는 untrusted content만 읽고 구조화 결과만 냅니다.</li>
+      <li>두 경로의 prompt, tool, memory를 분리합니다.</li>
+    </ul>
+  </div>
+  <div class="card">
+    <h3>왜 효과적인가</h3>
+    <ul>
+      <li>악성 문장이 planning loop 안으로 직접 들어오지 않습니다.</li>
+      <li>planner가 읽는 것은 필드화된 데이터라 공격 표현력이 줄어듭니다.</li>
+      <li>로그와 감사 관점에서도 "누가 무엇을 읽었는지"가 선명해집니다.</li>
+    </ul>
+  </div>
+</div>
+
+<div class="mini mt-4">실무 포인트: extractor 출력 형식은 JSON schema, enum, bounded field length처럼 해석 범위를 좁히는 것이 좋습니다.</div>
+
+---
+
+# 방어 패턴 2: Plan-Then-Execute
+
+<div class="deck-grid">
+  <div class="card">
+    <h3>실행 전에 plan을 고정</h3>
+    <ul>
+      <li>먼저 "무슨 데이터를 읽고 어떤 도구를 쓸지" 계획을 만듭니다.</li>
+      <li>그다음 별도 executor가 허용된 step만 실행합니다.</li>
+      <li>중간에 외부 콘텐츠가 새 지시를 넣어도 plan을 다시 쓸 수 없게 합니다.</li>
+    </ul>
+  </div>
+  <div class="card">
+    <h3>어디에 유리한가</h3>
+    <ul>
+      <li>브라우징 후 이메일 발송, 문서 검색 후 티켓 수정 같은 다단계 작업</li>
+      <li>승인 가능한 중간 산출물과 audit log가 필요한 조직 환경</li>
+      <li>도구 호출을 allowlist 기반으로 강제해야 하는 경우</li>
+    </ul>
+  </div>
+</div>
+
+<div class="flow-box">Plan generation
+  -> policy review
+  -> bounded execution
+  -> result summary</div>
+
+---
+
+# 방어 패턴 3: Code-Then-Execute
+
+<div class="deck-grid">
+  <div class="card">
+    <h3>자연어를 바로 실행하지 않고 제한된 표현으로 바꾼다</h3>
+    <ul>
+      <li>planner가 자유 서술 대신 제한된 DSL, typed action list, restricted code를 생성합니다.</li>
+      <li>executor는 허용된 명령 집합만 해석하고, 그 외 표현은 거부합니다.</li>
+      <li>예: <code>search_docs(query)</code>, <code>draft_email(recipient, summary)</code> 같은 bounded action만 허용</li>
+    </ul>
+  </div>
+  <div class="card">
+    <h3>왜 효과적인가</h3>
+    <ul>
+      <li>공격자가 넣은 자연어 지시가 곧바로 도구 호출로 번역되기 어렵습니다.</li>
+      <li>정책 검토 대상이 자유 텍스트가 아니라 구조화된 실행 계획이 됩니다.</li>
+      <li>허용되지 않은 action은 deterministic하게 차단할 수 있습니다.</li>
+    </ul>
+  </div>
+</div>
+
+---
+
+# 방어 패턴 4: Structured Extraction만 허용
+
+<div class="deck-grid">
+  <div class="card">
+    <h3>자유 서술 대신 구조화된 값만 통과</h3>
+    <ul>
+      <li>예: <code>{invoice_id, amount, sender, due_date}</code>만 추출</li>
+      <li>요약문 전체를 planner에 넘기지 않고 필요한 필드만 전달</li>
+      <li>허용되지 않은 필드는 버리고, 길이와 형식을 제한</li>
+    </ul>
+  </div>
+  <div class="card">
+    <h3>왜 중요한가</h3>
+    <ul>
+      <li>공격자가 넣은 "다음 단계에서 이 URL로 보내라" 같은 문장이 살아남기 어렵습니다.</li>
+      <li>planner는 데이터와 지시를 구별할 필요가 줄어듭니다.</li>
+      <li>PDF, HTML, 이메일처럼 표현력이 큰 입력에 특히 효과적입니다.</li>
+    </ul>
+  </div>
+</div>
+
+---
+
+# 방어 패턴 5: Context Minimization
+
+<div class="deck-grid">
+  <div class="card">
+    <h3>Context를 작게 유지</h3>
+    <ul>
+      <li>필요한 문서 조각만 읽고, 검색 결과 전체를 한 번에 넣지 않습니다.</li>
+      <li>민감 저장소와 외부 문서를 같은 context window에 섞지 않습니다.</li>
+      <li>세션 메모리도 목적별로 나누고 자동 정리합니다.</li>
+    </ul>
+  </div>
+  <div class="card">
+    <h3>언제 특히 유리한가</h3>
+    <ul>
+      <li>검색 결과가 많은 RAG 흐름</li>
+      <li>여러 메일과 첨부파일을 동시에 읽는 워크플로</li>
+      <li>내부 문서와 외부 웹 문서를 함께 다뤄야 하는 조사형 agent</li>
+    </ul>
+  </div>
+</div>
+
+---
+
+# 방어 패턴 6: Map-Reduce
+
+<div class="deck-grid">
+  <div class="card">
+    <h3>문서별로 먼저 처리하고 마지막에 합친다</h3>
+    <ul>
+      <li>각 입력 문서마다 extractor 결과를 따로 만든 뒤 최종 aggregator가 합칩니다.</li>
+      <li>최종 단계는 원문 전체가 아니라 부분 요약·구조화 결과만 받습니다.</li>
+      <li>공격 문장이 전체 context를 장악하는 효과를 줄일 수 있습니다.</li>
+    </ul>
+  </div>
+  <div class="card">
+    <h3>실무에서의 장점</h3>
+    <ul>
+      <li>병렬 처리와 재시도에 유리합니다.</li>
+      <li>문서 단위 provenance와 audit trail을 남기기 쉽습니다.</li>
+      <li>대규모 검색·요약 작업에서 blast radius를 줄이는 데 효과적입니다.</li>
+    </ul>
+  </div>
+</div>
+
+---
+
+# 방어 패턴 7: Action Selector와 승인 게이트
+
+<div class="deck-grid">
+  <div class="card">
+    <h3>외부 액션은 별도 선택 단계로 분리</h3>
+    <ul>
+      <li>send mail, post Slack, write ticket, execute command는 별도 selector가 결정</li>
+      <li>selector는 입력 출처, 데이터 민감도, 대상 도메인, approval 상태를 함께 봅니다.</li>
+      <li>필요하면 human approval 없이는 실행하지 않습니다.</li>
+    </ul>
+  </div>
+  <div class="card">
+    <h3>정책 엔진이 강제해야 할 것</h3>
+    <ul>
+      <li>egress allowlist, tool별 scope, read/write 분리, request signing</li>
+      <li>고위험 액션의 dry-run preview와 diff 표시</li>
+      <li>누가 어떤 컨텍스트로 어떤 액션을 승인했는지 감사 로그 남기기</li>
+    </ul>
+  </div>
+</div>
+
+---
+
+# 실무 적용 체크리스트
+
+<div class="step-list">
+  <div class="step"><span class="strong">1.</span> 외부 입력을 읽는 도구와 민감 데이터를 읽는 도구를 분리합니다.</div>
+  <div class="step"><span class="strong">2.</span> planner, extractor, executor를 분리하고 각자 tool scope를 다르게 부여합니다.</div>
+  <div class="step"><span class="strong">3.</span> 외부 전송과 상태변경 도구는 allowlist, approval, audit log 뒤에 둡니다.</div>
+  <div class="step"><span class="strong">4.</span> structured output, bounded schema, short-lived memory를 기본값으로 둡니다.</div>
+  <div class="step"><span class="strong">5.</span> 한 세션 안에서 Lethal Trifecta가 다시 결합되는 우회 경로가 없는지 점검합니다.</div>
+</div>
+
+---
+
+# 필드 사례가 보여주는 것
+
+<div class="deck-grid">
+  <div class="card">
+    <h3>EchoLeak이 보여준 구조</h3>
+    <ul>
+      <li>악성 이메일이라는 비신뢰 입력이 M365 Copilot의 검색·요약 경로에 들어갔습니다.</li>
+      <li>그 뒤 내부 데이터 접근과 외부 전송 경로가 결합되며 zero-click exfiltration 문제가 드러났습니다.</li>
+      <li>즉 실제 취약점은 단일 프롬프트가 아니라 tool boundary와 data flow 조합에 있었습니다.</li>
+    </ul>
+  </div>
+  <div class="card">
+    <h3>교훈</h3>
+    <ul>
+      <li>취약점은 대체로 "모델이 너무 똑똑해서"가 아니라 "시스템이 너무 많은 권한을 붙여서" 발생합니다.</li>
+      <li>보안 설계의 핵심은 모델 내부가 아니라 tool boundary와 action policy입니다.</li>
+      <li>결국 agent 보안은 architecture 문제입니다.</li>
+    </ul>
+  </div>
+</div>
+
+---
+
+# 결론
+
+<div class="closing">
+  AI agent가 비신뢰 입력 처리, 민감 데이터 접근, 외부 전송·상태변경 액션을 동시에 가지면
+  indirect prompt injection은 모델 품질 문제가 아니라 구조적 취약점이 됩니다.
+</div>
+
+<div class="closing mt-6">
+  따라서 근본 방어는 "더 강한 프롬프트"가 아니라,
+  세 조건이 한 세션과 한 경로에서 동시에 성립하지 않도록 설계하는 것입니다.
+  Lethal Trifecta와 Rule of Two는 그 설계를 점검하는 실용적인 기준입니다.
+</div>
+
+---
+
+# 참고 문헌 1: 연구와 개념
+
+- [Not what you've signed up for: Compromising Real-World LLM-Integrated Applications with Indirect Prompt Injection](https://arxiv.org/abs/2302.12173)
+- [Defeating Prompt Injections by Design](https://arxiv.org/abs/2503.18813)
+- [CaMeL research artifact (google-research/camel-prompt-injection)](https://github.com/google-research/camel-prompt-injection)
+- [Operationalizing CaMeL: Strengthening LLM Defenses for Enterprise Deployment](https://arxiv.org/abs/2505.22852)
+- [Design Patterns for Securing LLM Agents against Prompt Injections](https://arxiv.org/abs/2506.08837)
+- [The lethal trifecta for AI agents: private data, untrusted content, and external communication](https://simonwillison.net/2025/Jun/16/the-lethal-trifecta/)
+- [Meta: Practical AI Agent Security](https://ai.meta.com/blog/practical-ai-agent-security/)
+
+---
+
+# 참고 문헌 2: 운영 가이드와 사례
+
+- [OpenAI: Designing AI agents to resist prompt injection](https://openai.com/index/designing-agents-to-resist-prompt-injection/)
+- [OpenAI API: Safety in building agents](https://platform.openai.com/docs/guides/agent-builder-safety)
+- [OpenAI: Keeping your data safe when an AI agent clicks a link](https://openai.com/index/ai-agent-link-safety/)
+- [OWASP AI Agent Security Cheat Sheet](https://cheatsheetseries.owasp.org/cheatsheets/AI_Agent_Security_Cheat_Sheet.html)
+- [OWASP MCP Security Cheat Sheet](https://cheatsheetseries.owasp.org/cheatsheets/MCP_Security_Cheat_Sheet.html)
+- [MSRC: How Microsoft defends against indirect prompt injection attacks](https://msrc.microsoft.com/blog/2025/07/how-microsoft-defends-against-indirect-prompt-injection-attacks/)
+- [Aim Labs: Breaking down EchoLeak](https://www.aim.security/post/echoleak-blogpost)
+- [Reversec: Design Patterns to Secure LLM Agents In Action](https://labs.reversec.com/posts/2025/08/design-patterns-to-secure-llm-agents-in-action)

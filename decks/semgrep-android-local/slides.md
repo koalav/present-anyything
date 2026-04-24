@@ -26,9 +26,9 @@ mdc: true
 
 ```text
 문제 설명
-→ Semgrep rule 설명
 → 위험한 sample 코드
-→ Semgrep output
+→ Semgrep rule 설명
+→ 검출 방식 / output
 → false positive sample
 → AI triage 방법
 ```
@@ -59,12 +59,33 @@ semgrep scan --metrics=off \
 
 ## `android-pendingintent-implicit`
 
-- 점검 대상: 암시적 `Intent`를 그대로 `PendingIntent`로 래핑하는 코드
-- 문제 상황: `setComponent()` / `setPackage()` 없이 action string만으로 생성
-- 왜 위험한가:
-  - 의도하지 않은 exported component가 선택될 수 있음
-  - 민감 action이면 hijacking / spoofing surface가 커짐
-  - 코드리뷰 시 "대상이 누구인지" 한눈에 보이지 않음
+- 명시적 `Intent`는 `Intent(context, DetailActivity::class.java)` 또는 `setComponent()` / `setPackage()`로 대상 컴포넌트가 고정됩니다.
+- 암시적 `Intent`는 action, data, category만으로 대상을 런타임에 찾습니다.
+- `PendingIntent`는 다른 시점이나 다른 프로세스에서 실행될 수 있어, 대상이 불분명하면 리뷰와 통제가 어려워집니다.
+
+```kotlin
+// 위험한 예: action만 있고 대상이 고정되지 않음
+val riskyIntent = Intent("com.example.ACTION_VIEW_DETAIL")
+val riskyPi = PendingIntent.getActivity(
+    context, 4412, riskyIntent, PendingIntent.FLAG_UPDATE_CURRENT
+)
+
+// 비교적 안전한 예: same-app explicit component + immutable
+val safeIntent = Intent(context, DetailActivity::class.java).apply {
+    setPackage(context.packageName)
+}
+val safePi = PendingIntent.getActivity(
+    context, 4412, safeIntent,
+    PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
+)
+```
+
+- 위험도가 높은 경우:
+  - 승인, 결제, 주문 상세, deep link 재진입처럼 민감한 흐름을 암시적 `PendingIntent`로 위임하는 경우
+  - exported component가 있을 수 있는 action을 broad하게 열어두는 경우
+- 비교적 안전한 경우:
+  - same-app explicit component + `FLAG_IMMUTABLE` + 목적이 분명한 requestCode를 함께 쓰는 경우
+  - 호출부만 봐도 "어디로 가는지"와 "어떻게 바뀔 수 없는지"가 드러나는 경우
 
 ```text
 핵심 질문
@@ -72,31 +93,6 @@ semgrep scan --metrics=off \
 - 외부 앱이 가로챌 여지가 있는가?
 - 이 호출부만 보면 안전성을 확신할 수 있는가?
 ```
-
----
-class: text-sm
----
-
-# Sample 1: Semgrep rule
-
-```yaml
-rules:
-  - id: android-pendingintent-implicit
-    languages: [java, kotlin]
-    severity: ERROR
-    message: >
-      암시적 Intent를 PendingIntent로 래핑하고 있습니다.
-      setComponent() 또는 setPackage()로 명시적 대상을 지정하십시오.
-    patterns:
-      - pattern: PendingIntent.get$METHOD($CTX, $REQ, $INTENT, $FLAGS)
-      - pattern-not-inside: $INTENT.setComponent(...)
-      - pattern-not-inside: $INTENT.setPackage(...)
-```
-
-- `pattern`: `PendingIntent.getActivity/getBroadcast/getService` 호출을 수집합니다.
-- `pattern-not-inside`: 같은 함수 안에서 `setComponent`, `setPackage`가 보이면 제외합니다.
-- 의도한 한계: 헬퍼 함수 안에서 explicit intent로 바뀌면, 호출부 기준으로는 오탐이 날 수 있습니다.
-- 즉, 이 룰은 "후보 추출"에 강하고, "정답 확정"은 사람이나 AI가 맡아야 합니다.
 
 ---
 class: text-sm
@@ -131,6 +127,53 @@ class PendingIntentLab {
 class: text-sm
 ---
 
+# Sample 1: Semgrep rule
+
+```yaml
+rules:
+  - id: android-pendingintent-implicit
+    languages: [java, kotlin]
+    severity: ERROR
+    message: >
+      암시적 Intent를 PendingIntent로 래핑하고 있습니다.
+      setComponent() 또는 setPackage()로 명시적 대상을 지정하십시오.
+    patterns:
+      - pattern: PendingIntent.get$METHOD($CTX, $REQ, $INTENT, $FLAGS)
+      - pattern-not-inside: $INTENT.setComponent(...)
+      - pattern-not-inside: $INTENT.setPackage(...)
+```
+
+- `pattern`: `PendingIntent.getActivity/getBroadcast/getService` 호출을 수집합니다.
+- `pattern-not-inside`: 같은 함수 안에서 `setComponent`, `setPackage`가 보이면 제외합니다.
+- 이 규칙은 "명시적 대상을 만들었는가"를 보는 구조 기반 룰입니다.
+
+---
+class: text-sm
+---
+
+# Sample 1: Semgrep이 어떻게 검출하나
+
+```text
+탐지 순서
+1. PendingIntent.getActivity/getBroadcast/getService 호출을 찾는다.
+2. 같은 함수 안에 setComponent() / setPackage()가 있는지 본다.
+3. 없으면 "대상이 코드에 드러나지 않는 PendingIntent 후보"로 표시한다.
+```
+
+```kotlin
+val detailIntent = Intent("com.example.ACTION_VIEW_DETAIL")   // 대상 미고정
+return PendingIntent.getActivity(
+    context, 4412, detailIntent, PendingIntent.FLAG_UPDATE_CURRENT
+)                                                          // 탐지 지점
+```
+
+- 이 룰은 "Intent가 어디서 왔는가"보다 "대상이 코드에 명시되어 있는가"를 봅니다.
+- 헬퍼 함수 안에서 explicit intent로 바뀌면 호출부만 보고는 오탐이 날 수 있습니다.
+
+---
+class: text-sm
+---
+
 # Sample 1: Semgrep output
 
 ```text
@@ -157,7 +200,7 @@ $ semgrep scan --metrics=off \
 class: text-sm
 ---
 
-# Sample 1: 오탐 사례와 AI triage
+# Sample 1: 오탐 사례
 
 ```kotlin
 object SecureIntents {
@@ -182,14 +225,20 @@ class SafeNotificationBuilder {
 ```
 
 - 이 호출부만 보면 `setComponent()` / `setPackage()`가 보이지 않아 룰이 잡을 수 있습니다.
-- 하지만 실제로는 헬퍼 함수 내부에서 explicit intent를 만들고 있어 false positive일 수 있습니다.
+- 하지만 실제로는 헬퍼 함수 내부에서 same-app explicit intent를 만들고 있어 false positive일 수 있습니다.
+
+---
+class: text-sm
+---
+
+# Sample 1: AI triage 포인트
 
 ```text
-AI triage 포인트
 1. explicitIntent를 만드는 헬퍼 함수 구현을 확인한다.
 2. 반환된 Intent가 explicit constructor / setPackage를 쓰는지 확인한다.
 3. 반환 뒤에 다시 action-only intent로 덮어쓰지 않는지 확인한다.
-4. 실제로 안전하면 "rule false positive"로 분류하고 sanitizer/wrapper allowlist 후보로 기록한다.
+4. 실제로 안전하면 "rule false positive"로 분류한다.
+5. 반복 패턴이면 sanitizer/wrapper allowlist 후보로 기록한다.
 ```
 
 ---
@@ -211,35 +260,6 @@ AI triage 포인트
 - 단순 표시/호환용인가, 검증용인가?
 - SHA-256 이상으로 바꿀 수 있는가?
 ```
-
----
-class: text-sm
----
-
-# Sample 2: Semgrep rule
-
-```yaml
-rules:
-  - id: java-android-weak-hash-md1-sha1
-    languages: [java]
-    severity: ERROR
-    message: >
-      MD1·SHA-1 계열의 약한 해시 또는 서명 알고리즘 사용입니다.
-      SHA-256 이상 또는 최신 권장 알고리즘으로 교체하십시오.
-    pattern-either:
-      - pattern: MessageDigest.getInstance("MD1")
-      - pattern: MessageDigest.getInstance("SHA1")
-      - pattern: MessageDigest.getInstance("SHA-1")
-      - pattern: Mac.getInstance("HmacSHA1")
-      - pattern: Signature.getInstance("SHA1withRSA")
-      - pattern: Signature.getInstance("SHA1withDSA")
-      - pattern: Signature.getInstance("SHA1withECDSA")
-```
-
-- `pattern-either`: 해시, HMAC, 전자서명 초기화 지점을 넓게 수집합니다.
-- 장점: 단순하고 빠르게 찾을 수 있습니다.
-- 한계: "보안 검증"에 쓰는지, "표시/호환용"인지는 구분하지 못합니다.
-- 그래서 이 룰은 AI triage와 특히 궁합이 좋습니다.
 
 ---
 class: text-sm
@@ -269,6 +289,35 @@ class LegacyCrypto {
 - `verifyManifest()`에서는 SHA-1 결과를 실제 비교 판단에 사용합니다.
 - `newSigner()`는 오래된 서명 알고리즘을 그대로 사용합니다.
 - 이런 코드는 "레거시 때문에 유지"되는 경우가 많아, 우선 수집이 중요합니다.
+
+---
+class: text-sm
+---
+
+# Sample 2: Semgrep rule
+
+```yaml
+rules:
+  - id: java-android-weak-hash-md1-sha1
+    languages: [java]
+    severity: ERROR
+    message: >
+      MD1·SHA-1 계열의 약한 해시 또는 서명 알고리즘 사용입니다.
+      SHA-256 이상 또는 최신 권장 알고리즘으로 교체하십시오.
+    pattern-either:
+      - pattern: MessageDigest.getInstance("MD1")
+      - pattern: MessageDigest.getInstance("SHA1")
+      - pattern: MessageDigest.getInstance("SHA-1")
+      - pattern: Mac.getInstance("HmacSHA1")
+      - pattern: Signature.getInstance("SHA1withRSA")
+      - pattern: Signature.getInstance("SHA1withDSA")
+      - pattern: Signature.getInstance("SHA1withECDSA")
+```
+
+- `pattern-either`: 해시, HMAC, 전자서명 초기화 지점을 넓게 수집합니다.
+- 장점: 단순하고 빠르게 찾을 수 있습니다.
+- 한계: "보안 검증"에 쓰는지, "표시/호환용"인지는 구분하지 못합니다.
+- 그래서 이 룰은 AI triage와 특히 궁합이 좋습니다.
 
 ---
 class: text-sm
@@ -361,8 +410,8 @@ class: text-sm
 
 ---
 
-# Takeaways
+# Summary
 
-- 이번 deck은 룰을 `2개`로 줄이고 sample과 1:1로 묶었습니다.
-- Semgrep은 빠른 후보 추출에 강하고, false positive 판별에는 문맥 확인이 필요합니다.
-- 그래서 운영 흐름은 `Semgrep -> sample 확인 -> AI triage -> 사람 확정` 순서가 가장 실용적입니다.
+- 암시적 `PendingIntent`는 대상 컴포넌트가 코드에 드러나지 않아, 민감한 흐름에서는 명시적 대상 지정 여부를 먼저 확인해야 합니다.
+- 약한 해시·서명 탐지는 빠르게 후보를 수집하는 데 유용하지만, 실제 보안 의사결정에 쓰이는지는 별도 확인이 필요합니다.
+- Semgrep은 구조 기반 후보 추출에 적합하고, 최종 판정은 코드 문맥 확인과 AI/사람 triage를 함께 써야 정확도가 올라갑니다.
