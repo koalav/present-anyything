@@ -9,7 +9,6 @@ drawings:
   persist: false
 mdc: true
 ---
----
 
 # LLM 기반 Windows 애플리케이션 보안감사 운영 구조
 

@@ -10,7 +10,6 @@ drawings:
 transition: slide-left
 mdc: true
 ---
----
 
 # Semgrep CE 로 Android 보안 점검
 
