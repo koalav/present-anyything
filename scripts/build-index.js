@@ -65,6 +65,20 @@ const decks = [
       "Skill과 운영 통제: Tool 매핑, 증거 묶음, 리스크, 체크리스트",
       "참고 자료"
     ]
+  },
+  {
+    name: "Codex와 Android Deeplink Audit 사용자 가이드",
+    path: "codex-deeplink-audit-guide/",
+    description: "CLI 설치, repo 셋업, Codex 활용, skill과 plugin 동작 방식을 사용자 가이드 톤으로 정리한 deck",
+    toc: [
+      "Goals",
+      "설치와 init",
+      "repo 구조",
+      "Codex 설정과 plugin 등록",
+      "skill과 plugin 역할",
+      "실행 흐름과 산출물",
+      "CLI 단독 사용과 차이"
+    ]
   }
 ];
 

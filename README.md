@@ -21,6 +21,7 @@ npm run dev:indirect-prompt
 npm run dev:windows-design
 npm run dev:mobile-audit-mcp
 npm run dev:mobile-audit-mcp-origin
+npm run dev:codex-deeplink-audit-guide
 ```
 
 ## 정적 빌드
@@ -61,6 +62,7 @@ https://{github_user}.github.io/{repository_name}/
 /present-anyything/windows-audit-design/
 /present-anyything/mobile-audit-mcp-windows/
 /present-anyything/mobile-audit-mcp-origin/
+/present-anyything/codex-deeplink-audit-guide/
 /present-anyything/downloads/semgrep-android-local.pdf
 ```
 
@@ -79,6 +81,8 @@ decks/
   mobile-audit-mcp-windows/
     slides.md
   mobile-audit-mcp-origin/
+    slides.md
+  codex-deeplink-audit-guide/
     slides.md
 scripts/
   build-deck.js
