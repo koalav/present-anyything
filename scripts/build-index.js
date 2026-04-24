@@ -197,6 +197,49 @@ const html = `<!doctype html>
       border: 1px solid rgba(0, 0, 0, 0.08);
     }
 
+    .palette-preview {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 14px;
+      margin-bottom: 28px;
+    }
+
+    .palette-card {
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      background: var(--panel);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+      transition: transform 160ms ease, border-color 160ms ease;
+    }
+
+    .palette-card:hover {
+      transform: translateY(-2px);
+      border-color: var(--accent);
+    }
+
+    .palette-card-top {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      height: 68px;
+    }
+
+    .palette-card-body {
+      padding: 14px 16px 16px;
+    }
+
+    .palette-card strong {
+      display: block;
+      font-size: 15px;
+      margin-bottom: 6px;
+    }
+
+    .palette-card span {
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.5;
+    }
+
     .deck-list {
       display: grid;
       gap: 18px;
@@ -244,6 +287,12 @@ const html = `<!doctype html>
       font-weight: 700;
     }
 
+    @media (max-width: 900px) {
+      .palette-preview {
+        grid-template-columns: 1fr;
+      }
+    }
+
     @media (max-width: 640px) {
       main {
         padding-top: 56px;
@@ -282,6 +331,45 @@ const html = `<!doctype html>
           <span class="swatches"><span class="swatch" style="background:#f4f4f2"></span><span class="swatch" style="background:#27272a"></span><span class="swatch" style="background:#52525b"></span></span>
           Graphite
         </button>
+      </div>
+    </section>
+
+    <section class="palette-preview" aria-label="Palette preview cards">
+      <div class="palette-card">
+        <div class="palette-card-top">
+          <div style="background:#f7f7f5"></div>
+          <div style="background:#ffffff"></div>
+          <div style="background:#f1f1ee"></div>
+          <div style="background:#78716c"></div>
+        </div>
+        <div class="palette-card-body">
+          <strong>Warm Gray</strong>
+          <span>가장 마일드한 보고서 톤, 컨설팅 문서 느낌에 잘 맞음</span>
+        </div>
+      </div>
+      <div class="palette-card">
+        <div class="palette-card-top">
+          <div style="background:#f8fafc"></div>
+          <div style="background:#ffffff"></div>
+          <div style="background:#f1f5f9"></div>
+          <div style="background:#475569"></div>
+        </div>
+        <div class="palette-card-body">
+          <strong>Slate Gray</strong>
+          <span>보안, 아키텍처, 엔지니어링 발표에 가장 무난한 기본 선택</span>
+        </div>
+      </div>
+      <div class="palette-card">
+        <div class="palette-card-top">
+          <div style="background:#f4f4f2"></div>
+          <div style="background:#fbfbfa"></div>
+          <div style="background:#ececea"></div>
+          <div style="background:#52525b"></div>
+        </div>
+        <div class="palette-card-body">
+          <strong>Graphite</strong>
+          <span>조금 더 차분하고 무게감 있는 고급스러운 무채색 톤</span>
+        </div>
       </div>
     </section>
 
