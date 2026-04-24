@@ -26,17 +26,18 @@ npm run dev:windows
 npm run build
 ```
 
-빌드 결과는 `dist/`에 생성됩니다.
+빌드 결과는 `docs/`에 생성됩니다.
 
 ## GitHub Pages 배포
 
-`main` 브랜치에 push하면 GitHub Actions가 자동으로 `dist/`를 빌드하고 GitHub Pages에 배포합니다.
+이 프로젝트는 `main` 브랜치의 `docs/` 폴더를 GitHub Pages publish source로 사용하는 구성을 전제로 합니다.
+워크플로우는 배포를 대신하지 않고, `docs/`가 정상적으로 다시 빌드되는지만 검증합니다.
 
 GitHub 저장소 설정에서 다음을 확인해야 합니다.
 
 1. `Settings -> Pages`
-2. Source를 `GitHub Actions`로 설정
-3. Actions 권한이 활성화되어 있는지 확인
+2. Source를 `Deploy from a branch`로 설정
+3. Branch를 `main`, Folder를 `/docs`로 설정
 
 ## Base Path 주의사항
 
@@ -72,6 +73,10 @@ public/
 .github/
   workflows/
     deploy.yml
+docs/
+  index.html
+  semgrep-android-local/
+  windows-audit/
 ```
 
 ## 검증
@@ -80,11 +85,11 @@ public/
 
 ```bash
 npm run build
-npx serve dist
+npx serve docs
 ```
 
 또는
 
 ```bash
-python3 -m http.server 8080 -d dist
+python3 -m http.server 8080 -d docs
 ```

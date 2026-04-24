@@ -11,7 +11,7 @@ if (!deckName) {
 const repoName = "present-anything";
 const rootDir = process.cwd();
 const entry = path.resolve(rootDir, "decks", deckName, "slides.md");
-const outDir = path.resolve(rootDir, "dist", deckName);
+const outDir = path.resolve(rootDir, "docs", deckName);
 const base = `/${repoName}/${deckName}/`;
 
 const result = spawnSync(

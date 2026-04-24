@@ -1,6 +1,8 @@
 import fs from "fs";
 import path from "path";
 
+const outputRoot = "docs";
+
 const decks = [
   {
     name: "Semgrep CE Local Rules for Android",
@@ -14,7 +16,7 @@ const decks = [
   }
 ];
 
-fs.mkdirSync("dist", { recursive: true });
+fs.mkdirSync(outputRoot, { recursive: true });
 
 const html = `<!doctype html>
 <html lang="ko">
@@ -169,4 +171,5 @@ const html = `<!doctype html>
 </body>
 </html>`;
 
-fs.writeFileSync(path.join("dist", "index.html"), html);
+fs.writeFileSync(path.join(outputRoot, "index.html"), html);
+fs.writeFileSync(path.join(outputRoot, ".nojekyll"), "");
