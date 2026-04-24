@@ -1,20 +1,57 @@
 <!doctype html>
-<html lang="ko">
+<html lang="ko" data-palette="slate-gray">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Presentation Index</title>
+  <script src="./palette.js"></script>
   <style>
+    @import url("https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css");
+
     :root {
       color-scheme: light;
-      --bg: #f3efe7;
-      --panel: rgba(255, 255, 255, 0.84);
+      --bg: #f8fafc;
+      --panel: #ffffff;
+      --panel-soft: #f1f5f9;
       --text: #1e293b;
-      --muted: #475569;
-      --border: rgba(148, 163, 184, 0.28);
-      --shadow: 0 24px 60px rgba(15, 23, 42, 0.12);
-      --accent: #0f766e;
-      --accent-soft: #ccfbf1;
+      --muted: #64748b;
+      --border: #e2e8f0;
+      --shadow: 0 16px 40px rgba(15, 23, 42, 0.06);
+      --accent: #475569;
+      --accent-soft: #e2e8f0;
+    }
+
+    html[data-palette="warm-gray"] {
+      --bg: #f7f7f5;
+      --panel: #ffffff;
+      --panel-soft: #f1f1ee;
+      --text: #2f3437;
+      --muted: #737373;
+      --border: #e7e5e4;
+      --accent: #78716c;
+      --accent-soft: #e7e5e4;
+    }
+
+    html[data-palette="slate-gray"] {
+      --bg: #f8fafc;
+      --panel: #ffffff;
+      --panel-soft: #f1f5f9;
+      --text: #1e293b;
+      --muted: #64748b;
+      --border: #e2e8f0;
+      --accent: #475569;
+      --accent-soft: #e2e8f0;
+    }
+
+    html[data-palette="graphite"] {
+      --bg: #f4f4f2;
+      --panel: #fbfbfa;
+      --panel-soft: #ececea;
+      --text: #27272a;
+      --muted: #71717a;
+      --border: #d4d4d8;
+      --accent: #52525b;
+      --accent-soft: #e4e4e7;
     }
 
     * {
@@ -24,22 +61,20 @@
     body {
       margin: 0;
       min-height: 100vh;
-      font-family: "IBM Plex Sans KR", "Noto Sans KR", system-ui, sans-serif;
+      font-family: "Pretendard", "Noto Sans KR", "Apple SD Gothic Neo", "Malgun Gothic", sans-serif;
       color: var(--text);
-      background:
-        radial-gradient(circle at top left, rgba(15, 118, 110, 0.18), transparent 28%),
-        radial-gradient(circle at top right, rgba(251, 146, 60, 0.14), transparent 24%),
-        linear-gradient(180deg, #fcfbf7 0%, var(--bg) 100%);
+      background: var(--bg);
+      transition: background-color 180ms ease, color 180ms ease;
     }
 
     main {
-      max-width: 1040px;
+      max-width: 1100px;
       margin: 0 auto;
       padding: 72px 24px 96px;
     }
 
     .hero {
-      margin-bottom: 40px;
+      margin-bottom: 28px;
     }
 
     .eyebrow {
@@ -64,17 +99,84 @@
     }
 
     .lead {
-      max-width: 720px;
+      max-width: 760px;
       margin: 0;
       color: var(--muted);
       font-size: 18px;
       line-height: 1.7;
     }
 
+    .toolbar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      align-items: center;
+      margin-top: 28px;
+      margin-bottom: 36px;
+      padding: 18px;
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      background: var(--panel);
+      box-shadow: var(--shadow);
+    }
+
+    .toolbar-label {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--muted);
+      margin-right: 4px;
+    }
+
+    .palette-picker {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .palette-btn {
+      appearance: none;
+      border: 1px solid var(--border);
+      background: var(--panel-soft);
+      color: var(--text);
+      border-radius: 999px;
+      padding: 10px 14px;
+      cursor: pointer;
+      font: inherit;
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      transition: transform 160ms ease, border-color 160ms ease, background 160ms ease;
+    }
+
+    .palette-btn:hover,
+    .palette-btn:focus-visible {
+      transform: translateY(-1px);
+      border-color: var(--accent);
+      outline: none;
+    }
+
+    .palette-btn.active {
+      background: var(--accent-soft);
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+
+    .swatches {
+      display: inline-flex;
+      gap: 4px;
+    }
+
+    .swatch {
+      width: 14px;
+      height: 14px;
+      border-radius: 999px;
+      border: 1px solid rgba(0, 0, 0, 0.08);
+    }
+
     .deck-list {
       display: grid;
       gap: 18px;
-      margin-top: 34px;
+      margin-top: 20px;
     }
 
     .deck {
@@ -83,7 +185,6 @@
       border: 1px solid var(--border);
       border-radius: 24px;
       background: var(--panel);
-      backdrop-filter: blur(10px);
       box-shadow: var(--shadow);
       color: inherit;
       text-decoration: none;
@@ -93,8 +194,8 @@
     .deck:hover,
     .deck:focus-visible {
       transform: translateY(-3px);
-      border-color: rgba(15, 118, 110, 0.5);
-      box-shadow: 0 30px 70px rgba(15, 23, 42, 0.16);
+      border-color: var(--accent);
+      box-shadow: 0 24px 56px rgba(15, 23, 42, 0.1);
       outline: none;
     }
 
@@ -109,6 +210,7 @@
       display: block;
       color: var(--muted);
       font-size: 16px;
+      line-height: 1.6;
     }
 
     .deck small {
@@ -126,6 +228,10 @@
       .deck {
         padding: 20px;
       }
+
+      .toolbar {
+        padding: 14px;
+      }
     }
   </style>
 </head>
@@ -136,6 +242,25 @@
       <h1>Presentation Index</h1>
       <p class="lead">GitHub Pages에서 정적으로 제공되는 Slidev deck 목록입니다. 현재 build base는 <code>present-anyything</code> 저장소 이름을 기준으로 계산됩니다.</p>
     </section>
+
+    <section class="toolbar" aria-label="Palette picker">
+      <div class="toolbar-label">Palette</div>
+      <div class="palette-picker">
+        <button class="palette-btn" data-palette-option="warm-gray" type="button">
+          <span class="swatches"><span class="swatch" style="background:#f7f7f5"></span><span class="swatch" style="background:#2f3437"></span><span class="swatch" style="background:#78716c"></span></span>
+          Warm Gray
+        </button>
+        <button class="palette-btn" data-palette-option="slate-gray" type="button">
+          <span class="swatches"><span class="swatch" style="background:#f8fafc"></span><span class="swatch" style="background:#1e293b"></span><span class="swatch" style="background:#475569"></span></span>
+          Slate Gray
+        </button>
+        <button class="palette-btn" data-palette-option="graphite" type="button">
+          <span class="swatches"><span class="swatch" style="background:#f4f4f2"></span><span class="swatch" style="background:#27272a"></span><span class="swatch" style="background:#52525b"></span></span>
+          Graphite
+        </button>
+      </div>
+    </section>
+
     <section class="deck-list">
       <a class="deck" href="./semgrep-android-local/">
         <strong>Semgrep CE Local Rules for Android</strong>
@@ -154,5 +279,25 @@
       </a>
     </section>
   </main>
+  <script>
+    const picker = document.querySelectorAll('[data-palette-option]');
+    const paletteApi = window.__presentAnythingPalette;
+
+    const syncActive = () => {
+      const current = paletteApi?.current?.() || 'slate-gray';
+      picker.forEach((button) => {
+        button.classList.toggle('active', button.dataset.paletteOption === current);
+      });
+    };
+
+    picker.forEach((button) => {
+      button.addEventListener('click', () => {
+        paletteApi?.apply?.(button.dataset.paletteOption);
+        syncActive();
+      });
+    });
+
+    syncActive();
+  </script>
 </body>
 </html>

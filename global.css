@@ -4,6 +4,48 @@
   --slidev-font-sans: "Pretendard", "Noto Sans KR", "Apple SD Gothic Neo", "Malgun Gothic", sans-serif;
   --slidev-font-serif: "Pretendard", "Noto Sans KR", "Apple SD Gothic Neo", "Malgun Gothic", sans-serif;
   --slidev-font-mono: "Pretendard", "Noto Sans KR", "Apple SD Gothic Neo", "Malgun Gothic", sans-serif;
+
+  --c-bg: #f8fafc;
+  --c-surface: #ffffff;
+  --c-surface-soft: #f1f5f9;
+  --c-text: #1e293b;
+  --c-muted: #64748b;
+  --c-border: #e2e8f0;
+  --c-accent: #475569;
+  --c-accent-soft: #e2e8f0;
+}
+
+html[data-palette="warm-gray"] {
+  --c-bg: #f7f7f5;
+  --c-surface: #ffffff;
+  --c-surface-soft: #f1f1ee;
+  --c-text: #2f3437;
+  --c-muted: #737373;
+  --c-border: #e7e5e4;
+  --c-accent: #78716c;
+  --c-accent-soft: #e7e5e4;
+}
+
+html[data-palette="slate-gray"] {
+  --c-bg: #f8fafc;
+  --c-surface: #ffffff;
+  --c-surface-soft: #f1f5f9;
+  --c-text: #1e293b;
+  --c-muted: #64748b;
+  --c-border: #e2e8f0;
+  --c-accent: #475569;
+  --c-accent-soft: #e2e8f0;
+}
+
+html[data-palette="graphite"] {
+  --c-bg: #f4f4f2;
+  --c-surface: #fbfbfa;
+  --c-surface-soft: #ececea;
+  --c-text: #27272a;
+  --c-muted: #71717a;
+  --c-border: #d4d4d8;
+  --c-accent: #52525b;
+  --c-accent-soft: #e4e4e7;
 }
 
 html,
@@ -13,4 +55,118 @@ body,
 .slidev-layout,
 .slidev-page {
   font-family: var(--slidev-font-sans);
+  background: var(--c-bg);
+  color: var(--c-text);
+}
+
+.slidev-layout {
+  background: var(--c-bg);
+  color: var(--c-text);
+  letter-spacing: -0.015em;
+}
+
+.slidev-layout h1 {
+  color: var(--c-text);
+  font-weight: 750;
+  letter-spacing: -0.04em;
+}
+
+.slidev-layout h2,
+.slidev-layout h3,
+.slidev-layout h4 {
+  color: var(--c-text);
+  font-weight: 700;
+  letter-spacing: -0.03em;
+}
+
+.slidev-layout p,
+.slidev-layout li,
+.slidev-layout td,
+.slidev-layout th {
+  color: var(--c-text);
+  line-height: 1.65;
+}
+
+.slidev-layout strong,
+.accent {
+  color: var(--c-accent);
+}
+
+.muted {
+  color: var(--c-muted);
+}
+
+.slidev-layout a {
+  color: var(--c-accent);
+  text-decoration: none;
+  border-bottom: 1px solid var(--c-accent-soft);
+}
+
+.slidev-layout code {
+  background: var(--c-surface-soft);
+  color: var(--c-text);
+  border: 1px solid var(--c-border);
+  border-radius: 0.35rem;
+  padding: 0.1em 0.35em;
+}
+
+.slidev-layout pre,
+.slidev-code {
+  background: var(--c-surface-soft) !important;
+  color: var(--c-text);
+  border: 1px solid var(--c-border);
+  border-radius: 1rem;
+}
+
+.slidev-layout table {
+  border-collapse: collapse;
+  width: 100%;
+  font-size: 0.9em;
+}
+
+.slidev-layout th {
+  background: var(--c-surface-soft);
+  color: var(--c-text);
+  font-weight: 700;
+}
+
+.slidev-layout td,
+.slidev-layout th {
+  border: 1px solid var(--c-border);
+  padding: 0.65rem 0.8rem;
+}
+
+.slidev-layout blockquote {
+  background: var(--c-surface);
+  border-left: 4px solid var(--c-accent);
+  color: var(--c-muted);
+  padding: 0.8rem 1rem;
+  border-radius: 0.75rem;
+}
+
+.card,
+.box {
+  background: var(--c-surface);
+  border: 1px solid var(--c-border);
+  border-radius: 1rem;
+  box-shadow: 0 8px 24px rgba(15, 23, 42, 0.04);
+}
+
+.card {
+  padding: 1.25rem;
+  border-radius: 1.25rem;
+}
+
+.box {
+  padding: 0.75rem 1rem;
+}
+
+.badge {
+  display: inline-block;
+  background: var(--c-accent-soft);
+  color: var(--c-accent);
+  border-radius: 999px;
+  padding: 0.2rem 0.65rem;
+  font-size: 0.75em;
+  font-weight: 600;
 }
