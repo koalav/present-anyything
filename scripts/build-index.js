@@ -6,17 +6,61 @@ const decks = [
   {
     name: "Semgrep CE Local Rules for Android",
     path: "semgrep-android-local/",
-    description: "Semgrep CE CLI와 로컬 룰만으로 Android 보안 후보를 찾는 운영 방식"
+    description: "Semgrep CE CLI와 로컬 룰만으로 Android 보안 후보를 찾는 운영 방식",
+    toc: [
+      "1p 발표 개요와 목적",
+      "2p 전체 발표 구조",
+      "3p 범위와 전제 조건",
+      "4p 로컬 룰 운영 흐름",
+      "5p 권장 디렉터리 구조",
+      "6p 실제 사용 명령",
+      "7p PendingIntent 샘플 소스",
+      "8p LegacySecurity 샘플 소스",
+      "9p 터미널 출력 예시",
+      "10p JSON/SARIF 출력 활용",
+      "11p Semgrep 이후 AI 입력 예시",
+      "12p AI 가이드 문제 정의",
+      "13p AI 가이드 위험 평가",
+      "14p AI 가이드 권장 가이드라인",
+      "15p AI 가이드 코드 개선",
+      "16p AI 가이드 실전 검토 절차",
+      "17p 로컬 룰팩 구성 맵",
+      "18p~28p 주요 룰 상세",
+      "29p 룰 운영 시 주의점",
+      "30p Takeaways"
+    ]
   },
   {
     name: "Windows Application Security Audit",
     path: "windows-audit/",
-    description: "Windows 애플리케이션 감사 체크리스트와 검증 흐름"
+    description: "Windows 애플리케이션 감사 체크리스트와 검증 흐름",
+    toc: [
+      "1p 감사 개요",
+      "2p 주요 점검 영역",
+      "3p 감사 흐름"
+    ]
   },
   {
     name: "LLM 기반 Windows 애플리케이션 보안감사 운영 구조",
     path: "windows-audit-design/",
-    description: "LLM 기반 운영 구조, 에이전트 역할, 검증 게이트, 증적 보고 체계"
+    description: "LLM 기반 운영 구조, 에이전트 역할, 검증 게이트, 증적 보고 체계",
+    toc: [
+      "1p 표지와 발표 범위",
+      "2p 문제 정의",
+      "3p 핵심 설계 원칙",
+      "4p 작업 구조도",
+      "5p 에이전트 관계도",
+      "6p Reviewer / Verifier 게이트",
+      "7p 폴더 구조와 상태 관리",
+      "8p 체크리스트 순차 실행 방식",
+      "9p Tool / MCP 계층",
+      "10p 에이전트와 MCP 보안 통제",
+      "11p 증적과 보고서 구조",
+      "12p 대안 비교와 선택 기준",
+      "13p 단계별 프롬프트 예시",
+      "14p 도입 로드맵",
+      "15p 참고 출처"
+    ]
   }
 ];
 
@@ -287,6 +331,91 @@ const html = `<!doctype html>
       font-weight: 700;
     }
 
+    .toc-section {
+      margin-top: 44px;
+      display: grid;
+      gap: 18px;
+    }
+
+    .toc-card {
+      border: 1px solid var(--border);
+      border-radius: 24px;
+      background: var(--panel);
+      box-shadow: var(--shadow);
+      padding: 24px;
+    }
+
+    .toc-card h2 {
+      margin: 0 0 8px;
+      font-size: 26px;
+      line-height: 1.2;
+      letter-spacing: -0.03em;
+    }
+
+    .toc-card p {
+      margin: 0 0 16px;
+      color: var(--muted);
+      line-height: 1.6;
+    }
+
+    .toc-card ul {
+      margin: 0;
+      padding-left: 20px;
+      display: grid;
+      gap: 8px;
+      color: var(--text);
+      line-height: 1.6;
+    }
+
+    .toc-card a.inline-link {
+      display: inline-block;
+      margin-top: 16px;
+      color: var(--accent);
+      text-decoration: none;
+      font-weight: 700;
+    }
+
+    .deck {
+      display: block;
+      padding: 24px;
+      border: 1px solid var(--border);
+      border-radius: 24px;
+      background: var(--panel);
+      box-shadow: var(--shadow);
+      color: inherit;
+      text-decoration: none;
+      transition: transform 180ms ease, border-color 180ms ease, box-shadow 180ms ease;
+    }
+
+    .deck:hover,
+    .deck:focus-visible {
+      transform: translateY(-3px);
+      border-color: var(--accent);
+      box-shadow: 0 24px 56px rgba(15, 23, 42, 0.1);
+      outline: none;
+    }
+
+    .deck strong {
+      display: block;
+      font-size: 24px;
+      line-height: 1.2;
+      margin-bottom: 8px;
+    }
+
+    .deck span {
+      display: block;
+      color: var(--muted);
+      font-size: 16px;
+      line-height: 1.6;
+    }
+
+    .deck small {
+      display: inline-block;
+      margin-top: 16px;
+      color: var(--accent);
+      font-weight: 700;
+    }
+
     @media (max-width: 900px) {
       .palette-preview {
         grid-template-columns: 1fr;
@@ -381,6 +510,21 @@ const html = `<!doctype html>
         <span>${deck.description}</span>
         <small>Open deck</small>
       </a>`
+        )
+        .join("\n")}
+    </section>
+
+    <section class="toc-section" aria-label="Page-by-page table of contents">
+      ${decks
+        .map(
+          (deck) => `<article class="toc-card">
+        <h2>${deck.name}</h2>
+        <p>${deck.description}</p>
+        <ul>
+          ${deck.toc.map((item) => `<li>${item}</li>`).join("\n          ")}
+        </ul>
+        <a class="inline-link" href="./${deck.path}">이 deck 열기</a>
+      </article>`
         )
         .join("\n")}
     </section>
