@@ -1,0 +1,25 @@
+.slidev-layout.diagram-slide {
+  padding-top: 0.25rem;
+}
+
+.slidev-layout.diagram-slide h1 {
+  margin-bottom: 0.5rem;
+  font-size: 1.9rem;
+  line-height: 1.15;
+}
+
+.slidev-layout.diagram-slide p,
+.slidev-layout.diagram-slide li,
+.slidev-layout.diagram-slide td,
+.slidev-layout.diagram-slide th {
+  font-size: 0.92rem;
+  line-height: 1.45;
+}
+
+.slidev-layout.diagram-slide .mermaid {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  width: 100%;
+  margin-top: 0.5rem;
+}

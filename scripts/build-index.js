@@ -281,129 +281,104 @@ const html = `<!doctype html>
     }
 
     .deck {
-      display: block;
-      padding: 24px;
       border: 1px solid var(--border);
       border-radius: 24px;
       background: var(--panel);
       box-shadow: var(--shadow);
-      color: inherit;
-      text-decoration: none;
+      padding: 24px;
       transition: transform 180ms ease, border-color 180ms ease, box-shadow 180ms ease;
     }
 
     .deck:hover,
-    .deck:focus-visible {
+    .deck:focus-within {
       transform: translateY(-3px);
       border-color: var(--accent);
       box-shadow: 0 24px 56px rgba(15, 23, 42, 0.1);
-      outline: none;
     }
 
-    .deck strong {
+    .deck-header {
+      display: flex;
+      gap: 18px;
+      align-items: flex-start;
+      justify-content: space-between;
+    }
+
+    .deck-copy {
+      min-width: 0;
+    }
+
+    .deck-copy strong {
       display: block;
       font-size: 24px;
       line-height: 1.2;
       margin-bottom: 8px;
     }
 
-    .deck span {
+    .deck-copy span {
       display: block;
       color: var(--muted);
       font-size: 16px;
       line-height: 1.6;
     }
 
-    .deck small {
-      display: inline-block;
-      margin-top: 16px;
-      color: var(--accent);
-      font-weight: 700;
-    }
-
-    .toc-section {
-      margin-top: 44px;
-      display: grid;
-      gap: 18px;
-    }
-
-    .toc-card {
+    .deck-link {
+      flex: none;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 44px;
+      padding: 0 16px;
+      border-radius: 999px;
       border: 1px solid var(--border);
-      border-radius: 24px;
-      background: var(--panel);
-      box-shadow: var(--shadow);
-      padding: 24px;
+      background: var(--panel-soft);
+      color: var(--accent);
+      text-decoration: none;
+      font-weight: 700;
+      white-space: nowrap;
     }
 
-    .toc-card h2 {
-      margin: 0 0 8px;
-      font-size: 26px;
-      line-height: 1.2;
-      letter-spacing: -0.03em;
+    .deck-link:hover,
+    .deck-link:focus-visible {
+      border-color: var(--accent);
+      outline: none;
     }
 
-    .toc-card p {
-      margin: 0 0 16px;
-      color: var(--muted);
-      line-height: 1.6;
+    .deck-toc {
+      margin-top: 18px;
+      border-top: 1px solid var(--border);
+      padding-top: 16px;
     }
 
-    .toc-card ul {
-      margin: 0;
+    .deck-toc summary {
+      cursor: pointer;
+      list-style: none;
+      font-weight: 700;
+      color: var(--accent);
+      user-select: none;
+    }
+
+    .deck-toc summary::-webkit-details-marker {
+      display: none;
+    }
+
+    .deck-toc summary::before {
+      content: "▸";
+      display: inline-block;
+      margin-right: 8px;
+      transition: transform 160ms ease;
+    }
+
+    .deck-toc[open] summary::before {
+      transform: rotate(90deg);
+    }
+
+    .deck-toc ul {
+      margin: 14px 0 0;
       padding-left: 20px;
       display: grid;
       gap: 8px;
       color: var(--text);
       line-height: 1.6;
-    }
-
-    .toc-card a.inline-link {
-      display: inline-block;
-      margin-top: 16px;
-      color: var(--accent);
-      text-decoration: none;
-      font-weight: 700;
-    }
-
-    .deck {
-      display: block;
-      padding: 24px;
-      border: 1px solid var(--border);
-      border-radius: 24px;
-      background: var(--panel);
-      box-shadow: var(--shadow);
-      color: inherit;
-      text-decoration: none;
-      transition: transform 180ms ease, border-color 180ms ease, box-shadow 180ms ease;
-    }
-
-    .deck:hover,
-    .deck:focus-visible {
-      transform: translateY(-3px);
-      border-color: var(--accent);
-      box-shadow: 0 24px 56px rgba(15, 23, 42, 0.1);
-      outline: none;
-    }
-
-    .deck strong {
-      display: block;
-      font-size: 24px;
-      line-height: 1.2;
-      margin-bottom: 8px;
-    }
-
-    .deck span {
-      display: block;
-      color: var(--muted);
-      font-size: 16px;
-      line-height: 1.6;
-    }
-
-    .deck small {
-      display: inline-block;
-      margin-top: 16px;
-      color: var(--accent);
-      font-weight: 700;
     }
 
     @media (max-width: 900px) {
@@ -419,6 +394,10 @@ const html = `<!doctype html>
 
       .deck {
         padding: 20px;
+      }
+
+      .deck-header {
+        flex-direction: column;
       }
 
       .toolbar {
@@ -492,28 +471,23 @@ const html = `<!doctype html>
       </div>
     </section>
 
-    <section class="deck-list">
+    <section class="deck-list" aria-label="Presentation decks">
       ${decks
         .map(
-          (deck) => `<a class="deck" href="./${deck.path}">
-        <strong>${deck.name}</strong>
-        <span>${deck.description}</span>
-        <small>Open deck</small>
-      </a>`
-        )
-        .join("\n")}
-    </section>
-
-    <section class="toc-section" aria-label="Page-by-page table of contents">
-      ${decks
-        .map(
-          (deck) => `<article class="toc-card">
-        <h2>${deck.name}</h2>
-        <p>${deck.description}</p>
-        <ul>
-          ${deck.toc.map((item) => `<li>${item}</li>`).join("\n          ")}
-        </ul>
-        <a class="inline-link" href="./${deck.path}">이 deck 열기</a>
+          (deck) => `<article class="deck">
+        <div class="deck-header">
+          <div class="deck-copy">
+            <strong>${deck.name}</strong>
+            <span>${deck.description}</span>
+          </div>
+          <a class="deck-link" href="./${deck.path}">Open deck</a>
+        </div>
+        <details class="deck-toc">
+          <summary>목차 펼치기</summary>
+          <ul>
+            ${deck.toc.map((item) => `<li>${item}</li>`).join("\n            ")}
+          </ul>
+        </details>
       </article>`
         )
         .join("\n")}

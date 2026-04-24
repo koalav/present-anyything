@@ -5,35 +5,26 @@ layout: section
 # 3. 작업 구조도
 
 ---
+class: diagram-slide
+---
 
 # 전체 감사 흐름
 
 ```mermaid
-flowchart TD
-    A[감사 요청 접수] --> B[프로젝트 스냅샷 생성]
-    B --> C[자산 인벤토리 작성]
-    C --> D[신뢰 경계 및 공격면 정리]
-    D --> E[감사 계획 수립]
-    E --> F[체크리스트 분해]
-    F --> G[작업 이슈 생성 및 상태 연결]
-
-    G --> H1[정적 점검]
-    G --> H2[동적 점검]
-    G --> H3[권한/ACL 점검]
-    G --> H4[지속성/설치/업데이트 점검]
-
-    H1 --> I[증적 정규화]
-    H2 --> I
-    H3 --> I
-    H4 --> I
-
-    I --> J[Finding Candidate]
-    J --> K[Reviewer / Verifier 검증]
-    K --> L{둘 다 통과?}
-    L -->|Yes| M[Verified Finding]
-    L -->|No| N[재작업 또는 Evidence Gap]
-    N --> G
-    M --> O[보고서 반영]
+%%{init: {'themeVariables': {'fontSize': '12px'}, 'flowchart': {'nodeSpacing': 18, 'rankSpacing': 26, 'diagramPadding': 6, 'curve': 'linear'}}}%%
+flowchart LR
+    A[감사 요청] --> B[스냅샷]
+    B --> C[인벤토리 · 경계]
+    C --> D[계획 · 이슈화]
+    D --> E[감사 실행<br/>정적 · 동적 · ACL · 업데이트]
+    E --> F[증적 정규화]
+    F --> G[Finding Candidate]
+    G --> H[Reviewer + Verifier]
+    H --> I{통과 여부}
+    I -->|Yes| J[Verified]
+    I -->|No| K[Rework / Gap]
+    K --> D
+    J --> L[Report]
 ```
 
 ---

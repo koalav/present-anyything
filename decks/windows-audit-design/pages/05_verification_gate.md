@@ -5,29 +5,28 @@ layout: section
 # 5. Reviewer / Verifier 게이트
 
 ---
+class: diagram-slide
+---
 
 # 승인 흐름
 
 ```mermaid
-flowchart TD
-    A[Coordinator가 작업 할당] --> B[Auditor 실행]
-    B --> C[Finding Candidate + Evidence]
-    C --> D[Technical Reviewer]
-    C --> E[Evidence Verifier]
-
-    D --> F{논리와 영향이 타당한가?}
-    E --> G{증거와 재현이 충분한가?}
-
-    F -->|No| H[Needs Rework]
-    G -->|No| I[Evidence Gap]
-
-    F -->|Yes| J[Review Pass]
-    G -->|Yes| K[Verify Pass]
-
-    J --> L{두 게이트 모두 통과?}
-    K --> L
-    L -->|Yes| M[Verified Finding]
-    L -->|No| H
+%%{init: {'themeVariables': {'fontSize': '12px'}, 'flowchart': {'nodeSpacing': 18, 'rankSpacing': 26, 'diagramPadding': 6, 'curve': 'linear'}}}%%
+flowchart LR
+    A[Assignment] --> B[Auditor]
+    B --> C[Candidate + Evidence]
+    C --> D[Reviewer]
+    C --> E[Verifier]
+    D --> F{논리 타당?}
+    E --> G{증거 충분?}
+    F -->|Yes| H[Review Pass]
+    G -->|Yes| I[Verify Pass]
+    F -->|No| J[Needs Rework]
+    G -->|No| K[Evidence Gap]
+    H --> L{둘 다 통과?}
+    I --> L
+    L -->|Yes| M[Verified]
+    L -->|No| J
     M --> N[Report Writer]
 ```
 
@@ -69,20 +68,22 @@ flowchart TD
 </div>
 
 ---
+class: diagram-slide
+---
 
 # 상태 머신
 
 ```mermaid
-stateDiagram-v2
-    [*] --> Planned
-    Planned --> InProgress
-    InProgress --> AuditComplete
-    AuditComplete --> InReview
-    InReview --> NeedsRework: Reviewer 반려
-    InReview --> EvidenceGap: Verifier 반려
-    NeedsRework --> InProgress
-    EvidenceGap --> InProgress
-    InReview --> Verified: Reviewer + Verifier 통과
-    Verified --> Reported
-    Reported --> Closed
+%%{init: {'themeVariables': {'fontSize': '12px'}, 'flowchart': {'nodeSpacing': 18, 'rankSpacing': 26, 'diagramPadding': 6, 'curve': 'linear'}}}%%
+flowchart LR
+    A[Planned] --> B[In Progress]
+    B --> C[Audit Complete]
+    C --> D[In Review]
+    D -->|Reviewer 반려| E[Needs Rework]
+    D -->|Verifier 반려| F[Evidence Gap]
+    E --> B
+    F --> B
+    D -->|둘 다 통과| G[Verified]
+    G --> H[Reported]
+    H --> I[Closed]
 ```

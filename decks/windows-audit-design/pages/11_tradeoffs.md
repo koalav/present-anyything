@@ -27,16 +27,19 @@ layout: section
 | Full multi-agent | 병렬 분석이 많고 도메인이 명확히 분리 | 비용, 지연, 조정 복잡도 증가 |
 
 ---
+class: diagram-slide
+---
 
 # 설계 선택 기준
 
 ```mermaid
-flowchart TD
-    A[감사 범위 평가] --> B{도구/표면이 많은가?}
+%%{init: {'themeVariables': {'fontSize': '12px'}, 'flowchart': {'nodeSpacing': 18, 'rankSpacing': 26, 'diagramPadding': 6, 'curve': 'linear'}}}%%
+flowchart LR
+    A[감사 범위 평가] --> B{표면이 많은가?}
     B -->|No| C[Single Agent + Skills]
-    B -->|Yes| D{병렬 조사 가치가 높은가?}
+    B -->|Yes| D{병렬 조사 가치?}
     D -->|No| E[Coordinator + Skills + Reviewer]
-    D -->|Yes| F{감사 추적성과 증적이 중요한가?}
-    F -->|Yes| G[Coordinator + Auditors + Reviewer/Verifier]
+    D -->|Yes| F{증적·추적성 중요?}
+    F -->|Yes| G[Coordinator + Auditors + Review/Verify]
     F -->|No| H[경량 Multi-agent]
 ```

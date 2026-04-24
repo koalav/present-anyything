@@ -5,44 +5,26 @@ layout: section
 # 4. 에이전트 관계도
 
 ---
+class: diagram-slide
+---
 
 # Coordinator 중심 구조
 
 ```mermaid
+%%{init: {'themeVariables': {'fontSize': '12px'}, 'flowchart': {'nodeSpacing': 18, 'rankSpacing': 26, 'diagramPadding': 6, 'curve': 'linear'}}}%%
 flowchart LR
     C[Coordinator]
+    M[Mapping<br/>Project Mapper · Inventory]
+    A[Auditors<br/>Static · ACL · Runtime · Persistence]
+    R[Review Gate<br/>Reviewer + Verifier]
+    W[Report Writer]
 
-    PM[Project Mapper]
-    BI[Binary Inventory]
-
-    SA[Static Auditor]
-    AA[ACL Auditor]
-    RT[Runtime Tracer]
-    PA[Persistence Auditor]
-
-    RV[Technical Reviewer]
-    EV[Evidence Verifier]
-    RW[Report Writer]
-
-    C --> PM
-    C --> BI
-    C --> SA
-    C --> AA
-    C --> RT
-    C --> PA
-
-    SA --> RV
-    SA --> EV
-    AA --> RV
-    AA --> EV
-    RT --> RV
-    RT --> EV
-    PA --> RV
-    PA --> EV
-
-    RV --> C
-    EV --> C
-    C --> RW
+    C --> M
+    C --> A
+    M --> C
+    A --> R
+    R -->|Pass| C
+    R -->|Verified only| W
 ```
 
 ---

@@ -18,27 +18,22 @@ layout: section
 | Irreversible action | 삭제/수정/실행으로 환경 훼손 | 격리 VM, snapshot, explicit approval |
 
 ---
+class: diagram-slide
+---
 
 # 권한 모델
 
 ```mermaid
+%%{init: {'themeVariables': {'fontSize': '12px'}, 'flowchart': {'nodeSpacing': 18, 'rankSpacing': 26, 'diagramPadding': 6, 'curve': 'linear'}}}%%
 flowchart LR
-    RO[Read-only Agents]
-    RW[Write-limited Agents]
-    HI[Host Inspection Agents]
+    RO[Read-only<br/>Reviewer · Evidence Verifier · Docs Verifier]
+    RW[Write-limited<br/>Coordinator · Report Writer]
+    HI[Host Inspection<br/>ACL · Runtime · Persistence]
+    X[PowerShell / Host Tools]
 
-    RO --> RV[Reviewer]
-    RO --> EV[Evidence Verifier]
-    RO --> DV[Docs Verifier]
-
-    RW --> C[Coordinator]
-    RW --> RW2[Report Writer]
-
-    HI --> AA[ACL Auditor]
-    HI --> RT[Runtime Tracer]
-    HI --> PA[Persistence Auditor]
-
-    HI -. approval required .-> X[PowerShell / Host Tools]
+    RO --> RW
+    HI -. approval required .-> X
+    X --> HI
 ```
 
 <div class="mt-8">

@@ -5,27 +5,24 @@ layout: section
 # 8. Tool / MCP 계층
 
 ---
+class: diagram-slide
+---
 
 # 도구 계층 구분
 
 ```mermaid
-flowchart TD
+%%{init: {'themeVariables': {'fontSize': '12px'}, 'flowchart': {'nodeSpacing': 18, 'rankSpacing': 26, 'diagramPadding': 6, 'curve': 'linear'}}}%%
+flowchart LR
     A[Coordinator] --> B[Skills]
     A --> C[Subagents]
-
     B --> D[절차 실행]
     C --> E[도메인 감사]
-
-    E --> F[Deterministic Tools]
-    E --> G[Read-only MCP]
-
-    F --> H[BinSkim / Sigcheck / AccessChk / Procmon / Autoruns / CodeQL]
-    G --> I[Filesystem / Event Log / Registry / GitHub Projects]
-
-    H --> J[Raw Evidence]
-    I --> J
-    J --> K[Normalized Summary]
-    K --> L[Finding Candidate]
+    E --> F[Deterministic Tools<br/>BinSkim · Sigcheck · AccessChk · Procmon · Autoruns · CodeQL]
+    E --> G[Read-only MCP<br/>Filesystem · Event Log · Registry · GitHub Projects]
+    F --> H[Raw Evidence]
+    G --> H
+    H --> I[Normalized Summary]
+    I --> J[Finding Candidate]
 ```
 
 ---
