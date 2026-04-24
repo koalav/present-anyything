@@ -1,10 +1,4 @@
----
-layout: section
----
-
-# 17. Android MCP Server: 사용 예시
-
----
+# Android MCP Server: 사용 예시
 
 - 현재 앱 화면 캡처
 - UI Layout 분석

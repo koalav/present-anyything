@@ -1,10 +1,4 @@
----
-layout: section
----
-
-# 20. JADX MCP: 사용 예시
-
----
+# JADX MCP: 사용 예시
 
 - MainActivity 요약
 - 하드코딩 API Key, Token, Password 확인

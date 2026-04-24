@@ -1,10 +1,4 @@
----
-layout: section
----
-
-# 28. Chrome DevTools / Playwright MCP: 적용 방법
-
----
+# Chrome DevTools / Playwright MCP: 적용 방법
 
 ```json
 {

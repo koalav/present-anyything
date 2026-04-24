@@ -3,7 +3,7 @@ theme: default
 title: MCP로 구성하는 AI 기반 모바일 앱 보안 감사
 info: |
   MCP, Tool, Skill, 감사 시스템, 운영 통제를 중심으로
-  모바일 앱 보안 감사 워크플로우를 설명하는 원본형 Slidev 자료.
+  모바일 앱 보안 감사 워크플로우를 설명하는 상세 발표 자료.
 class: text-left
 transition: slide-left
 drawings:
@@ -17,19 +17,15 @@ mdc: true
 
 # MCP로 구성하는 AI 기반 모바일 앱 보안 감사
 
-## 원본형 · 개념 · 도구 적용 · 감사 시스템 · Skill · 운영 통제
+## 개념 정리, 도구 적용, 감사 시스템, Skill, 운영 통제
 
 <div class="mt-8 text-lg opacity-80">
-모바일 앱 보안 감사를 MCP와 Skill 중심으로 구조화하는 상세 Slidev 자료
+모바일 앱 보안 감사를 MCP와 Skill 중심으로 어떻게 운영할지 설명하는 발표 자료
 </div>
 
 <div class="mt-16 text-sm opacity-60">
 작성일: 2026-04-24 · 범위: Android 앱 감사, MCP Server, Skill 설계, 보안 통제
 </div>
-
----
-src: ./pages/01_title.md
----
 ---
 src: ./pages/02_scope.md
 ---

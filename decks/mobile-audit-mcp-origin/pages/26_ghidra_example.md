@@ -1,10 +1,4 @@
----
-layout: section
----
-
-# 26. Ghidra MCP: 사용 예시
-
----
+# Ghidra MCP: 사용 예시
 
 - JNI 함수 검색
 - 디컴파일 코드 조회

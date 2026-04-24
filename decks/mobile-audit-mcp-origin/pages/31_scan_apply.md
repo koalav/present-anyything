@@ -1,10 +1,4 @@
----
-layout: section
----
-
-# 31. MobSF / Semgrep / CodeQL: 적용 방법
-
----
+# MobSF / Semgrep / CodeQL: 적용 방법
 
 - MCP Server 직접 연결
 - CLI Tool 래핑

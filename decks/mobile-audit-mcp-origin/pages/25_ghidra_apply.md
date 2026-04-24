@@ -1,10 +1,4 @@
----
-layout: section
----
-
-# 25. Ghidra MCP: 적용 방법
-
----
+# Ghidra MCP: 적용 방법
 
 - Ghidra 설치
 - JDK 설치

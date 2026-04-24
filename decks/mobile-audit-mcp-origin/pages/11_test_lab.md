@@ -1,10 +1,4 @@
----
-layout: section
----
-
-# 11. 구축: 테스트 랩 구성
-
----
+# 구축: 테스트 랩 구성
 
 - Python 3.10+
 - Node.js LTS

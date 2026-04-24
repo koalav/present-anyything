@@ -1,10 +1,4 @@
----
-layout: section
----
-
-# 18. JADX MCP: APK 정적 분석
-
----
+# JADX MCP: APK 정적 분석
 
 - 디컴파일 코드 분석
 - Manifest 분석

@@ -1,10 +1,4 @@
----
-layout: section
----
-
-# 42. Skill 설계: 감사 단계별 Tool 매핑
-
----
+# Skill 설계: 감사 단계별 Tool 매핑
 
 - 대상 식별: Android MCP
 - Manifest 분석: JADX, MobSF

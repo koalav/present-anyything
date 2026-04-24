@@ -1,10 +1,4 @@
----
-layout: section
----
-
-# 34. Burp / ZAP / GitHub MCP: 적용 방법
-
----
+# Burp / ZAP / GitHub MCP: 적용 방법
 
 - 프록시 구성
 - 대상 범위 제한

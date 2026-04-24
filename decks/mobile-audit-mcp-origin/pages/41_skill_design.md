@@ -1,10 +1,4 @@
----
-layout: section
----
-
-# 41. Skill 설계: Mobile App Security Audit Skill
-
----
+# Skill 설계: Mobile App Security Audit Skill
 
 - 절차 표준화
 - MASVS 기준 매핑

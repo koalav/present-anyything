@@ -1,10 +1,4 @@
----
-layout: section
----
-
-# 36. 감사 시스템: AI Mobile Audit Orchestrator 개요
-
----
+# 감사 시스템: Mobile Audit Orchestrator 개요
 
 입력값
 - APK

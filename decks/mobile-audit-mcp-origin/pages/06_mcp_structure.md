@@ -1,10 +1,4 @@
----
-layout: section
----
-
-# 6. 기본 지식: MCP의 구조
-
----
+# 기본 지식: MCP의 구조
 
 - Host
 - MCP Client

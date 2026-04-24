@@ -1,10 +1,4 @@
----
-layout: section
----
-
-# 12. 구축: MCP Client 설정 구조
-
----
+# 구축: MCP Client 설정 구조
 
 ```json
 {

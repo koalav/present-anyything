@@ -1,10 +1,4 @@
----
-layout: section
----
-
-# 24. Ghidra MCP: 네이티브 코드 분석
-
----
+# Ghidra MCP: 네이티브 코드 분석
 
 - JNI 함수 분석
 - 네이티브 코드 디컴파일

@@ -54,69 +54,16 @@ const decks = [
     ]
   },
   {
-    name: "Windows 환경에서 MCP로 구성하는 AI 기반 모바일 앱 보안 감사",
-    path: "mobile-audit-mcp-windows/",
-    description: "Windows 기반 Android 앱 감사용 MCP 도구체인, Skill 운영, 증거 기반 보고 구조",
-    toc: [
-      "발표 목표와 범위",
-      "Agent, MCP, Tool, Skill 구분",
-      "Windows 테스트 랩 구성",
-      "전체 아키텍처",
-      "Android MCP 적용",
-      "JADX와 정적 분석",
-      "Frida와 런타임 검증",
-      "Ghidra와 네이티브 분석",
-      "WebView, 브라우저, 네트워크 분석",
-      "자동 스캐닝과 초벌 분류",
-      "AI Mobile Audit Orchestrator 흐름",
-      "Skill과 Evidence Bundle",
-      "운영 통제",
-      "결론과 Q&A",
-      "참고 자료"
-    ]
-  },
-  {
-    name: "Windows 환경에서 MCP로 구성하는 AI 기반 모바일 앱 보안 감사 - Extended",
-    path: "mobile-audit-mcp-windows-extended/",
-    description: "원문 흐름에 가깝게 확장한 상세 버전. 개념, 설정, 도구별 적용, 시스템 설계, 통제를 더 자세히 설명",
-    toc: [
-      "목표와 범위",
-      "모바일 앱 감사의 작업 구조",
-      "AI Agent와 Tool Calling",
-      "MCP 구조와 개념 구분",
-      "Skill 역할과 기본 도구 vs MCP 도구",
-      "MASVS 정렬",
-      "Windows 랩과 Client 설정",
-      "전체 아키텍처와 승인 게이트",
-      "Android MCP 3장",
-      "JADX 3장",
-      "Frida 3장",
-      "Ghidra 2장",
-      "WebView와 네트워크 도구",
-      "스캔 스택",
-      "Orchestrator와 Finding",
-      "Skill 설계와 Evidence Bundle",
-      "리스크와 통제",
-      "결론과 참고 자료"
-    ]
-  },
-  {
     name: "MCP로 구성하는 AI 기반 모바일 앱 보안 감사",
     path: "mobile-audit-mcp-origin/",
-    description: "원본 슬라이드 흐름에 가깝게 정리한 상세 deck. 특정 OS 언급을 줄이고 모바일 앱 감사 구조 중심으로 재구성",
+    description: "모바일 앱 감사를 위한 MCP, Tool, Skill, 감사 시스템, 운영 통제 구조",
     toc: [
-      "기본 지식 10장",
-      "구축 4장",
-      "Android MCP 3장",
-      "JADX 3장",
-      "Frida 3장",
-      "Ghidra 3장",
-      "WebView와 브라우저 3장",
-      "스캔 도구 3장",
-      "네트워크와 운영 확장 3장",
-      "감사 시스템 5장",
-      "Skill 설계 4장",
-      "운영 통제와 결론 5장"
+      "도입: 범위, 감사 흐름, Agent·MCP·Tool·Skill 개념",
+      "구축: 테스트 랩, Client 설정, 전체 아키텍처, 승인 범위",
+      "도구 적용: Android, JADX, Frida, Ghidra, WebView, 스캔, 네트워크 도구",
+      "감사 시스템: Orchestrator, 실행 흐름, Finding 템플릿",
+      "Skill과 운영 통제: Tool 매핑, 증거 묶음, 리스크, 체크리스트",
+      "참고 자료"
     ]
   }
 ];

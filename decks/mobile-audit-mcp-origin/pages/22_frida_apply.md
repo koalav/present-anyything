@@ -1,10 +1,4 @@
----
-layout: section
----
-
-# 22. Frida MCP: 적용 방법
-
----
+# Frida MCP: 적용 방법
 
 ```bash
 pip install frida-tools

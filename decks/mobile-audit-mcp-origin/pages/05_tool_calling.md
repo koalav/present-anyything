@@ -1,10 +1,4 @@
----
-layout: section
----
-
-# 5. 기본 지식: Tool Calling의 동작 방식
-
----
+# 기본 지식: Tool Calling의 동작 방식
 
 1. Tool 정의 등록
 2. 사용자 요청 해석

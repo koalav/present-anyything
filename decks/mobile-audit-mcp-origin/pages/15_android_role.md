@@ -1,10 +1,4 @@
----
-layout: section
----
-
-# 15. Android MCP Server: 디바이스 제어와 증거 수집
-
----
+# Android MCP Server: 디바이스 제어와 증거 수집
 
 - 디바이스 정보 확인
 - 앱 설치, 실행 상태 확인

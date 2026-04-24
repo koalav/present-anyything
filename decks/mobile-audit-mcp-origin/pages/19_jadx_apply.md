@@ -1,10 +1,4 @@
----
-layout: section
----
-
-# 19. JADX MCP: 적용 방법
-
----
+# JADX MCP: 적용 방법
 
 - JADX 설치
 - MCP 플러그인 설치

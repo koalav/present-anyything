@@ -1,10 +1,4 @@
----
-layout: section
----
-
-# 40. 감사 시스템: Finding 생성 예시
-
----
+# 감사 시스템: Finding 생성 예시
 
 ```markdown
 # Finding: 제목

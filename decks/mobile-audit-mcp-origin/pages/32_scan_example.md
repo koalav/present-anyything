@@ -1,10 +1,4 @@
----
-layout: section
----
-
-# 32. MobSF / Semgrep / CodeQL: 사용 예시
-
----
+# MobSF / Semgrep / CodeQL: 사용 예시
 
 - APK에 대해 MobSF 정적 분석 실행
 - High, Medium 이슈 필터링

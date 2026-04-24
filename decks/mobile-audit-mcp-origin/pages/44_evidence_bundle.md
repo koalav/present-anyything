@@ -1,10 +1,4 @@
----
-layout: section
----
-
-# 44. Skill 설계: Evidence Bundle 표준화
-
----
+# Skill 설계: Evidence Bundle 표준화
 
 ```text
 evidence/{app_name}/{date}/

@@ -1,10 +1,4 @@
----
-layout: section
----
-
-# 16. Android MCP Server: 적용 방법
-
----
+# Android MCP Server: 적용 방법
 
 ```bash
 adb devices

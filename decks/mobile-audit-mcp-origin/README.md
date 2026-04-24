@@ -12,11 +12,11 @@
 ## 실행
 
 ```bash
-npm run dev:mobile-audit-mcp-origin
+npm run dev:mobile-audit-mcp
 ```
 
 ## 빌드
 
 ```bash
-npm run build:mobile-audit-mcp-origin
+npm run build:mobile-audit-mcp
 ```

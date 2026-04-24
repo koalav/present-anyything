@@ -1,10 +1,4 @@
----
-layout: section
----
-
-# 49. 참고 자료
-
----
+# 참고 자료
 
 - MCP Specification
 - Claude Code Tools, MCP, Skills
