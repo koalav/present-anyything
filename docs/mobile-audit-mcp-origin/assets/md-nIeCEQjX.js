@@ -1,0 +1,8 @@
+import{_ as r}from"./slidev/CodeBlockWrapper.vue_vue_type_script_setup_true_lang-B0Ewlm6-.js";import{o as p,b as u,w as n,g as s,d,m as c,D as l,v as m,x as _,z as a}from"./modules/vue-0DkHb0vD.js";import{I as f}from"./slidev/default-CB3VrREn.js";import{u as k,f as g}from"./slidev/context-DAer1AR1.js";import"./modules/unplugin-icons-CrxfDbIS.js";import"./index-CRMdovOK.js";import"./modules/shiki-BdEeu8M_.js";const N={__name:"44_evidence_bundle.md__slidev_44",setup(v){const{$clicksContext:i,$frontmatter:t}=k();return i.setup(),(x,e)=>{const o=r;return p(),u(f,m(_(a(g)(a(t),43))),{default:n(()=>[e[1]||(e[1]=s("h1",null,"Skill 설계: 증거 묶음 표준",-1)),d(o,c({},{title:"",ranges:[]}),{default:n(()=>[...e[0]||(e[0]=[s("pre",{class:"shiki shiki-themes vitesse-dark vitesse-light slidev-code",style:{"--shiki-dark":"#dbd7caee","--shiki-light":"#393a34","--shiki-dark-bg":"#121212","--shiki-light-bg":"#ffffff"}},[s("code",{class:"language-text"},[s("span",{class:"line"},[s("span",null,"evidence/{app_name}/{date}/")]),l(`
+`),s("span",{class:"line"},[s("span",null,"  00_scope/")]),l(`
+`),s("span",{class:"line"},[s("span",null,"  01_device/")]),l(`
+`),s("span",{class:"line"},[s("span",null,"  02_static/")]),l(`
+`),s("span",{class:"line"},[s("span",null,"  03_dynamic/")]),l(`
+`),s("span",{class:"line"},[s("span",null,"  04_native/")]),l(`
+`),s("span",{class:"line"},[s("span",null,"  05_network/")]),l(`
+`),s("span",{class:"line"},[s("span",null,"  06_findings/")])])],-1)])]),_:1},16),e[2]||(e[2]=s("ul",null,[s("li",null,"증거 경로"),s("li",null,"테스트 일시"),s("li",null,"도구 버전"),s("li",null,"Tool Call 요약"),s("li",null,"민감정보 마스킹 여부")],-1))]),_:1},16)}}};export{N as default};
