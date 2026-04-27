@@ -1,4 +1,4 @@
-# 감사 시스템: 컴포넌트 구성
+# 감사 시스템 컴포넌트
 
 ```mermaid
 flowchart TB

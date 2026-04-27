@@ -1,4 +1,4 @@
-# Ghidra MCP: 적용 방법
+# Ghidra MCP: 설치와 실행
 
 - Ghidra 설치
 - JDK 설치

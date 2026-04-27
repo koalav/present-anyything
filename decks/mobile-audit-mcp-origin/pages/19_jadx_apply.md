@@ -1,4 +1,4 @@
-# JADX MCP: 적용 방법
+# JADX MCP: 설치와 실행
 
 - JADX 설치
 - MCP 플러그인 설치

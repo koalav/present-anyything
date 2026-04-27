@@ -65,7 +65,7 @@ semgrep scan --metrics=off \
   app/src/main
 ```
 
-- 발표용 룰 파일에는 룰 `2개`만 둡니다.
+- 두 룰은 한 파일 `rules/android-local.yml` 안에 묶어 두고, 새 룰이 생기면 같은 파일에 append 합니다.
 - 목적은 "완성형 판정기"가 아니라, 후보를 빠르게 추출하고 분류 시간을 줄이는 데 있습니다.
 
 ---
@@ -86,16 +86,15 @@ App A creates PendingIntent
 ```
 
 ---
+class: text-sm
+---
 
 # 예시 1: 어떤 조합이 위험한가
 
 | 패턴 | 왜 위험한가 |
 |---|---|
-| `FLAG_MUTABLE`을 불필요하게 사용 | 받은 쪽이 `fillInIntent()`로 미채워진 필드를 바꿀 수 있습니다. |
-| `FLAG_MUTABLE` + empty / implicit `Intent` | action, data, component, extras가 변형될 여지가 커집니다. |
-| `requestCode = 0` 반복 + `FLAG_UPDATE_CURRENT` | 기존 토큰과 충돌하거나 extras가 섞일 수 있습니다. |
-| `content://` + URI grant 결합 | 의도치 않은 URI read/write 권한 흐름으로 이어질 수 있습니다. |
-| 민감 작업인데 `FLAG_ONE_SHOT` 없음 | 삭제, 승인, 결제 같은 1회성 작업이 재실행될 수 있습니다. |
+| `FLAG_MUTABLE` + empty / implicit `Intent` | action, data, component, extras가 받은 쪽에서 변형될 여지가 커집니다. |
+| `requestCode = 0` 반복 + `FLAG_UPDATE_CURRENT` | 기존 토큰과 extras가 충돌하거나 덮어써질 수 있습니다. |
 | notification action이 바로 민감 작업 수행 | 잠금화면·외부 표면과 결합될 때 오용 여지가 생깁니다. |
 
 - 특히 `FLAG_MUTABLE` + implicit `Intent` 조합은 위험도가 높습니다.
@@ -108,18 +107,20 @@ class: text-sm
 # 예시 1: 코드 리뷰 빨간불 패턴
 
 ```kotlin
+// 이 룰이 1차로 잡는 패턴 (FLAG_MUTABLE)
 PendingIntent.getActivity(context, 0, Intent(), PendingIntent.FLAG_MUTABLE)
 PendingIntent.getBroadcast(context, 0, Intent("SOME_ACTION"), PendingIntent.FLAG_MUTABLE)
 PendingIntent.getService(context, 0, intent, PendingIntent.FLAG_MUTABLE)
+
+// 룰이 직접 잡지는 않지만 함께 봐야 할 주변 신호
 PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT)
 PendingIntent.getBroadcast(context, 0, intent, PendingIntent.FLAG_CANCEL_CURRENT)
 ```
 
-- 같이 보면 더 위험한 조건:
-  - `setClass`, `setComponent`, `setPackage`가 없음
-  - `FLAG_GRANT_READ_URI_PERMISSION` / `WRITE`가 붙음
-  - 내부 `Receiver` / `Service`가 extras를 그대로 신뢰함
-  - 민감 작업인데 `FLAG_ONE_SHOT`과 만료 개념이 없음
+- 같이 보면 더 위험한 주변 신호 (룰이 직접 잡지는 않음):
+  - `FLAG_GRANT_READ_URI_PERMISSION` / `WRITE`가 같이 붙어 URI 권한 흐름이 따라감
+  - 내부 `Receiver` / `Service`가 extras를 그대로 신뢰
+  - 민감 작업인데 `FLAG_ONE_SHOT`이 없어 재실행 가능
 
 ---
 class: text-sm
@@ -148,6 +149,7 @@ class PendingIntentLab {
 }
 ```
 
+- 이 함수는 학습용으로 5가지 안티패턴이 한 줄에 겹친 합성 예시입니다.
 - `FLAG_MUTABLE`: 받은 쪽이 미채워진 필드나 extras를 보강할 수 있습니다.
 - `Intent("ACTION")`: explicit component가 아니라 implicit `Intent`입니다.
 - `requestCode = 0`: 다른 토큰과 충돌하기 쉬운 기본값입니다.
@@ -161,6 +163,8 @@ class: text-sm
 # 예시 1: 비교적 안전한 기본형
 
 ```kotlin
+val notificationId = 1042
+
 val intent = Intent(context, DeleteConfirmActivity::class.java).apply {
     action = "com.example.ACTION_DELETE_FILE"
     setPackage(context.packageName)
@@ -207,8 +211,13 @@ rules:
 ```
 
 - 이 규칙은 의도적으로 넓게 `FLAG_MUTABLE` 사용처를 1차 수집합니다.
+- `metavariable-regex`의 `.*FLAG_MUTABLE.*`는 부분문자열 매칭이라 일부러 느슨하게 두고, 정확도는 AI 분류 단계에서 보강합니다.
 - 실제 위험도는 2차 분류에서 봅니다.
 - 즉, "mutable이 정말 필요한가", "Intent가 explicit인가", "추가 red flag가 있는가"를 사람이나 AI가 이어서 판단합니다.
+
+---
+class: text-sm
+---
 
 # 예시 1: 검출 결과
 
@@ -240,7 +249,7 @@ $ semgrep scan --metrics=off \
 class: text-sm
 ---
 
-# 예시 1: 합법적인 mutable 예외 사례
+# 예시 1: 오탐 사례 (합법적인 mutable use case)
 
 ```kotlin
 object ReplyActionFactory {
@@ -261,7 +270,8 @@ object ReplyActionFactory {
 ```
 
 - notification inline reply처럼 시스템이 `RemoteInput` 결과를 채워야 하는 경우에는 mutable이 실제로 필요할 수 있습니다.
-- 이 경우에도 component/package는 고정하고, mutable 필요성이 코드리뷰에서 설명 가능해야 합니다.
+- 이 경우에도 component/package는 고정하고, mutable이 필요한 이유를 PR 설명·코드 코멘트·RFC 중 한 곳에 남겨 둡니다.
+- 그래야 다음 분류 사이클에서 동일 패턴을 allowlist로 빠르게 분기할 수 있습니다.
 
 ---
 class: text-sm
@@ -317,8 +327,8 @@ class: text-sm
 - 문제 상황: 무결성 검증, 서명 검증, 토큰 서명, 업데이트 검증에 그대로 사용
 - 왜 위험한가:
   - 충돌 공격 관점에서 현대 기준에 맞지 않음
-  - "레거시라서 그대로" 남아 있는 경우가 많음
   - 보안 결정에 쓰이면 영향이 커짐
+- 왜 자주 발견되나: "레거시라서 그대로" 남아 있는 경우가 많아 발견율이 높음
 
 ```text
 핵심 질문
@@ -355,6 +365,35 @@ class LegacyCrypto {
 - `verifyManifest()`에서는 SHA-1 결과를 실제 비교 판단에 사용합니다.
 - `newSigner()`는 오래된 서명 알고리즘을 그대로 사용합니다.
 - 이런 코드는 "레거시 때문에 유지"되는 경우가 많아, 우선 수집이 중요합니다.
+
+---
+class: text-sm
+---
+
+# 예시 2: 비교적 안전한 기본형
+
+```java
+package com.example;
+
+import java.security.MessageDigest;
+import java.security.Signature;
+
+class ManifestVerifier {
+    boolean verifyManifest(byte[] manifest, byte[] expectedDigest) throws Exception {
+        byte[] actual = MessageDigest.getInstance("SHA-256").digest(manifest);
+        return MessageDigest.isEqual(actual, expectedDigest);
+    }
+
+    Signature newSigner() throws Exception {
+        return Signature.getInstance("SHA256withRSA");
+    }
+}
+```
+
+- 기본 안전선:
+  - `SHA-256` 이상, 서명은 `SHA256withRSA` / `SHA256withECDSA` 권장
+  - 알고리즘 선택은 정책 한 곳에 모아 두고 호출부에서 분기 금지
+- 참고로 비교 함수도 timing-safe 한 `MessageDigest.isEqual` 사용 — 약한 해시와는 별개 이슈지만 같이 다듬어 두면 좋습니다.
 
 ---
 class: text-sm
@@ -435,8 +474,8 @@ class CertificateScreen {
 }
 ```
 
-- 이 코드는 SHA-1을 쓰지만, 예를 들어 "기존 운영 문서와 맞춰 보기 위한 표시용 지문값"이라면 보안 의사결정일 수도, 아닐 수도 있습니다.
-- Semgrep은 사용 목적을 알 수 없기 때문에 우선 후보로 잡는 편이 맞습니다.
+- 이 코드만 봐서는 SHA-1 지문이 trust decision에 쓰이는지, 단순 표시·기록용인지 가릴 수 없습니다.
+- Semgrep은 호출 자체만 보기 때문에 우선 후보로 잡고, "어디에 쓰이는가"는 다음 단계에서 봅니다.
 
 ---
 class: text-sm
@@ -482,8 +521,8 @@ class: text-sm
 
 # 정리
 
-- `PendingIntent`는 나중에 내 앱 정체성으로 실행될 수 있는 토큰이므로, `FLAG_MUTABLE` 사용은 기본적으로 의심하고 봐야 합니다.
-- 기본 안전선은 `explicit + immutable + unique requestCode + 최소 extras + receiver 측 재검증`입니다.
-- `FLAG_MUTABLE`이 정말 필요한지, implicit `Intent` / URI grant / `FLAG_UPDATE_CURRENT` / 민감 action이 같이 붙는지 확인하는 것이 핵심입니다.
-- 약한 해시·서명 탐지는 빠르게 후보를 수집하는 데 유용하지만, 실제 보안 의사결정에 쓰이는지는 별도 확인이 필요합니다.
-- Semgrep은 구조 기반 후보 추출에 적합하고, 최종 판정은 코드 문맥 확인과 AI·사람 분류를 함께 써야 정확도가 올라갑니다.
+- 룰은 의도적으로 넓게, 정확도는 AI 분류 단계에서 — 이 두 단계 구조가 발표의 핵심입니다.
+- 예시 1 (PendingIntent): `FLAG_MUTABLE`은 1차 수집, AI에게는 "mutable이 정말 필요한 use case인가"를 먼저 묻습니다.
+- 예시 2 (weak hash): 약한 해시 호출은 1차 수집, AI에게는 "이 결과가 trust decision에 쓰이는가"를 먼저 묻습니다.
+- 두 사례의 공통 패턴 — AI는 코드 자체보다 *사용 목적*과 *call path*를 가리는 데 가장 효과적입니다.
+- Semgrep CE + 로컬 룰만으로도 후보 추출은 충분하고, 최종 판정은 사람·AI 분류와 묶을 때 정확도가 올라갑니다.

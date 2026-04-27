@@ -1,4 +1,4 @@
-# Frida MCP: 적용 방법
+# Frida MCP: 설치와 실행
 
 ```bash
 pip install frida-tools

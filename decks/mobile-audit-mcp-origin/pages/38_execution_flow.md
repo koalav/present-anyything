@@ -1,4 +1,4 @@
-# 감사 시스템: 단계별 실행 흐름
+# 단계별 실행 흐름
 
 ```mermaid
 flowchart LR

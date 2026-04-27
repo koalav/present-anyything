@@ -1,4 +1,4 @@
-# Burp / ZAP / GitHub MCP: 사용 예시
+# 네트워크·워크플로우 MCP: 실전 예시
 
 - `/api/login` 이후 요청 분석
 - Authorization 헤더 방식 확인

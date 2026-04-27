@@ -1,4 +1,4 @@
-# 감사 시스템: Mobile Audit Orchestrator 개요
+# 감사 시스템 전체 흐름
 
 ```mermaid
 flowchart LR

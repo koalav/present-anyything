@@ -1,4 +1,4 @@
-# 구축: MCP Client 설정 구조
+# MCP Client 설정 구조
 
 ```json
 {

@@ -33,6 +33,9 @@ src: ./pages/02_scope.md
 src: ./pages/03_mobile_workflow.md
 ---
 ---
+src: ./pages/10_masvs.md
+---
+---
 src: ./pages/04_ai_agent.md
 ---
 ---
@@ -48,12 +51,6 @@ src: ./pages/07_mcp_vs_tool.md
 src: ./pages/08_skill.md
 ---
 ---
-src: ./pages/09_builtin_vs_mcp.md
----
----
-src: ./pages/10_masvs.md
----
----
 src: ./pages/11_test_lab.md
 ---
 ---
@@ -64,6 +61,15 @@ src: ./pages/13_architecture.md
 ---
 ---
 src: ./pages/14_hitl.md
+---
+---
+src: ./pages/36_orchestrator_overview.md
+---
+---
+src: ./pages/37_components.md
+---
+---
+src: ./pages/38_execution_flow.md
 ---
 ---
 src: ./pages/15_android_role.md
@@ -102,6 +108,9 @@ src: ./pages/25_ghidra_apply.md
 src: ./pages/26_ghidra_example.md
 ---
 ---
+src: ./pages/27a_grouped_tools_intro.md
+---
+---
 src: ./pages/27_webview_role.md
 ---
 ---
@@ -127,15 +136,6 @@ src: ./pages/34_network_apply.md
 ---
 ---
 src: ./pages/35_network_example.md
----
----
-src: ./pages/36_orchestrator_overview.md
----
----
-src: ./pages/37_components.md
----
----
-src: ./pages/38_execution_flow.md
 ---
 ---
 src: ./pages/39_login_scenario.md

@@ -1,4 +1,4 @@
-# Android MCP Server: 적용 방법
+# Android MCP: 설치와 실행
 
 ```bash
 adb devices

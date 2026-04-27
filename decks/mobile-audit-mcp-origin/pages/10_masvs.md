@@ -1,4 +1,4 @@
-# 기본 지식: 감사 기준은 MASVS와 MASTG로 정렬한다
+# 감사 기준: MASVS / MASTG로 정렬
 
 - Finding을 MASVS 항목에 매핑
 - 테스트 절차를 MASTG 기반으로 구성

@@ -1,9 +1,20 @@
-# Skill 설계: 감사 단계별 Tool 매핑
+---
+class: text-sm
+---
 
-- 대상 식별: Android MCP
-- Manifest 분석: JADX, MobSF
-- Secret 탐지: JADX, Semgrep
-- 인증 분석: JADX, Frida, Burp
-- 네트워크 분석: Burp, Chrome DevTools
-- 네이티브 분석: Ghidra, Frida
-- 보고서화: Skill Template
+# Skill 설계: 단계별 Tool 매핑
+
+| 단계 | Android | JADX | Frida | Ghidra | WebView·웹 | 정적 스캐너 | 네트워크·워크플로우 | Skill |
+|---|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|
+| 대상 식별 | ● | | | | | | | |
+| Manifest 분석 | | ● | | | | ● | | |
+| Secret 탐지 | | ● | | | | ● | | |
+| 인증 분석 | | ● | ● | | | | ● | |
+| 네트워크 분석 | | | | | ● | | ● | |
+| 네이티브 분석 | | | ● | ● | | | | |
+| 보고서화 | | | | | | | | ● |
+
+- 단독 도구 4개 + 묶음 도구 3개 + Skill 보고서 = 8개 영역
+- 각 단계는 1–3개 도구가 협력
+- 정적 스캐너 = MobSF / Semgrep / CodeQL
+- 네트워크·워크플로우 = Burp / ZAP / GitHub

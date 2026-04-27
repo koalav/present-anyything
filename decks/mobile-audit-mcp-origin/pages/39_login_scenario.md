@@ -1,4 +1,4 @@
-# 감사 시스템: 로그인 기능 감사 시나리오
+# 시나리오: 로그인 기능 감사
 
 ```mermaid
 sequenceDiagram

@@ -1,4 +1,4 @@
-# MobSF / Semgrep / CodeQL: 적용 방법
+# 정적 스캐너 MCP: 설치와 실행
 
 - MCP Server 직접 연결
 - CLI Tool 래핑

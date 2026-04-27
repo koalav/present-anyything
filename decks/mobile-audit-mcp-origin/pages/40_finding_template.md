@@ -1,4 +1,4 @@
-# 감사 시스템: Finding 생성 예시
+# Finding이 만들어지는 흐름
 
 ```mermaid
 flowchart LR

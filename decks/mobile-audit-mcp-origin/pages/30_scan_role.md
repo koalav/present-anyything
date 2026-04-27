@@ -1,4 +1,4 @@
-# MobSF / Semgrep / CodeQL: 자동 스캐닝과 정적 분석 확장
+# 정적 스캐너 MCP: MobSF / Semgrep / CodeQL
 
 - MobSF: 모바일 앱 1차 정적 분석
 - Semgrep: 룰 기반 SAST

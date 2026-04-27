@@ -1,4 +1,4 @@
-# Skill 설계: Evidence Bundle 표준화
+# Skill 설계: 증거 묶음 표준
 
 ```text
 evidence/{app_name}/{date}/

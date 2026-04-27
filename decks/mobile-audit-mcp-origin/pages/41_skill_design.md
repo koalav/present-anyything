@@ -1,4 +1,4 @@
-# Skill 설계: Mobile App Security Audit Skill
+# Skill 설계: 감사 Skill의 구성
 
 - 절차 표준화
 - MASVS 기준 매핑

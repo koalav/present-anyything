@@ -1,4 +1,4 @@
-# Frida MCP: 사용 예시
+# Frida MCP: 실전 예시
 
 - validateUser 메서드 호출 추적
 - 인자와 반환값 로그

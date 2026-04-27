@@ -1,4 +1,4 @@
-# Burp / ZAP / GitHub MCP: 네트워크와 운영 워크플로우 확장
+# 네트워크·워크플로우 MCP: Burp / ZAP / GitHub
 
 - Burp와 ZAP으로 HTTP, API 보안 분석 연결
 - GitHub MCP로 이슈와 PR 흐름 연결

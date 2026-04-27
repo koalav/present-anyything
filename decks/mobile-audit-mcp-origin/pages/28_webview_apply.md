@@ -1,4 +1,4 @@
-# Chrome DevTools / Playwright MCP: 적용 방법
+# WebView·웹 MCP: 설치와 실행
 
 ```json
 {
