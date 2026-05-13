@@ -6,33 +6,32 @@
 
 ## 1. Slide 3 - AI Agent 구성
 
-목적: "AI Agent = Model + Tools + Context + Verification"을 구조로 보여줍니다.
+목적: 사람이 하던 보안 감사 업무를 Harness, AI 판단, 사람 후속 조치로 나누는 구조를 보여줍니다.
 
 ```mermaid
-flowchart LR
-  M[Model]:::input --> A((AI Agent)):::core
-  T[Tools]:::input --> A
-  C[Context]:::input --> A
-  V[Verification]:::input --> A
-  A --> O[Verified Work Output]:::success
+flowchart TB
+  Work["Human security audit work"]:::input --> Harness["Tool / Harness<br/>boring deterministic work"]:::tool
+  Harness --> AI["AI judgment<br/>analysis · PoC<br/>diagnosis"]:::core
+  AI --> Human["Human<br/>final analysis · follow-up"]:::success
   classDef input fill:#0f172a,stroke:#475569,color:#e2e8f0,stroke-width:1.5px;
+  classDef tool fill:#0f766e,stroke:#99f6e4,color:#ffffff,stroke-width:2.2px;
   classDef core fill:#1d4ed8,stroke:#bfdbfe,color:#ffffff,stroke-width:2.5px;
   classDef success fill:#064e3b,stroke:#5eead4,color:#ecfeff,stroke-width:2px;
 ```
 
 ## 2. Slide 5 - 답변은 작업의 시작점
 
-목적: 질의응답만으로는 파일 변경, 실행, 검증, 최신 상태 확인이 되지 않는다는 점을 한 장에 보여줍니다.
+목적: 질의응답만으로는 사람 일을 보조하거나 대체하는 구조가 되지 않는다는 점을 한 장에 보여줍니다.
 
 ```mermaid
 flowchart TB
   Q["질문"]:::input --> A(("텍스트 답변")):::core
-  A --> Human["사람이 복사하고 판단"]:::human
-  A -.-> F["파일은 그대로"]:::gap
-  A -.-> R["실행 결과 없음"]:::gap
+  A --> Human["사람이 복사하고 오케스트레이션"]:::human
+  A -.-> F["APK / Manifest는 그대로"]:::gap
+  A -.-> R["재현 결과 없음"]:::gap
   A -.-> V["검증 증거 없음"]:::gap
-  A -.-> C["최신/사내 상태 모름"]:::gap
-  Human --> Done["작업 완료는 아직 아님"]:::warn
+  A -.-> C["Android 정책 모름"]:::gap
+  Human --> Done["보조/대체 구조는 아직 아님"]:::warn
   classDef input fill:#0f172a,stroke:#60a5fa,color:#dbeafe,stroke-width:2px;
   classDef core fill:#1d4ed8,stroke:#bfdbfe,color:#ffffff,stroke-width:2.6px;
   classDef human fill:#111827,stroke:#94a3b8,color:#f8fafc,stroke-width:1.8px;
@@ -50,13 +49,13 @@ sequenceDiagram
   participant U as User
   participant A as App
   participant M as Model
-  participant T as External Tool
+  participant T as Android Tool / MCP
 
   U->>A: Prompt
   A->>M: Prompt + tool schemas
   M-->>A: Tool call(name, args)
-  A->>T: Execute tool
-  T-->>A: Result
+  A->>T: Execute jadx / adb / parser
+  T-->>A: Structured result
   A->>M: Tool result
   Note over A,M: App executes. Model interprets.
   M-->>A: Final answer
@@ -68,16 +67,16 @@ sequenceDiagram
 목적: AI model이 tool call을 판단하고, Host가 여러 타입의 MCP client를 통해 여러 타입의 MCP server로 연결한다는 구조를 보여줍니다.
 
 ```mermaid
-flowchart LR
+flowchart TB
   Model(["AI Model: tool call 판단"]):::model --> Host["Host App: context + policy"]:::host
   Host --> C1["IDE / Coding Client"]:::client
-  Host --> C2["Desktop Chat Client"]:::client
-  Host --> C3["Workflow Client"]:::client
-  C1 --> S1[["Repo / Files Server"]]:::server
-  C1 --> S2[["Browser / DevTools Server"]]:::server
-  C2 --> S3[["Docs / Search Server"]]:::server
-  C3 --> S4[["Jira / DB / API Server"]]:::server
-  S1 --> Cap["Tools / Resources / Prompts"]:::cap
+  Host --> C2["Mobile Audit Harness"]:::client
+  Host --> C3["Reverse Engineering UI"]:::client
+  C1 --> S1[["Repo / Manifest Server"]]:::server
+  C2 --> S2[["JADX / APK Server"]]:::server
+  C2 --> S3[["Frida / Device Server"]]:::server
+  C3 --> S4[["Ghidra / IDA Server"]]:::server
+  S1 --> Cap["Tools / Resources / Findings"]:::cap
   S2 --> Cap
   S3 --> Cap
   S4 --> Cap
@@ -93,23 +92,25 @@ flowchart LR
 목적: 커스텀 연동 복잡도와 표준 서버 재사용의 차이를 대비합니다.
 
 ```mermaid
-flowchart LR
-  subgraph Before["Before: custom wiring"]
-    BA["IDE Agent"]:::app --> B1["GitHub adapter"]:::wire --> BT1["GitHub API"]:::external
-    BA --> B2["FS wrapper"]:::wire --> BT2["Local files"]:::external
-    BB["Desktop Chat"]:::app --> B3["Drive connector"]:::wire --> BT3["Drive API"]:::external
-    BB --> B4["Jira connector"]:::wire --> BT4["Jira API"]:::external
+flowchart TB
+  subgraph ABefore["Before: custom wiring"]
+    BA["IDE Agent"]:::app --> B1["rg wrapper"]:::wire --> BT1["AndroidManifest.xml"]:::external
+    BA --> B2["jadx script"]:::wire --> BT2["Decompiled code"]:::external
+    BB["Audit UI"]:::app --> B3["frida script"]:::wire --> BT3["Device runtime"]:::external
+    BB --> B4["Ghidra bridge"]:::wire --> BT4["Native libs"]:::external
   end
-  subgraph After["After: MCP standard"]
+  subgraph BAfter["After: MCP standard"]
     HA["IDE Agent"]:::client --> HC1["MCP Client"]:::bridge
-    HB["Desktop Chat"]:::client --> HC2["MCP Client"]:::bridge
-    HC1 --> HS1[["Filesystem Server"]]:::server
-    HC1 --> HS2[["GitHub Server"]]:::server
+    HB["Audit Harness"]:::client --> HC2["MCP Client"]:::bridge
+    HC1 --> HS1[["Manifest / Source Server"]]:::server
+    HC1 --> HS2[["JADX Server"]]:::server
     HC2 --> HS1
-    HC2 --> HS3[["Jira / Drive Server"]]:::server
-    HS1 --> HT1["Local files"]:::external
-    HS2 --> HT2["GitHub API"]:::external
-    HS3 --> HT3["SaaS APIs"]:::external
+    HC2 --> HS3[["Frida / ADB Server"]]:::server
+    HC2 --> HS4[["Ghidra / IDA Server"]]:::server
+    HS1 --> HT1["APK / source"]:::external
+    HS2 --> HT2["DEX view"]:::external
+    HS3 --> HT3["Device evidence"]:::external
+    HS4 --> HT4["Native analysis"]:::external
   end
   classDef app fill:#111827,stroke:#fca5a5,color:#fee2e2,stroke-width:1.8px;
   classDef wire fill:#3f1d1d,stroke:#fb7185,color:#ffe4e6,stroke-width:2px;
@@ -124,18 +125,10 @@ flowchart LR
 목적: 대표적인 MCP server인 filesystem이 허용된 workspace 안에서 파일 도구를 실행하는 구조를 보여줍니다.
 
 ```mermaid
-flowchart LR
-  Request["요청: config 읽고 테스트 수정"]:::input --> Host["Host / Agent"]:::host
-  Host --> Model["AI Model"]:::model
-  Model -->|selects tool| Client["MCP Client"]:::client
-  Client --> Server[["Filesystem MCP Server"]]:::server
-  Server --> Guard{"path in allowed roots?"}:::guard
-  Guard -->|no| Denied["blocked"]:::deny
-  Guard -->|yes| Ops["read / list / search / edit"]:::tool
-  Ops --> Workspace[("Allowed workspace")]:::fs
-  Workspace --> Result["content / tree / diff"]:::result
-  Result --> Host
-  Host --> Verify["git diff / tests / review"]:::success
+flowchart TB
+  Request["요청: exported components 찾기"]:::input --> Host["Host / MCP Client<br/>model selects tool"]:::host
+  Host --> Server[["Filesystem MCP Server"]]:::server
+  Server --> Verify["allowed roots check<br/>read / list / search / parse<br/>manifest / source / JSON<br/>evidence review"]:::success
   classDef input fill:#111827,stroke:#94a3b8,color:#f8fafc,stroke-width:1.5px;
   classDef host fill:#0f172a,stroke:#60a5fa,color:#dbeafe,stroke-width:2px;
   classDef model fill:#1d4ed8,stroke:#bfdbfe,color:#ffffff,stroke-width:2.5px;
@@ -144,8 +137,6 @@ flowchart LR
   classDef guard fill:#422006,stroke:#fbbf24,color:#fffbeb,stroke-width:2px;
   classDef deny fill:#3f1d1d,stroke:#fca5a5,color:#fee2e2,stroke-width:2px;
   classDef tool fill:#052e2b,stroke:#5eead4,color:#ecfeff,stroke-width:2px;
-  classDef fs fill:#1f2937,stroke:#94a3b8,color:#f8fafc,stroke-width:1.5px;
-  classDef result fill:#111827,stroke:#2dd4bf,color:#ccfbf1,stroke-width:1.8px;
   classDef success fill:#064e3b,stroke:#5eead4,color:#ecfeff,stroke-width:2px;
 ```
 
@@ -154,7 +145,7 @@ flowchart LR
 목적: 에이전트가 한 번 답하는 것이 아니라 관찰과 수정 루프를 돈다는 점을 강조합니다.
 
 ```mermaid
-flowchart LR
+flowchart TB
   Plan((Plan)):::core --> Act((Act)):::core
   Act --> Observe((Observe)):::core
   Observe -->|failed| Revise((Revise)):::warn
@@ -170,7 +161,7 @@ flowchart LR
 목적: Claude Code, Codex CLI, Gemini CLI, Cursor 같은 코딩 에이전트의 공통 구조를 보여줍니다.
 
 ```mermaid
-flowchart LR
+flowchart TB
   LLM[LLM]:::core --> Tools[Tool layer]:::tool
   Tools --> Loop[Planning / Action / Observe / Retry]:::loop
   Loop --> Context[Context management]:::context
@@ -183,21 +174,25 @@ flowchart LR
   classDef success fill:#064e3b,stroke:#5eead4,color:#ecfeff,stroke-width:2px;
 ```
 
-## 8. Slide 33 - Harness 작업 흐름
+## 8. Slide 44 - Harness 작업 흐름
 
-목적: 사용자 요청이 그대로 실행되는 것이 아니라 Task spec과 도구 정책을 거쳐 검증 루프로 들어간다는 점을 보여줍니다.
+목적: 사람이 하던 귀찮고 결정적인 작업을 Harness가 맡고, 판단과 후속 조치의 경계를 나누는 구조를 보여줍니다.
 
 ```mermaid
-flowchart LR
-  User[User request]:::input --> Spec[Task spec]:::core
-  Spec --> Loop[Plan / Execute / Verify loop]:::loop
-  Loop --> Evidence[Evidence report]:::success
-  Spec --> Guard[Tool and permission policy]:::guard
-  Guard --> Loop
+flowchart TB
+  Work["Human audit task"]:::input --> Spec["Audit spec"]:::core
+  Spec --> Harness["Harness<br/>deterministic collection"]:::tool
+  Harness --> AI["AI judgment<br/>analysis · PoC · diagnosis"]:::loop
+  AI --> Evidence["Evidence report"]:::success
+  Evidence --> Human["Human follow-up"]:::human
+  Spec --> Guard[Tool and device policy]:::guard
+  Guard --> Harness
   classDef input fill:#0f172a,stroke:#64748b,color:#e2e8f0,stroke-width:1.5px;
   classDef core fill:#0f766e,stroke:#99f6e4,color:#ffffff,stroke-width:2.5px;
+  classDef tool fill:#111827,stroke:#5eead4,color:#ccfbf1,stroke-width:1.8px;
   classDef loop fill:#1d4ed8,stroke:#bfdbfe,color:#ffffff,stroke-width:2.4px;
   classDef guard fill:#422006,stroke:#fbbf24,color:#fffbeb,stroke-width:2px;
+  classDef human fill:#111827,stroke:#94a3b8,color:#f8fafc,stroke-width:1.8px;
   classDef success fill:#064e3b,stroke:#5eead4,color:#ecfeff,stroke-width:2px;
 ```
 
@@ -220,41 +215,40 @@ flowchart TB
   classDef success fill:#064e3b,stroke:#5eead4,color:#ecfeff,stroke-width:2px;
 ```
 
-## 10. Slide 26 - 에이전트 작업 방식
+## 10. Slide 27 - 에이전트 작업 방식
 
-목적: 사람이 복사/실행하던 작업이 에이전트 실행 루프로 들어간다는 점을 보여줍니다.
+목적: 사람이 하던 작업이 Tool/Harness, AI 판단, 사람 후속 조치로 재배치되는 흐름을 보여줍니다.
 
 ```mermaid
-flowchart LR
-  Goal((Goal)):::start --> Read[Read codebase]:::step
-  Read --> Plan[Plan]:::step
-  Plan --> Edit[Edit files]:::step
-  Edit --> Build[Build]:::step
-  Build --> Test{Test pass?}:::decision
-  Test -->|No| Edit
-  Test -->|Yes| Review[Human review]:::success
+flowchart TB
+  Work["Human work"]:::start --> Harness["Tool / Harness<br/>collect · parse · run"]:::tool
+  Harness --> AI["AI judgment<br/>analysis · PoC<br/>diagnosis"]:::step
+  AI --> Evidence["Evidence report"]:::evidence
+  Evidence --> Human["Human<br/>final analysis · follow-up"]:::success
   classDef start fill:#1d4ed8,stroke:#bfdbfe,color:#ffffff,stroke-width:2.5px;
+  classDef tool fill:#0f766e,stroke:#99f6e4,color:#ffffff,stroke-width:2.2px;
   classDef step fill:#111827,stroke:#60a5fa,color:#dbeafe,stroke-width:1.8px;
-  classDef decision fill:#422006,stroke:#fbbf24,color:#fffbeb,stroke-width:2px;
+  classDef evidence fill:#422006,stroke:#fbbf24,color:#fffbeb,stroke-width:2px;
   classDef success fill:#064e3b,stroke:#5eead4,color:#ecfeff,stroke-width:2px;
 ```
 
-## 11. Slide 27 - 컴파일 에러 수정 루프
+## 11. Slide 27 - Open components 추출 루프
 
-목적: 실제 에이전트가 빌드 실패를 읽고, 최소 수정 후 재검증하는 루틴을 보여줍니다.
+목적: code agent만으로 찾는 방식과 structured extractor를 붙이는 방식의 차이를 보여줍니다.
 
 ```mermaid
-flowchart LR
-  Build[npm run build]:::run --> Error[Read compiler error]:::warn
-  Error --> Locate[Find file and type]:::step
-  Locate --> Patch[Patch smallest scope]:::step
-  Patch --> Rebuild[npm run build again]:::run
-  Rebuild -->|Fail| Error
-  Rebuild -->|Pass| Test[npm test]:::run
-  Test --> Report[Report evidence]:::success
+flowchart TB
+  Ask["open components 찾아줘"]:::run --> Find[find AndroidManifest]:::step
+  Find --> Grep[rg exported / intent-filter]:::step
+  Grep --> Guess[AI interprets candidates]:::warn
+  Guess --> Miss{missing risk?}:::decision
+  Miss -->|possible| Extract[structured manifest JSON]:::step
+  Extract --> Judge[AI judges risk]:::run
+  Judge --> Report[Report evidence]:::success
   classDef run fill:#1e3a8a,stroke:#93c5fd,color:#eff6ff,stroke-width:2px;
   classDef warn fill:#7f1d1d,stroke:#fca5a5,color:#fee2e2,stroke-width:2px;
   classDef step fill:#111827,stroke:#60a5fa,color:#dbeafe,stroke-width:1.8px;
+  classDef decision fill:#422006,stroke:#fbbf24,color:#fffbeb,stroke-width:2px;
   classDef success fill:#064e3b,stroke:#5eead4,color:#ecfeff,stroke-width:2px;
 ```
 
@@ -279,7 +273,7 @@ flowchart TB
 목적: Skill이 항상 전체 context를 차지하지 않고, 이름/설명에서 시작해 필요한 파일만 단계적으로 로드된다는 점을 보여줍니다.
 
 ```mermaid
-flowchart LR
+flowchart TB
   Catalog["name + description"]:::catalog --> Match{"task matches?"}:::decision
   Match -->|no| Skip["do not load"]:::muted
   Match -->|yes| Skill["read SKILL.md"]:::skill
@@ -302,14 +296,14 @@ flowchart LR
 목적: 적은 토큰과 높은 정확도가 요청 구조화, context 선별, 도구 순서, 검증 루프에서 나온다는 점을 보여줍니다.
 
 ```mermaid
-flowchart LR
-  Request["User request"]:::input --> Spec["Task spec"]:::core
-  Spec --> Select["select minimal context"]:::step
-  Select --> Tools["choose tool sequence"]:::step
-  Tools --> Verify["run verification"]:::success
-  Select -.-> Noise["less irrelevant tokens"]:::benefit
-  Tools -.-> Accuracy["fewer wrong actions"]:::benefit
-  Verify -.-> Trust["evidence-backed result"]:::benefit
+flowchart TB
+  Request["User request"]:::input --> Spec["Audit spec"]:::core
+  Spec --> Facts["structured Android facts"]:::step
+  Spec --> Context["selected policy context"]:::step
+  Facts --> Judge["AI risk judgment<br/>+ evidence-backed finding"]:::success
+  Context --> Judge
+  Facts -.-> Noise["less source text"]:::benefit
+  Context -.-> Accuracy["fewer wrong assumptions"]:::benefit
   classDef input fill:#0f172a,stroke:#64748b,color:#e2e8f0,stroke-width:1.5px;
   classDef core fill:#0f766e,stroke:#99f6e4,color:#ffffff,stroke-width:2.5px;
   classDef step fill:#111827,stroke:#60a5fa,color:#dbeafe,stroke-width:1.8px;
@@ -317,41 +311,23 @@ flowchart LR
   classDef benefit fill:#422006,stroke:#fbbf24,color:#fffbeb,stroke-width:1.8px;
 ```
 
-## 15. Slide 47 - 에이전트 친화적 구조
+## 15. 모바일 앱 보안 분석 루프
 
-목적: 비즈니스 로직과 인프라가 분리될수록 테스트와 수정 범위가 명확해지는 것을 보여줍니다.
+목적: Harness가 facts를 만들고 AI가 분석/PoC/진단을 수행한 뒤, 사람이 최종 분석과 후속 조치를 맡는 루프를 보여줍니다.
 
 ```mermaid
 flowchart TB
-  Controller[Controller / Handler]:::edge --> UseCase[Business Logic]:::core
-  UseCase --> Port[Interface / Port]:::port
-  Port --> Adapter[Infrastructure Adapter]:::infra
-  Adapter --> DB[(Database)]:::system
-  Adapter --> External[External API]:::system
-  Tests[Unit Tests]:::success --> UseCase
-  classDef core fill:#0f766e,stroke:#99f6e4,color:#ffffff,stroke-width:2.5px;
-  classDef edge fill:#111827,stroke:#64748b,color:#e2e8f0,stroke-width:1.5px;
-  classDef port fill:#1e3a8a,stroke:#93c5fd,color:#eff6ff,stroke-width:2px;
-  classDef infra fill:#422006,stroke:#fbbf24,color:#fffbeb,stroke-width:2px;
-  classDef system fill:#1f2937,stroke:#94a3b8,color:#f8fafc,stroke-width:1.5px;
-  classDef success fill:#064e3b,stroke:#5eead4,color:#ecfeff,stroke-width:2px;
-```
-
-## 16. Slide 53 - 취약점 탐색 루프
-
-목적: 취약점 가설이 증거, 수정, 회귀 테스트까지 이어져야 실제 보안 작업이 된다는 점을 보여줍니다.
-
-```mermaid
-flowchart LR
-  Surface[Surface]:::step --> Hypothesis[Hypothesis]:::step
-  Hypothesis --> Test[Test]:::run
-  Test --> Evidence[Evidence]:::evidence
-  Evidence --> Fix[Fix]:::fix
-  Fix --> Regression[Regression Test]:::run
-  Regression --> Report[Report]:::success
+  Goal[Human audit goal]:::human --> Facts[Harness facts]:::step
+  Facts --> Analysis[AI code analysis]:::step
+  Analysis --> PoC[AI PoC attempt]:::run
+  PoC --> Diagnosis[Vulnerability diagnosis]:::evidence
+  Diagnosis --> Evidence[Evidence report]:::success
+  Evidence --> Human[Human final analysis]:::human
+  Human --> Followup[Follow-up action]:::fix
   classDef step fill:#111827,stroke:#fca5a5,color:#fee2e2,stroke-width:1.8px;
   classDef run fill:#1e3a8a,stroke:#93c5fd,color:#eff6ff,stroke-width:2px;
   classDef evidence fill:#422006,stroke:#fbbf24,color:#fffbeb,stroke-width:2px;
   classDef fix fill:#0f766e,stroke:#99f6e4,color:#ffffff,stroke-width:2px;
+  classDef human fill:#111827,stroke:#94a3b8,color:#f8fafc,stroke-width:1.8px;
   classDef success fill:#064e3b,stroke:#5eead4,color:#ecfeff,stroke-width:2px;
 ```

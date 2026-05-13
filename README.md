@@ -45,8 +45,8 @@ scripts/
 content/
   decks/
     ai-agent-effective-use/
-      source.md              # 작업용 대본 소스 위치 안내
-      visual-assets.md       # 작업용 비주얼 목록 위치 안내
+      source.md              # 작업용 대본 소스
+      visual-assets.md       # 작업용 비주얼 목록
     <deck-name>/
       source.md              # 마이그레이션된 작업용 소스
   deck-outline-template.md

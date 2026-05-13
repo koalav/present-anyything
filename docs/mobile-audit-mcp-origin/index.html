@@ -45,10 +45,10 @@
 <pre class="terminal-card"><code class="language-text">Tool Result -&gt; Evidence -&gt; MASVS Mapping -&gt; Finding</code></pre></div>
     </section>
 
-    <section class="slide surface markdown-slide accent-teal" data-part="AI Agent: 일반 LLM과의 차이">
-      <h2>AI Agent: 일반 LLM과의 차이</h2>
-      <div class="deck-body"><div class="table-wrap"><table><thead><tr><th>구분</th><th>특징</th></tr></thead><tbody><tr><td>일반 LLM</td><td>생성과 요약에 강하지만 도구 실행은 못함</td></tr>
-<tr><td>AI Agent</td><td>목표 분해, 도구 선택, 결과 해석, 다음 행동 결정</td></tr></tbody></table></div>
+    <section class="slide surface markdown-slide diagram-slide accent-teal" data-part="AI 에이전트: 일반 LLM과의 차이">
+      <h2>AI 에이전트: 일반 LLM과의 차이</h2>
+      <div class="deck-body tight"><div class="table-wrap"><table><thead><tr><th>구분</th><th>특징</th></tr></thead><tbody><tr><td>일반 LLM</td><td>생성과 요약에 강하지만 도구 실행은 못함</td></tr>
+<tr><td>AI 에이전트</td><td>목표 분해, 도구 선택, 결과 해석, 다음 행동 결정</td></tr></tbody></table></div>
 <div class="diagram-frame wide"><pre class="mermaid">flowchart LR
     G[Goal] --&gt; P[Plan]
     P --&gt; T[Tool 호출]
@@ -59,11 +59,11 @@
 <ul><li>명령어 변환기</li><li>분석 보조자</li><li>증거 관리자</li><li>보고서 작성자</li></ul></div>
     </section>
 
-    <section class="slide surface markdown-slide accent-teal" data-part="Tool Calling: 모델이 도구를 호출하는 방식">
+    <section class="slide surface markdown-slide diagram-slide accent-teal" data-part="Tool Calling: 모델이 도구를 호출하는 방식">
       <h2>Tool Calling: 모델이 도구를 호출하는 방식</h2>
-      <div class="deck-body"><div class="diagram-frame wide"><pre class="mermaid">sequenceDiagram
+      <div class="deck-body tight"><div class="diagram-frame wide"><pre class="mermaid">sequenceDiagram
     participant U as User
-    participant A as AI Agent (LLM)
+    participant A as AI 에이전트 (LLM)
     participant T as Tool
 
     Note over A: Tool 정의 사전 등록
@@ -73,17 +73,13 @@
     A-&gt;&gt;T: Tool 실행
     T--&gt;&gt;A: 결과
     A--&gt;&gt;U: 응답 / 보고서로 통합</pre></div>
-<ol><li>Tool 정의 등록</li><li>사용자 요청 해석</li><li>실행할 Tool 선택</li><li>파라미터 생성</li><li>Tool 실행</li><li>결과 수신</li><li>보고서나 요약으로 통합</li></ol>
-<pre class="terminal-card"><code class="language-json">{
-  "tool": "get_device_info",
-  "arguments": {"device_id": "R5CR123ABC4"}
-}</code></pre></div>
+<ul class="compact-list two-col-list"><li>Tool 정의 등록</li><li>사용자 요청 해석</li><li>Tool 선택과 파라미터 생성</li><li>Tool 실행과 결과 수신</li><li>보고서나 요약으로 통합</li><li><code>get_device_info(device_id)</code> 같은 호출 단위로 기록</li></ul></div>
     </section>
 
-    <section class="slide surface markdown-slide accent-teal" data-part="MCP: Host / Client / Server 3층 구조">
+    <section class="slide surface markdown-slide diagram-slide accent-teal" data-part="MCP: Host / Client / Server 3층 구조">
       <h2>MCP: Host / Client / Server 3층 구조</h2>
-      <div class="deck-body"><div class="diagram-frame wide"><pre class="mermaid">flowchart TB
-    H["Host (AI Agent App)"]
+      <div class="deck-body tight"><div class="diagram-frame wide"><pre class="mermaid">flowchart TB
+    H["Host (AI 에이전트 앱)"]
     C[MCP Client]
     S1["MCP Server #1&lt;br&gt;예: Android MCP"]
     S2["MCP Server #2&lt;br&gt;예: JADX MCP"]
@@ -99,7 +95,7 @@
     S1 --&gt; T
     S1 --&gt; R
     S1 --&gt; P</pre></div>
-<ul><li><strong>Host</strong>: AI Agent를 실행하는 앱 (Claude Code, Codex 등)</li><li><strong>MCP Client</strong>: Host 안에서 서버와 표준 프로토콜로 통신</li><li><strong>MCP Server</strong>: 도구 묶음을 노출 — Tools / Resources / Prompts</li><li>Client 1개에 Server N개 연결 가능</li></ul>
+<ul class="compact-list two-col-list"><li><strong>Host</strong>: AI 에이전트를 실행하는 앱</li><li><strong>MCP Client</strong>: Host 안에서 서버와 통신</li><li><strong>MCP Server</strong>: Tools / Resources / Prompts 노출</li><li>Client 하나에 여러 Server 연결 가능</li></ul>
 <p>MCP는 AI 애플리케이션과 외부 도구를 연결하는 표준 프로토콜이다.</p></div>
     </section>
 
@@ -137,14 +133,14 @@
     }
   }
 }</code></pre>
-<ul><li>서버별 로그와 버전 기록</li><li>위험 Tool 자동 승인 금지</li></ul></div>
+<ul><li>서버별 로그와 버전 기록</li><li>위험 도구 자동 승인 금지</li></ul></div>
     </section>
 
-    <section class="slide surface markdown-slide accent-teal" data-part="전체 감사 아키텍처">
+    <section class="slide surface markdown-slide diagram-slide accent-teal" data-part="전체 감사 아키텍처">
       <h2>전체 감사 아키텍처</h2>
-      <div class="deck-body"><div class="diagram-frame wide"><pre class="mermaid">flowchart TB
+      <div class="deck-body tight"><div class="diagram-frame wide"><pre class="mermaid">flowchart TB
     U[사용자]
-    A["AI Agent Client&lt;br&gt;(Skill 적용)"]
+    A["AI 에이전트 Client&lt;br&gt;(Skill 적용)"]
     M[MCP Server Layer]
     T["실제 보안 도구&lt;br&gt;JADX · Frida · Ghidra · MobSF · ..."]
     Tg[대상 앱 / 디바이스 / API]
@@ -154,35 +150,32 @@
     U --&gt; A --&gt; M --&gt; T --&gt; Tg
     T -.-&gt;|"증거 수집"| E
     E --&gt; R</pre></div>
-<ul><li>사용자는 Agent에게 감사 요청</li><li>Skill이 절차를 표준화, MCP Server Layer가 도구를 노출</li><li>도구는 실제 대상에 작동, 결과를 Evidence Store로 모음</li><li>Report가 최종 산출물</li></ul></div>
+<ul class="compact-list two-col-list"><li>사용자는 에이전트에게 감사 요청</li><li>Skill은 감사 절차를 표준화</li><li>MCP Server Layer는 보안 도구를 노출</li><li>Evidence Store가 결과를 모아 보고서로 연결</li></ul></div>
     </section>
 
-    <section class="slide surface markdown-slide accent-teal" data-part="HITL: 사람 승인이 필요한 작업">
-      <h2>HITL: 사람 승인이 필요한 작업</h2>
+    <section class="slide surface markdown-slide accent-teal" data-part="HITL: 사람 승인 지점">
+      <h2>HITL: 사람 승인 지점</h2>
       <div class="deck-body"><p>승인 필요 작업</p>
 <ul><li>앱 설치와 삭제</li><li>파일 pull, push</li><li>Frida 스크립트 주입</li><li>능동 스캔</li><li>이슈와 PR 생성</li></ul>
 <p>자동 실행 가능한 작업</p>
 <ul><li>정보 조회</li><li>화면 캡처</li><li>로그 필터링</li><li>보고서 초안 생성</li></ul></div>
     </section>
 
-    <section class="slide surface markdown-slide accent-teal" data-part="감사 시스템 전체 흐름">
+    <section class="slide surface markdown-slide diagram-slide accent-teal" data-part="감사 시스템 전체 흐름">
       <h2>감사 시스템 전체 흐름</h2>
-      <div class="deck-body"><div class="diagram-frame wide"><pre class="mermaid">flowchart LR
+      <div class="deck-body tight"><div class="diagram-frame wide"><pre class="mermaid">flowchart LR
     A[입력값\nAPK\n소스 코드\n테스트 디바이스\n테스트 계정\nAPI base URL\n감사 범위 문서] --&gt; B[AI Mobile Audit Orchestrator]
     B --&gt; C[Evidence Bundle]
     B --&gt; D[Finding 후보 목록]
     B --&gt; E[MASVS 매핑 표]
     B --&gt; F[보고서 초안]</pre></div>
-<p>입력값</p>
-<ul><li>APK</li><li>소스 코드 저장소</li><li>테스트 디바이스</li><li>테스트 계정</li><li>API base URL</li><li>감사 범위 문서</li></ul>
-<p>출력값</p>
-<ul><li>Evidence Bundle</li><li>Finding 후보 목록</li><li>MASVS 매핑 표</li><li>보고서 초안</li></ul></div>
+<div class="generated-two-cols"><div><h3>입력값</h3><ul class="compact-list"><li>APK / 소스 코드 저장소</li><li>테스트 디바이스와 계정</li><li>API base URL / 감사 범위 문서</li></ul></div><div><h3>출력값</h3><ul class="compact-list"><li>Evidence Bundle</li><li>Finding 후보 목록</li><li>MASVS 매핑 표 / 보고서 초안</li></ul></div></div></div>
     </section>
 
-    <section class="slide surface markdown-slide accent-teal" data-part="감사 시스템 컴포넌트">
+    <section class="slide surface markdown-slide diagram-slide accent-teal" data-part="감사 시스템 컴포넌트">
       <h2>감사 시스템 컴포넌트</h2>
-      <div class="deck-body"><div class="diagram-frame wide"><pre class="mermaid">flowchart TB
-    U[감사자] --&gt; A[AI Agent]
+      <div class="deck-body tight"><div class="diagram-frame wide"><pre class="mermaid">flowchart TB
+    U[감사자] --&gt; A[AI 에이전트]
     A --&gt; S[Audit Skill]
     A --&gt; T[Tool Registry]
     A --&gt; G[Approval Gate]
@@ -192,20 +185,21 @@
     S --&gt; P[Policy Guardrail]
     P --&gt; A
     G --&gt; A</pre></div>
-<ul><li>AI Agent</li><li>Audit Skill</li><li>Tool Registry</li><li>Approval Gate</li><li>MCP Server Layer</li><li>Evidence Store</li><li>Report Generator</li><li>Policy Guardrail</li></ul></div>
+<ul class="compact-list two-col-list"><li>AI 에이전트</li><li>Audit Skill</li><li>Tool Registry</li><li>Approval Gate</li><li>MCP Server Layer</li><li>Evidence Store</li><li>Report Generator</li><li>Policy Guardrail</li></ul></div>
     </section>
 
-    <section class="slide surface markdown-slide accent-teal" data-part="단계별 실행 흐름">
+    <section class="slide surface markdown-slide diagram-slide accent-teal" data-part="단계별 실행 흐름">
       <h2>단계별 실행 흐름</h2>
-      <div class="deck-body"><div class="diagram-frame wide"><pre class="mermaid">flowchart LR
-    A[1. 대상 등록] --&gt; B[2. 기본 정보 수집]
-    B --&gt; C[3. 정적 분석]
-    C --&gt; D[4. 런타임 분석]
-    D --&gt; E[5. 네이티브 분석]
-    E --&gt; F[6. 웹/API 분석]
-    F --&gt; G[7. 보고서화]
-    G --&gt; H[감사자 검토 및 확정]</pre></div>
-<ol><li>대상 등록</li><li>기본 정보 수집</li><li>정적 분석</li><li>런타임 분석</li><li>네이티브 분석</li><li>웹/API 분석</li><li>보고서화</li></ol>
+      <div class="deck-body tight"><div class="steps">
+        <div class="step"><span class="step-num">01</span><p>대상 등록</p></div>
+        <div class="step"><span class="step-num">02</span><p>기본 정보 수집</p></div>
+        <div class="step"><span class="step-num">03</span><p>정적 분석</p></div>
+        <div class="step"><span class="step-num">04</span><p>런타임 분석</p></div>
+        <div class="step"><span class="step-num">05</span><p>네이티브 분석</p></div>
+        <div class="step"><span class="step-num">06</span><p>웹/API 분석</p></div>
+        <div class="step"><span class="step-num">07</span><p>보고서화</p></div>
+        <div class="step"><span class="step-num">08</span><p>감사자 검토</p></div>
+      </div>
 <p>원칙: 먼저 자동 수집, 이후 사람이 검토</p></div>
     </section>
 
@@ -274,9 +268,9 @@ frida-ps -U</code></pre>
       <div class="deck-body"><ul><li>JNI 함수 검색</li><li>디컴파일 코드 조회</li><li>호출 함수와 참조 데이터 추적</li><li>반환값 생성 방식 설명</li><li>안티디버깅 문자열 후보 탐색</li></ul></div>
     </section>
 
-    <section class="slide section accent-teal" data-part="여기까지 단독 도구">
-      <h1>여기까지 단독 도구</h1>
-      <p class="sub">이제 묶음 도구로</p>
+    <section class="slide section accent-teal" data-part="단독 도구에서 묶음 도구로">
+      <h1>단독 도구에서 묶음 도구로</h1>
+      <p class="sub">한 도구씩 보는 단계에서 여러 도구를 조합하는 단계로</p>
       <div class="deck-body section-body"><ul><li>단독 도구: Android · JADX · Frida · Ghidra</li><li>묶음 도구: WebView·웹 · 정적 스캐너 · 네트워크·워크플로우</li><li>묶음 도구는 한 영역을 여러 도구로 함께 다룹니다</li></ul></div>
     </section>
 
@@ -293,7 +287,7 @@ frida-ps -U</code></pre>
     "playwright": {"command": "npx", "args": ["-y", "@playwright/mcp@latest"]}
   }
 }</code></pre>
-<ul><li>WebView 디버깅 활성화 확인</li><li>페이지 콘텐츠를 Agent 지시문으로 신뢰하지 않기</li></ul></div>
+<ul><li>WebView 디버깅 활성화 확인</li><li>페이지 콘텐츠를 에이전트 지시문으로 신뢰하지 않기</li></ul></div>
     </section>
 
     <section class="slide surface markdown-slide accent-teal" data-part="WebView·웹 MCP: 실전 예시">
@@ -336,11 +330,11 @@ frida-ps -U</code></pre>
       <div class="deck-body"><ul><li><code>/api/login</code> 이후 요청 분석</li><li>Authorization 헤더 방식 확인</li><li>토큰 저장 위치 확인</li><li>민감정보 평문 전송 여부 확인</li><li>확정 Finding을 GitHub Issue 초안으로 변환</li></ul></div>
     </section>
 
-    <section class="slide surface markdown-slide accent-teal" data-part="시나리오: 로그인 기능 감사">
+    <section class="slide surface markdown-slide diagram-slide accent-teal" data-part="시나리오: 로그인 기능 감사">
       <h2>시나리오: 로그인 기능 감사</h2>
-      <div class="deck-body"><div class="diagram-frame wide"><pre class="mermaid">sequenceDiagram
+      <div class="deck-body tight"><div class="diagram-frame wide"><pre class="mermaid">sequenceDiagram
     participant Auditor as 감사자
-    participant Agent as AI Agent
+    participant Agent as AI 에이전트
     participant Android as Android MCP
     participant JADX as JADX MCP
     participant Frida as Frida MCP
@@ -356,9 +350,9 @@ frida-ps -U</code></pre>
 <ul><li>화면 캡처와 UI Layout 수집</li><li>로그인 관련 코드 분석</li><li>인증 함수 호출 흐름 관찰</li><li>HTTP 요청 확인</li><li>토큰 저장 위치 확인</li><li>MASVS 기준으로 매핑</li></ul></div>
     </section>
 
-    <section class="slide surface markdown-slide accent-teal" data-part="Finding이 만들어지는 흐름">
-      <h2>Finding이 만들어지는 흐름</h2>
-      <div class="deck-body"><div class="diagram-frame wide"><pre class="mermaid">flowchart LR
+    <section class="slide surface markdown-slide diagram-slide accent-teal" data-part="Finding 작성 흐름">
+      <h2>Finding 작성 흐름</h2>
+      <div class="deck-body tight"><div class="diagram-frame wide"><pre class="mermaid">flowchart LR
     A[정적 분석 결과] --&gt; D[증거 묶음]
     B[동적 분석 결과] --&gt; D
     C[네트워크 분석 결과] --&gt; D
@@ -366,15 +360,7 @@ frida-ps -U</code></pre>
     E --&gt; F[Finding 초안]
     F --&gt; G[감사자 검토]
     G --&gt; H[최종 보고서]</pre></div>
-<pre class="terminal-card"><code class="language-markdown"># Finding: 제목
-## 요약
-## 영향도
-## 영향 범위
-## 재현 절차
-## 증거
-## 기준 매핑
-## 권고 조치
-## 검증 방법</code></pre></div>
+<ul class="compact-list two-col-list"><li>요약 / 영향도</li><li>영향 범위 / 재현 절차</li><li>증거 / 기준 매핑</li><li>권고 조치 / 검증 방법</li></ul></div>
     </section>
 
     <section class="slide surface markdown-slide accent-teal" data-part="Skill 설계: 감사 Skill의 구성">
@@ -384,7 +370,7 @@ frida-ps -U</code></pre>
 
     <section class="slide surface markdown-slide accent-teal compact" data-part="Skill 설계: 단계별 Tool 매핑">
       <h2>Skill 설계: 단계별 Tool 매핑</h2>
-      <div class="deck-body"><div class="table-wrap"><table><thead><tr><th>단계</th><th>Android</th><th>JADX</th><th>Frida</th><th>Ghidra</th><th>WebView·웹</th><th>정적 스캐너</th><th>네트워크·워크플로우</th><th>Skill</th></tr></thead><tbody><tr><td>대상 식별</td><td>●</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+      <div class="deck-body tight"><div class="table-wrap"><table class="mini-table"><thead><tr><th>단계</th><th>Android</th><th>JADX</th><th>Frida</th><th>Ghidra</th><th>WebView·웹</th><th>정적 스캐너</th><th>네트워크·워크플로우</th><th>Skill</th></tr></thead><tbody><tr><td>대상 식별</td><td>●</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
 <tr><td>Manifest 분석</td><td></td><td>●</td><td></td><td></td><td></td><td>●</td><td></td><td></td></tr>
 <tr><td>Secret 탐지</td><td></td><td>●</td><td></td><td></td><td></td><td>●</td><td></td><td></td></tr>
 <tr><td>인증 분석</td><td></td><td>●</td><td>●</td><td></td><td></td><td></td><td>●</td><td></td></tr>
@@ -410,7 +396,7 @@ frida-ps -U</code></pre>
   04_native/
   05_network/
   06_findings/</code></pre>
-<ul><li>증거 경로</li><li>테스트 일시</li><li>도구 버전</li><li>Tool Call 요약</li><li>민감정보 마스킹 여부</li></ul></div>
+<ul><li>증거 경로</li><li>테스트 일시</li><li>도구 버전</li><li>도구 호출 요약</li><li>민감정보 마스킹 여부</li></ul></div>
     </section>
 
     <section class="slide surface markdown-slide accent-teal" data-part="운영 통제: MCP 도구의 리스크">
@@ -421,7 +407,7 @@ frida-ps -U</code></pre>
     <section class="slide surface markdown-slide accent-teal" data-part="운영 통제: 안전한 운영 체크리스트">
       <h2>운영 통제: 안전한 운영 체크리스트</h2>
       <div class="deck-body"><p>사전</p>
-<ul><li>승인된 범위 문서 확보</li><li>테스트 계정 준비</li><li>MCP Server 출처와 버전 확인</li><li>위험 Tool 자동 승인 비활성화</li></ul>
+<ul><li>승인된 범위 문서 확보</li><li>테스트 계정 준비</li><li>MCP Server 출처와 버전 확인</li><li>위험 도구 자동 승인 비활성화</li></ul>
 <p>실행 중</p>
 <ul><li>능동 스캔 전 승인 확인</li><li>대상 함수와 경로 확인</li><li>민감정보 포함 여부 점검</li></ul>
 <p>사후</p>
@@ -430,7 +416,7 @@ frida-ps -U</code></pre>
 
     <section class="slide surface markdown-slide accent-teal" data-part="결론: MCP는 연결, Tool은 실행, Skill은 절차">
       <h2>결론: MCP는 연결, Tool은 실행, Skill은 절차</h2>
-      <div class="deck-body"><ul><li>MCP는 도구를 연결하는 프로토콜</li><li>Tool은 실제 실행 단위</li><li>Skill은 절차와 판단 기준</li><li>Agent는 절차와 도구 호출을 조율하는 역할</li><li>최종 판단과 책임은 감사자에게 남습니다</li></ul></div>
+      <div class="deck-body"><ul><li>MCP는 도구를 연결하는 프로토콜</li><li>Tool은 실제 실행 단위</li><li>Skill은 절차와 판단 기준</li><li>에이전트는 절차와 도구 호출을 조율하는 역할</li><li>최종 판단과 책임은 감사자에게 남습니다</li></ul></div>
     </section>
 
     <section class="slide surface markdown-slide accent-teal" data-part="Q&amp;A">

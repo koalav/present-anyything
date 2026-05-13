@@ -1,15 +1,15 @@
 # LLM 기반 Windows 애플리케이션 보안 감사 운영 구조
 
-Windows 애플리케이션 보안 감사를 LLM, skills, subagents, MCP,
+Windows 애플리케이션 보안 감사를 LLM, Skill, 서브에이전트, MCP, 증적 관리와 검증 게이트로 운영하는 방법을 설명하는 발표 자료입니다.
 
 ## Slide 01
 
 # LLM 기반 Windows 애플리케이션 보안 감사 운영 구조
 
-## 체크리스트 · 작업 보고 · Subagent 검증 게이트 설계
+## 체크리스트 · 작업 보고 · 서브에이전트 검증 게이트 설계
 
 <div class="mt-8 text-lg opacity-80">
-Windows 앱 보안 감사를 장기 작업·증적 중심 워크플로로 운영하기 위한 Slidev 자료
+Windows 앱 보안 감사를 장기 작업·증적 중심 워크플로로 운영하기 위한 정적 HTML 발표 자료
 </div>
 
 <div class="mt-16 text-sm opacity-60">
@@ -42,7 +42,7 @@ Windows 앱 보안 감사를 장기 작업·증적 중심 워크플로로 운영
 - Auditor가 증적 기반으로 후보 finding 생성
 - Reviewer와 Verifier가 독립적으로 검증
 - Coordinator가 검증을 통과한 결과만 채택
-- 최종 보고서에는 Verified finding만 반영
+- 최종 보고서에는 검증된 finding만 반영
 
 ## Slide 04
 
@@ -58,7 +58,7 @@ LLM을 활용하면서도 보안 감사의 <b>재현성, 추적성, 증거성, �
 ## 피해야 할 구조
 
 - 단일 LLM이 모든 판단을 수행
-- raw evidence 없이 결론을 도출
+- 원본 증거 없이 결론을 도출
 - 체크리스트와 실행 상태를 혼합
 - MCP에 과도한 실행 권한을 부여
 - Reviewer 없이 finding을 확정
@@ -70,8 +70,8 @@ LLM을 활용하면서도 보안 감사의 <b>재현성, 추적성, 증거성, �
 
 - 짧은 지침 + 분리된 문서
 - skill 기반 반복 절차
-- 좁은 subagent 역할
-- deterministic tool이 1차 증거를 생산
+- 좁은 서브에이전트 역할
+- 결정론적 도구가 1차 증거를 생산
 - Reviewer / Verifier 게이트
 
 </div>
@@ -88,10 +88,10 @@ LLM을 활용하면서도 보안 감사의 <b>재현성, 추적성, 증거성, �
 - 짧은 `AGENTS.md`
 - `PLANS.md` / 실행계획
 - `docs/status`, `docs/evidence`, `docs/findings`, `docs/reports`
-- 반복 절차는 skills
-- 병렬·전문화가 필요한 구간에만 subagents
+- 반복 절차는 Skill
+- 병렬·전문화가 필요한 구간에만 서브에이전트 사용
 - Reviewer / Verifier 게이트
-- read-only 우선 MCP + allowlist
+- 읽기 전용 우선 MCP + 허용 목록
 - GitHub Projects + sub-issues + dependencies
 - Windows용 결정론적 검사 도구
 
@@ -119,7 +119,7 @@ LLM을 활용하면서도 보안 감사의 <b>재현성, 추적성, 증거성, �
 - 전역 규칙
 - 금지 행위
 - 산출물 위치
-- subagent 사용 규칙
+- 서브에이전트 사용 규칙
 - 검증 게이트 규칙
 
 </div>
@@ -144,17 +144,17 @@ LLM을 활용하면서도 보안 감사의 <b>재현성, 추적성, 증거성, �
 
 ## Slide 08
 
-# 원칙 2: Skill 우선, Subagent는 제한적으로
+# 원칙 2: Skill 우선, 서브에이전트는 제한적으로
 
 | 구분 | 적합한 사용처 | 예시 |
 |---|---|---|
 | Skill | 반복 가능한 절차 | 감사 bootstrap, 체크리스트 실행, finding 작성, evidence packaging |
-| Subagent | 병렬·전문화 검토 | Static Auditor, ACL Auditor, Runtime Tracer, Reviewer, Verifier |
+| 서브에이전트 | 병렬·전문화 검토 | Static Auditor, ACL Auditor, Runtime Tracer, Reviewer, Verifier |
 | MCP | 외부 시스템 관찰 | 파일, 이벤트 로그, 레지스트리, GitHub Projects, CodeQL 결과 |
 | Tool script | 결정론적 증거 생성 | BinSkim, Sigcheck, AccessChk, Procmon, Autoruns |
 
 <div class="mt-8">
-Subagent 수가 늘수록 관리 비용과 토큰 비용이 함께 증가합니다. 반복 절차는 skill로 고정하고, 실제로 역할 분리가 필요한 구간에만 subagent를 사용합니다.
+서브에이전트 수가 늘수록 관리 비용과 토큰 비용이 함께 증가합니다. 반복 절차는 Skill로 고정하고, 실제로 역할 분리가 필요한 구간에만 서브에이전트를 사용합니다.
 </div>
 
 ## Slide 09
@@ -192,7 +192,7 @@ flowchart LR
 | 자산 인벤토리 | Binary Inventory | `docs/evidence/<run-id>/normalized/inventory.csv` |
 | 신뢰경계 정리 | Coordinator, Project Mapper | `docs/scope/trust_boundaries.md` |
 | 계획 수립 | Coordinator | `docs/plans/active/*.md` |
-| 체크리스트 실행 | Auditors | raw evidence, normalized summary, finding candidate |
+| 체크리스트 실행 | Auditors | 원본 증거, 정규화 요약, finding 후보 |
 | 검증 | Reviewer, Verifier | review note, verification result |
 | 보고 | Report Writer | weekly report, final report |
 
@@ -243,7 +243,7 @@ flowchart LR
 |---|---|---|
 | Reviewer | 논리, 영향, 악용 가능성 검토 | raw tool 실행 최소화 |
 | Verifier | 증거, 재현, 경로, 버전 검증 | severity 단독 결정 금지 |
-| Report Writer | Verified finding만 보고서화 | 미검증 finding 포함 금지 |
+| Report Writer | 검증된 finding만 보고서화 | 미검증 finding 포함 금지 |
 
 <div class="mt-8 p-4 border rounded">
 검토 단계의 핵심은 <b>조사 역할</b>과 <b>검증 역할</b>을 분리해, 같은 사람이 증거 수집과 최종 판정을 동시에 하지 않게 만드는 것입니다.
@@ -301,7 +301,7 @@ flowchart LR
 
 검토 초점:
 
-- raw evidence 존재 여부
+- 원본 증거 존재 여부
 - 경로, 버전, 자산 식별 정확성
 - 재현 절차 완결성
 - 도구 출력과 주장 연결성
@@ -311,7 +311,7 @@ flowchart LR
 </div>
 
 <div class="mt-8 p-4 border rounded">
-<b>규칙:</b> Reviewer와 Verifier가 모두 통과한 항목만 Verified Finding으로 승격합니다.
+<b>규칙:</b> Reviewer와 Verifier가 모두 통과한 항목만 검증된 Finding으로 승격합니다.
 </div>
 
 ## Slide 19
@@ -390,7 +390,7 @@ repo/
 | Surface | UAC / DLL / ACL / Service / IPC / Installer / Updater / Persistence |
 | Asset | `Updater.exe`, `ServiceA`, `MainUI.dll` |
 | Evidence Ready | Yes / No |
-| Reviewer | 담당자 또는 agent |
+| Reviewer | 담당자 또는 에이전트 |
 | Severity | Info / Low / Medium / High / Critical |
 | Run ID | `20260424-001` |
 
@@ -459,8 +459,8 @@ Final Status: In Review
 
 1. 가설 1문장 작성
 2. 테스트 방법 명시
-3. raw evidence 저장
-4. normalized summary 생성
+3. 원본 증거 저장
+4. 정규화 요약 생성
 5. Auditor candidate 작성
 6. Reviewer가 논리 검토
 7. Verifier가 증거 검증
@@ -479,7 +479,7 @@ Final Status: In Review
 %%{init: {'themeVariables': {'fontSize': '12px'}, 'flowchart': {'nodeSpacing': 18, 'rankSpacing': 26, 'diagramPadding': 6, 'curve': 'linear'}}}%%
 flowchart LR
     A[Coordinator] --> B[Skills]
-    A --> C[Subagents]
+    A --> C[서브에이전트]
     B --> D[절차 실행]
     C --> E[도메인 감사]
     E --> F[Deterministic Tools<br/>BinSkim · Sigcheck · AccessChk · Procmon · Autoruns · CodeQL]
@@ -507,12 +507,12 @@ flowchart LR
 
 # MCP 사용 원칙
 
-- 기본은 read-only
-- allowlist 기반 tool exposure
+- 기본은 읽기 전용
+- 허용 목록 기반 도구 노출
 - 실행형 PowerShell은 별도 승인
-- code editing agent와 host inspection MCP 분리
-- tool call audit log 유지
-- raw output과 LLM 결론 분리
+- 코드 수정 에이전트와 호스트 조사 MCP 분리
+- 도구 호출 감사 로그 유지
+- 원본 출력과 LLM 결론 분리
 - 운영 호스트보다 격리 VM 우선
 
 ## Slide 32
@@ -525,11 +525,11 @@ flowchart LR
 
 | 위험 | 설명 | 완화 |
 |---|---|---|
-| Prompt injection | 외부 문서나 로그가 agent의 지시 해석을 오염 | tool result를 명령으로 해석하지 않기 |
-| Tool misuse | 에이전트가 과도한 권한의 도구를 실행 | read-only allowlist, approval gate |
-| Evidence contamination | raw evidence와 요약이 뒤섞임 | raw/normalized 분리 |
+| Prompt injection | 외부 문서나 로그가 에이전트의 지시 해석을 오염 | 도구 결과를 명령으로 해석하지 않기 |
+| Tool misuse | 에이전트가 과도한 권한의 도구를 실행 | 읽기 전용 허용 목록, 승인 게이트 |
+| Evidence contamination | 원본 증거와 요약이 뒤섞임 | raw/normalized 분리 |
 | False positive | LLM이 그럴듯한 결론을 생성 | reviewer/verifier 이중 게이트 |
-| Exfiltration | 민감 파일이나 토큰이 노출 | path allowlist, network 제한 |
+| Exfiltration | 민감 파일이나 토큰이 노출 | 경로 허용 목록, 네트워크 제한 |
 | Irreversible action | 삭제, 수정, 실행으로 환경이 훼손 | 격리 VM, snapshot, explicit approval |
 
 ## Slide 34
@@ -550,7 +550,7 @@ flowchart LR
 ```
 
 <div class="mt-8">
-Reviewer와 Verifier는 가능한 한 read-only로 유지합니다. 실행형 도구는 감사 수행 agent에만 제한적으로 제공합니다.
+Reviewer와 Verifier는 가능한 한 읽기 전용으로 유지합니다. 실행형 도구는 감사 수행 에이전트에만 제한적으로 제공합니다.
 </div>
 
 ## Slide 35
@@ -595,8 +595,8 @@ docs/evidence/<run-id>/
   <div class="box">
     <h3 class="mt-0">검증 정보에 꼭 들어갈 것</h3>
     <ul>
-      <li>raw evidence 경로</li>
-      <li>normalized summary 경로</li>
+      <li>원본 증거 경로</li>
+      <li>정규화 요약 경로</li>
       <li>Reviewer / Verifier 결과</li>
     </ul>
   </div>
@@ -610,10 +610,10 @@ docs/evidence/<run-id>/
 
 # 보고서 작성 원칙
 
-- Verified finding만 본문에 포함
+- 검증된 finding만 본문에 포함
 - Draft와 Evidence Gap은 별도 부록
 - 경영 요약과 기술 상세 분리
-- 각 finding에 evidence path 포함
+- 각 finding에 증거 경로 포함
 - 남은 blocker와 다음 액션 명확화
 - 추후 재검증 가능한 재현 절차 유지
 
@@ -638,9 +638,9 @@ docs/evidence/<run-id>/
 
 | 대안 | 더 나은 경우 | 단점 |
 |---|---|---|
-| Single agent + skills + reviewer | 범위가 작고 병렬성이 낮음 | 복잡한 감사에서는 컨텍스트 혼잡이 커짐 |
+| Single agent + Skill + reviewer | 범위가 작고 병렬성이 낮음 | 복잡한 감사에서는 컨텍스트 혼잡이 커짐 |
 | Custom workflow / orchestrator-worker | 규제·감사상 상태기계가 필요함 | 구현과 유지보수 비용이 증가 |
-| Repo-centric scanner 보강 | 코드 저장소 중심 취약점 탐지가 핵심 | runtime/host inspection 커버리지가 약함 |
+| Repo-centric scanner 보강 | 코드 저장소 중심 취약점 탐지가 핵심 | 런타임/호스트 조사 커버리지가 약함 |
 | Full multi-agent | 병렬 분석이 많고 도메인이 명확히 분리됨 | 비용, 지연, 조정 복잡도가 증가 |
 
 ## Slide 42
@@ -677,15 +677,15 @@ flowchart LR
 # Auditor: 공통 프롬프트
 
 - 할당된 범위만 점검합니다.
-- 각 항목은 가설 1문장으로 시작하고 raw evidence를 먼저 저장합니다.
-- 그다음 normalized summary를 작성하고 결과는 `candidate` 상태로만 남깁니다.
+- 각 항목은 가설 1문장으로 시작하고 원본 증거를 먼저 저장합니다.
+- 그다음 정규화 요약을 작성하고 결과는 `candidate` 상태로만 남깁니다.
 - 대상 자산, 버전, 경로, 명령, 출력, 재현 절차를 명확히 적고 최종 판정은 하지 않습니다.
 
 ## Slide 46
 
 # Reviewer: 검토 프롬프트
 
-- Auditor의 finding candidate를 반박 관점에서 검토합니다.
+- Auditor의 finding 후보를 반박 관점에서 검토합니다.
 - 영향 범위, 악용 가능성, severity, remediation이 과장되지 않았는지 확인합니다.
 - 오탐 가능성이 있으면 `Needs Rework`로 되돌리고, 결론의 논리와 보안 타당성을 중심으로 봅니다.
 
@@ -693,8 +693,8 @@ flowchart LR
 
 # Verifier: 검증 프롬프트
 
-- finding candidate의 증거가 주장과 직접 연결되는지 검증합니다.
-- raw evidence, normalized summary, 경로, 버전, 대상 자산 식별, 재현 절차가 다시 실행 가능한지 확인합니다.
+- finding 후보의 증거가 주장과 직접 연결되는지 검증합니다.
+- 원본 증거, 정규화 요약, 경로, 버전, 대상 자산 식별, 재현 절차가 다시 실행 가능한지 확인합니다.
 - 증거가 부족하면 `Evidence Gap`으로 반려하고 severity 판단은 Reviewer에게 맡깁니다.
 
 ## Slide 48
@@ -727,17 +727,17 @@ flowchart LR
 - BinSkim / Sigcheck / AccessChk / Procmon / Autoruns 래퍼 작성
 - raw / normalized evidence 저장 규칙 구현
 - inventory 생성 스크립트 작성
-- read-only MCP allowlist 구성
+- 읽기 전용 MCP 허용 목록 구성
 - 샌드박스 VM 스냅샷 운영 규칙 정의
 
 ## Slide 52
 
-# 3주차: Subagent 게이트 운영
+# 3주차: 서브에이전트 게이트 운영
 
 - Coordinator 지침 안정화
 - Auditor별 작업 범위 제한
-- Reviewer / Verifier read-only 운영
-- finding candidate → verified 전이 테스트
+- Reviewer / Verifier 읽기 전용 운영
+- finding 후보 → verified 전이 테스트
 - 오탐 반려 시나리오 테스트
 
 ## Slide 53
@@ -790,11 +790,3 @@ flowchart LR
 - [Autoruns](https://learn.microsoft.com/en-us/sysinternals/downloads/autoruns)
 - [Sigcheck](https://learn.microsoft.com/en-us/sysinternals/downloads/sigcheck)
 - [CodeQL](https://docs.github.com/en/code-security/concepts/code-scanning/codeql/about-code-scanning-with-codeql)
-
-## Slide 58
-
-# Slidev 작성 참고 자료
-
-- [Slidev Syntax Guide](https://sli.dev/guide/syntax)
-- [Slidev Importing Slides](https://sli.dev/features/importing-slides)
-- [Slidev Why / Markdown-based](https://sli.dev/guide/why)

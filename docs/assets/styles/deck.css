@@ -1,3 +1,5 @@
+@import url("https://cdn.jsdelivr.net/npm/pretendard@1.3.9/dist/web/static/pretendard.css");
+
 :root {
   --bg: #0d0d0d;
   --fg: #ffffff;
@@ -23,7 +25,7 @@ body {
 body {
   background: var(--bg);
   color: var(--fg);
-  font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", "Apple SD Gothic Neo", "Noto Sans KR", sans-serif;
+  font-family: "Pretendard", ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", "Apple SD Gothic Neo", "Noto Sans KR", sans-serif;
   -webkit-font-smoothing: antialiased;
   word-break: keep-all;
 }
@@ -160,6 +162,39 @@ h3,
   margin: 2.5vh auto 0;
   border-radius: 3px;
   background: var(--accent);
+}
+
+.section .deck-body {
+  margin-top: 3vh;
+}
+
+.diagram-slide {
+  justify-content: flex-start;
+}
+
+.diagram-slide h2 {
+  font-size: clamp(2.05rem, 4.4vw, 3.55rem);
+}
+
+.diagram-slide .deck-body {
+  margin-top: 2vh;
+}
+
+.diagram-slide .diagram-frame {
+  max-height: 46vh;
+  margin-top: 2vh;
+  padding: 16px 20px;
+}
+
+.diagram-slide .mermaid svg {
+  max-height: 40vh;
+}
+
+.diagram-slide .diagram-frame + ul,
+.diagram-slide .diagram-frame + ol,
+.diagram-slide .diagram-frame + p,
+.diagram-slide .diagram-frame + pre {
+  margin-top: 2vh;
 }
 
 .sub {
@@ -460,7 +495,7 @@ strong {
 .mermaid .messageText,
 .mermaid .actor,
 .mermaid .stateLabel {
-  font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", "Apple SD Gothic Neo", "Noto Sans KR", sans-serif !important;
+  font-family: "Pretendard", ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", "Apple SD Gothic Neo", "Noto Sans KR", sans-serif !important;
   letter-spacing: 0 !important;
 }
 
@@ -485,6 +520,40 @@ strong {
   font-size: 1.14rem;
   line-height: 1.58;
   text-align: left;
+}
+
+.deck-body.tight {
+  margin-top: 2vh;
+  font-size: 1rem;
+  line-height: 1.48;
+}
+
+.deck-body.tight h3 {
+  font-size: 1.15rem;
+}
+
+.deck-body.tight li {
+  margin: 0.38vh 0;
+}
+
+.deck-body.tight .terminal-card {
+  margin-top: 2vh;
+  padding: 16px 18px;
+  font-size: 0.86rem;
+  line-height: 1.45;
+}
+
+.deck-body.tight .table-wrap {
+  max-height: 52vh;
+}
+
+.deck-body.tight .compact-list {
+  gap: 8px;
+  margin-top: 1.6vh;
+}
+
+.deck-body.tight .compact-list li {
+  padding: 10px 12px;
 }
 
 .cover-body,
@@ -556,6 +625,42 @@ strong {
   color: var(--fg);
 }
 
+.deck-body .compact-list {
+  display: grid;
+  gap: 10px;
+  margin: 2.4vh 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.deck-body .compact-list li {
+  margin: 0;
+  padding: 14px 18px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.deck-body .two-col-list {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.deck-body .code-note-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.25fr) minmax(260px, 0.75fr);
+  gap: 22px;
+  align-items: start;
+  width: min(1120px, 100%);
+}
+
+.deck-body .code-note-grid .terminal-card {
+  margin-top: 0;
+}
+
+.deck-body .code-note-grid ul {
+  margin-top: 0;
+}
+
 .table-wrap {
   width: 100%;
   max-height: 44vh;
@@ -568,11 +673,20 @@ strong {
   border-collapse: collapse;
 }
 
+.deck-body table.mini-table {
+  font-size: 0.92rem;
+}
+
 .deck-body th,
 .deck-body td {
   padding: 0.72rem 0.86rem;
   border-bottom: 1px solid var(--line);
   vertical-align: top;
+}
+
+.deck-body table.mini-table th,
+.deck-body table.mini-table td {
+  padding: 0.52rem 0.66rem;
 }
 
 .deck-body th {

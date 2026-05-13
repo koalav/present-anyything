@@ -84,7 +84,7 @@
 
     <section class="slide surface markdown-slide accent-rose" data-part="공격 흐름 예시">
       <h2>공격 흐름 예시</h2>
-      <div class="deck-body"><div class="step-list">
+      <div class="deck-body tight"><div class="step-list two-col-list">
   <div class="step"><span class="strong">1.</span> 공격자가 악성 이메일이나 문서를 시스템 안으로 유입시킵니다.</div>
   <div class="step"><span class="strong">2.</span> 사용자는 "이 메일 요약하고 관련 문서 찾아줘" 같은 정상 요청을 보냅니다.</div>
   <div class="step"><span class="strong">3.</span> 에이전트는 메일 본문을 읽고 내부 검색 도구로 추가 문서를 가져옵니다.</div>
@@ -100,7 +100,7 @@
     <h3>프롬프트는 정책 선언이지 강제 경계가 아님</h3>
     <ul>
       <li>모델은 우선순위를 추론합니다. 선언한 규칙이 항상 이기지 않습니다.</li>
-      <li>긴 context와 다단계 작업에서는 지시 충돌과 오해가 누적됩니다.</li>
+      <li>긴 컨텍스트와 다단계 작업에서는 지시 충돌과 오해가 누적됩니다.</li>
       <li>악성 문장이 일반 업무 텍스트처럼 보이면 분리 자체가 어렵습니다.</li>
     </ul>
   </div>
@@ -187,7 +187,7 @@
   <div class="card">
     <h3>외부 콘텐츠를 분리하는 모델</h3>
     <ul>
-      <li>외부 콘텐츠는 schema 기반 필드 추출이나 요약으로만 전달합니다.</li>
+      <li>외부 콘텐츠는 스키마 기반 필드 추출이나 요약으로만 전달합니다.</li>
       <li>명령형 문장은 제거하고, 필요한 사실만 구조화된 값으로 넘깁니다.</li>
       <li>계획 모델은 정제 결과만 소비하고 원문과 섞이지 않습니다.</li>
     </ul>
@@ -204,8 +204,8 @@
   <div class="card">
     <h3>어떻게 나누나</h3>
     <ul>
-      <li>Planner는 trusted user request만 읽습니다.</li>
-      <li>Extractor는 untrusted content만 읽고 구조화 결과만 냅니다.</li>
+      <li>Planner는 신뢰된 사용자 요청만 읽습니다.</li>
+      <li>Extractor는 비신뢰 콘텐츠만 읽고 구조화 결과만 냅니다.</li>
       <li>두 경로의 프롬프트, 도구, 세션 메모리를 분리합니다.</li>
     </ul>
   </div>
@@ -218,7 +218,7 @@
     </ul>
   </div>
 </div>
-<div class="mini mt-4">실무 포인트: 추출 모델 출력은 JSON 스키마, enum, 최대 길이 제한처럼 해석 범위를 좁히는 편이 좋습니다.</div></div>
+<div class="mini mt-4">실무 포인트: 추출 모델 출력은 JSON 스키마, 열거값, 최대 길이 제한처럼 해석 범위를 좁히는 편이 좋습니다.</div></div>
     </section>
 
     <section class="slide surface markdown-slide accent-rose" data-part="방어 패턴 2: Plan-Then-Execute">
@@ -228,7 +228,7 @@
     <h3>실행 전에 계획을 고정</h3>
     <ul>
       <li>먼저 "무슨 데이터를 읽고 어떤 도구를 쓸지" 계획을 고정합니다.</li>
-      <li>그다음 별도 executor가 허용된 step만 실행합니다.</li>
+      <li>그다음 별도 실행기가 허용된 단계만 실행합니다.</li>
       <li>중간에 외부 콘텐츠가 새 지시를 넣어도 계획을 다시 쓰지 못하게 합니다.</li>
     </ul>
   </div>
@@ -236,7 +236,7 @@
     <h3>어디에 유리한가</h3>
     <ul>
       <li>브라우징 후 이메일 발송, 문서 검색 후 티켓 수정 같은 다단계 작업</li>
-      <li>승인 가능한 중간 산출물과 audit log가 필요한 조직 환경</li>
+      <li>승인 가능한 중간 산출물과 감사 로그가 필요한 조직 환경</li>
       <li>도구 호출을 허용 목록 기반으로 강제해야 하는 경우</li>
     </ul>
   </div>
@@ -253,7 +253,7 @@
     <h3>자연어를 바로 실행하지 않고 제한된 표현으로 바꾼다</h3>
     <ul>
       <li>계획 모델이 자유 서술 대신 제한된 DSL, typed action list, restricted code를 생성합니다.</li>
-      <li>executor는 허용된 명령 집합만 해석하고, 그 외 표현은 거부합니다.</li>
+      <li>실행기는 허용된 명령 집합만 해석하고, 그 외 표현은 거부합니다.</li>
       <li>예: <code>search_docs(query)</code>, <code>draft_email(recipient, summary)</code> 같은 제한된 액션만 허용</li>
     </ul>
   </div>
@@ -327,8 +327,8 @@
     <h3>실무에서의 장점</h3>
     <ul>
       <li>병렬 처리와 재시도에 유리합니다.</li>
-      <li>문서 단위 provenance와 audit trail을 남기기 쉽습니다.</li>
-      <li>대규모 검색·요약 작업에서 blast radius를 줄이는 데 효과적입니다.</li>
+      <li>문서 단위 출처 기록과 감사 추적을 남기기 쉽습니다.</li>
+      <li>대규모 검색·요약 작업에서 피해 범위를 줄이는 데 효과적입니다.</li>
     </ul>
   </div>
 </div></div>
@@ -341,14 +341,14 @@
     <h3>외부 액션은 별도 선택 단계로 분리</h3>
     <ul>
       <li>send mail, post Slack, write ticket, execute command는 별도 selector가 결정</li>
-      <li>selector는 입력 출처, 데이터 민감도, 대상 도메인, approval 상태를 함께 봅니다.</li>
-      <li>필요하면 human approval 없이는 실행하지 않습니다.</li>
+      <li>선택기는 입력 출처, 데이터 민감도, 대상 도메인, 승인 상태를 함께 봅니다.</li>
+      <li>필요하면 사람 승인 없이는 실행하지 않습니다.</li>
     </ul>
   </div>
   <div class="card">
     <h3>정책 엔진이 강제해야 할 것</h3>
     <ul>
-      <li>egress allowlist, tool별 scope, read/write 분리, request signing</li>
+      <li>외부 전송 허용 목록, 도구별 범위, 읽기/쓰기 분리, 요청 서명</li>
       <li>고위험 액션의 dry-run preview와 diff 표시</li>
       <li>누가 어떤 컨텍스트로 어떤 액션을 승인했는지 감사 로그 남기기</li>
     </ul>
@@ -358,11 +358,11 @@
 
     <section class="slide surface markdown-slide accent-rose" data-part="실무 적용 체크리스트">
       <h2>실무 적용 체크리스트</h2>
-      <div class="deck-body"><div class="step-list">
+      <div class="deck-body tight"><div class="step-list two-col-list">
   <div class="step"><span class="strong">1.</span> 외부 입력을 읽는 도구와 민감 데이터를 읽는 도구를 분리합니다.</div>
-  <div class="step"><span class="strong">2.</span> planner, extractor, executor를 분리하고 각자 tool scope를 다르게 부여합니다.</div>
-  <div class="step"><span class="strong">3.</span> 외부 전송과 상태변경 도구는 allowlist, approval, audit log 뒤에 둡니다.</div>
-  <div class="step"><span class="strong">4.</span> structured output, bounded schema, short-lived memory를 기본값으로 둡니다.</div>
+  <div class="step"><span class="strong">2.</span> planner, extractor, executor를 분리하고 각자 도구 범위를 다르게 부여합니다.</div>
+  <div class="step"><span class="strong">3.</span> 외부 전송과 상태변경 도구는 허용 목록, 승인, 감사 로그 뒤에 둡니다.</div>
+  <div class="step"><span class="strong">4.</span> 구조화 출력, 제한된 스키마, 짧은 수명 메모리를 기본값으로 둡니다.</div>
   <div class="step"><span class="strong">5.</span> 한 세션 안에서 Lethal Trifecta가 다시 결합되는 우회 경로가 없는지 점검합니다.</div>
 </div></div>
     </section>
@@ -383,7 +383,7 @@
     <ul>
       <li>취약점은 대체로 "모델이 너무 똑똑해서"가 아니라 "시스템이 너무 많은 권한을 붙여서" 발생합니다.</li>
       <li>보안 설계의 핵심은 모델 내부가 아니라 도구 경계와 액션 정책입니다.</li>
-      <li>결국 agent 보안은 architecture 문제입니다.</li>
+      <li>결국 에이전트 보안은 아키텍처 문제입니다.</li>
     </ul>
   </div>
 </div></div>

@@ -24,36 +24,36 @@
 </div></div>
     </section>
 
-    <section class="slide section accent-blue" data-part="Goals">
-      <h1>Goals</h1>
-      <div class="deck-body section-body"><div class="diagram-frame wide"><pre class="mermaid">mindmap
-  root((Goals))
+    <section class="slide surface markdown-slide diagram-slide accent-blue" data-part="목표">
+      <h2>목표</h2>
+      <div class="deck-body tight"><div class="diagram-frame wide"><pre class="mermaid">mindmap
+  root((목표))
     설치 흐름 이해
     init 셋업 이해
     Codex 활용 방식 이해
-    Dynamic 검증 필수화 이해
+    동적 검증 필수화 이해
     Skill 세부 내용 이해
-    Evidence 확보 흐름 이해</pre></div></div>
+    증거 확보 흐름 이해</pre></div></div>
     </section>
 
-    <section class="slide section accent-blue" data-part="전체 구조 한눈에 보기">
-      <h1>전체 구조 한눈에 보기</h1>
-      <div class="deck-body section-body"><div class="diagram-frame wide"><pre class="mermaid">flowchart LR
+    <section class="slide surface markdown-slide diagram-slide accent-blue" data-part="전체 구조 한눈에 보기">
+      <h2>전체 구조 한눈에 보기</h2>
+      <div class="deck-body tight"><div class="diagram-frame wide"><pre class="mermaid">flowchart LR
     A[사용자] --&gt; B[Codex]
     B --&gt; C[Skill]
     B --&gt; D[Local Plugin]
     D --&gt; E[Android Security Analyzer CLI]
-    E --&gt; F[Static 분석]
-    E --&gt; G[Dynamic 검증]
-    F --&gt; H[Evidence]
+    E --&gt; F[정적 분석]
+    E --&gt; G[동적 검증]
+    F --&gt; H[증거]
     G --&gt; H
-    H --&gt; I[Finding과 Report]</pre></div>
-<ul><li>핵심은 Codex가 직접 분석 엔진이 아니라, 설치된 Skill과 CLI를 조율한다는 점이다.</li><li>Static만으로 끝내지 않고 Dynamic까지 수행해 evidence를 확보한다.</li></ul></div>
+    H --&gt; I[Finding과 보고서]</pre></div>
+<ul><li>핵심은 Codex가 직접 분석 엔진이 아니라, 설치된 Skill과 CLI를 조율한다는 점이다.</li><li>정적 분석만으로 끝내지 않고 동적 검증까지 수행해 증거를 확보한다.</li></ul></div>
     </section>
 
-    <section class="slide section accent-blue" data-part="설치 단계">
-      <h1>설치 단계</h1>
-      <div class="deck-body section-body"><div class="diagram-frame wide"><pre class="mermaid">sequenceDiagram
+    <section class="slide surface markdown-slide diagram-slide accent-blue" data-part="설치 단계">
+      <h2>설치 단계</h2>
+      <div class="deck-body tight"><div class="diagram-frame wide"><pre class="mermaid">sequenceDiagram
     participant User as 사용자
     participant Shell as Shell
     participant Pip as pip
@@ -68,9 +68,9 @@
 <ul><li><code>android-security-analyzer</code></li><li><code>deeplink-audit</code></li></ul></div>
     </section>
 
-    <section class="slide section accent-blue" data-part="엔트리포인트 구조">
-      <h1>엔트리포인트 구조</h1>
-      <div class="deck-body section-body"><div class="diagram-frame wide"><pre class="mermaid">flowchart TB
+    <section class="slide surface markdown-slide diagram-slide accent-blue" data-part="엔트리포인트 구조">
+      <h2>엔트리포인트 구조</h2>
+      <div class="deck-body tight"><div class="diagram-frame wide"><pre class="mermaid">flowchart TB
     A[pyproject.toml] --&gt; B[android-security-analyzer]
     A --&gt; C[deeplink-audit]
     B --&gt; D[deeplink_audit_cli.main:main]
@@ -83,15 +83,15 @@
     E --&gt; J[report]
     E --&gt; K[analyze]
     E --&gt; L[init]</pre></div>
-<ul><li>이름은 두 개지만 내부 진입점은 하나다.</li><li>그래서 alias가 달라도 동일한 실행 흐름을 탄다.</li></ul></div>
+<ul><li>이름은 두 개지만 내부 진입점은 하나다.</li><li>그래서 명령 별칭이 달라도 동일한 실행 흐름을 탄다.</li></ul></div>
     </section>
 
-    <section class="slide section accent-blue" data-part="init 명령의 역할">
-      <h1>init 명령의 역할</h1>
-      <div class="deck-body section-body"><div class="diagram-frame wide"><pre class="mermaid">sequenceDiagram
+    <section class="slide surface markdown-slide diagram-slide accent-blue" data-part="init 명령의 역할">
+      <h2>init 명령의 역할</h2>
+      <div class="deck-body tight"><div class="diagram-frame wide"><pre class="mermaid">sequenceDiagram
     participant User as 사용자
     participant CLI as CLI
-    participant Repo as 대상 Repo
+    participant Repo as 대상 저장소
     participant Codex as Codex 설정
     participant Plugin as Local Plugin
 
@@ -101,13 +101,13 @@
     CLI-&gt;&gt;Plugin: plugins/android-security-analyzer 설치
     CLI-&gt;&gt;Repo: marketplace.json, AGENTS.md, registry 반영
     CLI--&gt;&gt;User: Codex에서 사용할 준비 완료</pre></div>
-<ul><li><code>init</code>은 분석을 수행하는 명령이 아니라, 분석을 위한 실행 환경을 repo에 심는 단계다.</li></ul></div>
+<ul><li><code>init</code>은 분석을 수행하는 명령이 아니라, 분석을 위한 실행 환경을 대상 저장소에 심는 단계다.</li></ul></div>
     </section>
 
-    <section class="slide section accent-blue" data-part="대상 repo에 생기는 구조">
-      <h1>대상 repo에 생기는 구조</h1>
-      <div class="deck-body section-body"><div class="diagram-frame wide"><pre class="mermaid">flowchart TB
-    A[대상 Repo] --&gt; B[tools/security/android-security-analyzer]
+    <section class="slide surface markdown-slide diagram-slide accent-blue" data-part="대상 저장소에 생기는 구조">
+      <h2>대상 저장소에 생기는 구조</h2>
+      <div class="deck-body tight"><div class="diagram-frame wide"><pre class="mermaid">flowchart TB
+    A[대상 저장소] --&gt; B[tools/security/android-security-analyzer]
     A --&gt; C[.codex]
     A --&gt; D[plugins/android-security-analyzer]
     A --&gt; E[.agents/plugins/marketplace.json]
@@ -121,9 +121,9 @@ AGENTS.md
 agent-skill-registry.yml</code></pre></div>
     </section>
 
-    <section class="slide section accent-blue" data-part="tools 폴더의 실제 역할">
-      <h1>tools 폴더의 실제 역할</h1>
-      <div class="deck-body section-body"><div class="diagram-frame wide"><pre class="mermaid">flowchart LR
+    <section class="slide surface markdown-slide diagram-slide accent-blue" data-part="tools 폴더의 실제 역할">
+      <h2>tools 폴더의 실제 역할</h2>
+      <div class="deck-body tight"><div class="diagram-frame wide"><pre class="mermaid">flowchart LR
     A[tools/security/android-security-analyzer] --&gt; B[bin]
     A --&gt; C[scripts]
     A --&gt; D[semgrep]
@@ -140,33 +140,33 @@ agent-skill-registry.yml</code></pre></div>
 <ul><li>이 폴더는 Codex가 간접적으로 쓰는 실제 분석 자산 모음이다.</li></ul></div>
     </section>
 
-    <section class="slide section accent-blue" data-part="Codex 설정은 왜 필요한가">
-      <h1>Codex 설정은 왜 필요한가</h1>
-      <div class="deck-body section-body"><div class="diagram-frame wide"><pre class="mermaid">sequenceDiagram
-    participant Repo as 대상 Repo
+    <section class="slide surface markdown-slide diagram-slide accent-blue" data-part="Codex 설정은 왜 필요한가">
+      <h2>Codex 설정은 왜 필요한가</h2>
+      <div class="deck-body tight"><div class="diagram-frame wide"><pre class="mermaid">sequenceDiagram
+    participant Repo as 대상 저장소
     participant Config as .codex 설정
     participant Codex as Codex 세션
     participant Plugin as Local Plugin
 
-    Repo-&gt;&gt;Config: repo 전용 설정 저장
-    Config-&gt;&gt;Codex: local plugin과 skill 위치 제공
+    Repo-&gt;&gt;Config: 저장소 전용 설정 저장
+    Config-&gt;&gt;Codex: 로컬 plugin과 skill 위치 제공
     Codex-&gt;&gt;Plugin: 설치된 plugin 로드
     Plugin--&gt;&gt;Codex: 사용 가능한 분석 흐름 노출</pre></div>
-<ul><li>Codex는 이 설정을 보고 repo별 도구를 인식한다.</li><li>이 단계가 없으면 일반 파일 편집 세션으로만 동작한다.</li></ul></div>
+<ul><li>Codex는 이 설정을 보고 저장소별 도구를 인식한다.</li><li>이 단계가 없으면 일반 파일 편집 세션으로만 동작한다.</li></ul></div>
     </section>
 
-    <section class="slide section accent-blue" data-part="local plugin 등록 방식">
-      <h1>local plugin 등록 방식</h1>
-      <div class="deck-body section-body"><div class="diagram-frame wide"><pre class="mermaid">flowchart LR
+    <section class="slide surface markdown-slide diagram-slide accent-blue" data-part="로컬 plugin 등록 방식">
+      <h2>로컬 plugin 등록 방식</h2>
+      <div class="deck-body tight"><div class="diagram-frame wide"><pre class="mermaid">flowchart LR
     A[plugins/android-security-analyzer] --&gt; B[marketplace.json]
     B --&gt; C[local source path 등록]
-    C --&gt; D[Codex가 repo local plugin으로 인식]</pre></div>
+    C --&gt; D[Codex가 저장소 로컬 plugin으로 인식]</pre></div>
 <ul><li>plugin은 “분석 기능이 여기 있다”는 연결점이다.</li><li>실제 실행 엔진은 여전히 CLI 쪽에 있다.</li></ul></div>
     </section>
 
-    <section class="slide section accent-blue" data-part="Skill이 하는 일">
-      <h1>Skill이 하는 일</h1>
-      <div class="deck-body section-body"><div class="diagram-frame wide"><pre class="mermaid">flowchart TB
+    <section class="slide surface markdown-slide diagram-slide accent-blue" data-part="Skill이 하는 일">
+      <h2>Skill이 하는 일</h2>
+      <div class="deck-body tight"><div class="diagram-frame wide"><pre class="mermaid">flowchart TB
     A[Skill] --&gt; B[언제 이 흐름을 쓸지 정의]
     A --&gt; C[단계별 실행 순서 정의]
     A --&gt; D[승인 필요 작업 구분]
@@ -174,49 +174,49 @@ agent-skill-registry.yml</code></pre></div>
     A --&gt; F[Finding 템플릿 정의]
     A --&gt; G[최종 보고서 구조 정의]</pre></div>
 <p>구체적으로 Skill에 들어가야 할 내용</p>
-<ul><li>대상 입력값 형식</li><li>static에서 확인할 항목</li><li>dynamic에서 반드시 검증할 항목</li><li>evidence 저장 규칙</li><li>finding 제목과 severity 형식</li><li>MASVS나 내부 기준 매핑 방식</li></ul>
+<ul><li>대상 입력값 형식</li><li>정적 분석에서 확인할 항목</li><li>동적 검증에서 반드시 확인할 항목</li><li>증거 저장 규칙</li><li>finding 제목과 severity 형식</li><li>MASVS나 내부 기준 매핑 방식</li></ul>
 <p>핵심 메시지</p>
 <ul><li>Skill은 단순 설명문이 아니라, Codex가 따라야 할 감사 절차서다.</li></ul></div>
     </section>
 
-    <section class="slide section accent-blue" data-part="plugin이 하는 일">
-      <h1>plugin이 하는 일</h1>
-      <div class="deck-body section-body"><div class="diagram-frame wide"><pre class="mermaid">sequenceDiagram
+    <section class="slide surface markdown-slide diagram-slide accent-blue" data-part="plugin이 하는 일">
+      <h2>plugin이 하는 일</h2>
+      <div class="deck-body tight"><div class="diagram-frame wide"><pre class="mermaid">sequenceDiagram
     participant Codex as Codex
     participant Plugin as Local Plugin
     participant CLI as CLI
-    participant Files as Reports and Evidence
+    participant Files as 보고서와 증거
 
     Codex-&gt;&gt;Plugin: 사용 가능한 기능 조회
     Plugin-&gt;&gt;CLI: 적절한 명령 실행 유도
-    CLI--&gt;&gt;Files: report와 evidence 생성
+    CLI--&gt;&gt;Files: 보고서와 증거 생성
     Files--&gt;&gt;Codex: 결과 읽기</pre></div>
 <ul><li>plugin은 Codex와 CLI 사이의 연결점이다.</li><li>plugin이 분석 로직을 대신 구현하는 것은 아니다.</li></ul></div>
     </section>
 
-    <section class="slide section accent-blue" data-part="실제 분석 엔진은 CLI다">
-      <h1>실제 분석 엔진은 CLI다</h1>
-      <div class="deck-body section-body"><div class="diagram-frame wide"><pre class="mermaid">flowchart LR
+    <section class="slide surface markdown-slide diagram-slide accent-blue" data-part="실제 분석 엔진은 CLI다">
+      <h2>실제 분석 엔진은 CLI다</h2>
+      <div class="deck-body tight"><div class="diagram-frame wide"><pre class="mermaid">flowchart LR
     A[doctor] --&gt; B[static]
     B --&gt; C[semgrep]
-    C --&gt; D[dynamic 필수]
+    C --&gt; D[동적 검증 필수]
     D --&gt; E[report]
     E --&gt; F[analyze 전체 실행]</pre></div>
 <p>각 단계 설명</p>
-<ul><li><code>doctor</code>: 도구와 환경 준비 상태 확인</li><li><code>static</code>: manifest와 소스에서 딥링크 엔트리 추출</li><li><code>semgrep</code>: validation, sink, 위험 패턴 탐지</li><li><code>dynamic</code>: 실제 호출로 증거 확보, 결과 검증</li><li><code>report</code>: evidence를 묶어 finding과 보고서 생성</li></ul>
+<ul><li><code>doctor</code>: 도구와 환경 준비 상태 확인</li><li><code>static</code>: manifest와 소스에서 딥링크 엔트리 추출</li><li><code>semgrep</code>: validation, sink, 위험 패턴 탐지</li><li><code>dynamic</code>: 실제 호출로 증거 확보, 결과 검증</li><li><code>report</code>: 증거를 묶어 finding과 보고서 생성</li></ul>
 <p>중요</p>
-<ul><li>여기서는 dynamic을 선택 기능이 아니라 필수 evidence 확보 단계로 본다.</li></ul></div>
+<ul><li>여기서는 동적 검증을 선택 기능이 아니라 필수 증거 확보 단계로 본다.</li></ul></div>
     </section>
 
-    <section class="slide section accent-blue" data-part="Codex가 실제로 활용하는 흐름">
-      <h1>Codex가 실제로 활용하는 흐름</h1>
-      <div class="deck-body section-body"><div class="diagram-frame wide"><pre class="mermaid">sequenceDiagram
+    <section class="slide surface markdown-slide diagram-slide accent-blue" data-part="Codex가 실제로 활용하는 흐름">
+      <h2>Codex가 실제로 활용하는 흐름</h2>
+      <div class="deck-body tight"><div class="diagram-frame wide"><pre class="mermaid">sequenceDiagram
     participant User as 사용자
     participant Codex as Codex
     participant Skill as Skill
     participant CLI as CLI
-    participant Evidence as Evidence
-    participant Report as Report
+    participant Evidence as 증거
+    participant Report as 보고서
 
     User-&gt;&gt;Codex: 딥링크 감사 요청
     Codex-&gt;&gt;Skill: 절차와 기준 확인
@@ -230,20 +230,20 @@ agent-skill-registry.yml</code></pre></div>
     Codex--&gt;&gt;User: 결과 요약과 후속 검토 포인트 제시</pre></div></div>
     </section>
 
-    <section class="slide section accent-blue" data-part="사용자는 어떻게 요청하면 좋은가">
-      <h1>사용자는 어떻게 요청하면 좋은가</h1>
-      <div class="deck-body section-body"><div class="diagram-frame wide"><pre class="mermaid">flowchart TB
+    <section class="slide surface markdown-slide diagram-slide accent-blue" data-part="사용자는 어떻게 요청하면 좋은가">
+      <h2>사용자는 어떻게 요청하면 좋은가</h2>
+      <div class="deck-body tight"><div class="diagram-frame wide"><pre class="mermaid">flowchart TB
     A[사용자 요청] --&gt; B[딥링크 inventory 해줘]
     A --&gt; C[validation과 sink 확인해줘]
-    A --&gt; D[dynamic까지 돌려서 evidence 확보해줘]
+    A --&gt; D[동적 검증까지 수행해 증거 확보해줘]
     A --&gt; E[보고서 초안 만들어줘]</pre></div>
 <p>권장 요청 방식</p>
-<ul><li>대상 앱과 범위를 먼저 명시</li><li>dynamic 검증까지 포함한다고 분명히 말하기</li><li>최종 산출물 형식도 같이 지정하기</li></ul></div>
+<ul><li>대상 앱과 범위를 먼저 명시</li><li>동적 검증까지 포함한다고 분명히 말하기</li><li>최종 산출물 형식도 같이 지정하기</li></ul></div>
     </section>
 
-    <section class="slide section accent-blue" data-part="권장 실행 흐름">
-      <h1>권장 실행 흐름</h1>
-      <div class="deck-body section-body"><div class="diagram-frame wide"><pre class="mermaid">sequenceDiagram
+    <section class="slide surface markdown-slide diagram-slide accent-blue" data-part="권장 실행 흐름">
+      <h2>권장 실행 흐름</h2>
+      <div class="deck-body tight"><div class="diagram-frame wide"><pre class="mermaid">sequenceDiagram
     participant Codex as Codex
     participant Doctor as doctor
     participant Static as static
@@ -254,58 +254,58 @@ agent-skill-registry.yml</code></pre></div>
     Codex-&gt;&gt;Doctor: 환경 점검
     Codex-&gt;&gt;Static: 엔트리 추출과 테스트 케이스 생성
     Codex-&gt;&gt;Semgrep: 위험 패턴 확인
-    Codex-&gt;&gt;Dynamic: 실제 딥링크 호출과 evidence 확보
+    Codex-&gt;&gt;Dynamic: 실제 딥링크 호출과 증거 확보
     Codex-&gt;&gt;Report: 결과 종합과 finding 작성</pre></div>
 <p>이 흐름을 권장하는 이유</p>
-<ul><li>static만으로는 실제 재현 가능성을 확정하기 어렵다.</li><li>dynamic까지 해야 evidence가 살아난다.</li></ul></div>
+<ul><li>정적 분석만으로는 실제 재현 가능성을 확정하기 어렵다.</li><li>동적 검증까지 해야 증거가 살아난다.</li></ul></div>
     </section>
 
-    <section class="slide section accent-blue" data-part="주요 산출물과 확인 포인트">
-      <h1>주요 산출물과 확인 포인트</h1>
-      <div class="deck-body section-body"><div class="diagram-frame wide"><pre class="mermaid">flowchart LR
+    <section class="slide surface markdown-slide diagram-slide accent-blue" data-part="주요 산출물과 확인 포인트">
+      <h2>주요 산출물과 확인 포인트</h2>
+      <div class="deck-body tight"><div class="diagram-frame wide"><pre class="mermaid">flowchart LR
     A[static-report.json] --&gt; Z[최종 검토]
     B[semgrep-report.json] --&gt; Z
     C[deeplink-tests.generated.json] --&gt; Z
     D[dynamic-report.json] --&gt; Z
     E[final-report.md] --&gt; Z</pre></div>
 <p>각 파일의 의미</p>
-<ul><li><code>static-report.json</code>: 엔트리포인트와 manifest 중심 정적 결과</li><li><code>semgrep-report.json</code>: 코드 패턴과 위험 후보</li><li><code>deeplink-tests.generated.json</code>: dynamic에서 재사용할 테스트 입력</li><li><code>dynamic-report.json</code>: 실제 실행 기반 evidence</li><li><code>final-report.md</code>: 보고서 초안</li></ul></div>
+<ul><li><code>static-report.json</code>: 엔트리포인트와 manifest 중심 정적 결과</li><li><code>semgrep-report.json</code>: 코드 패턴과 위험 후보</li><li><code>deeplink-tests.generated.json</code>: 동적 검증에서 재사용할 테스트 입력</li><li><code>dynamic-report.json</code>: 실제 실행 기반 증거</li><li><code>final-report.md</code>: 보고서 초안</li></ul></div>
     </section>
 
-    <section class="slide section accent-blue" data-part="사용자가 얻는 실제 가치">
-      <h1>사용자가 얻는 실제 가치</h1>
-      <div class="deck-body section-body"><div class="diagram-frame wide"><pre class="mermaid">flowchart TB
+    <section class="slide surface markdown-slide diagram-slide accent-blue" data-part="사용자가 얻는 실제 가치">
+      <h2>사용자가 얻는 실제 가치</h2>
+      <div class="deck-body tight"><div class="diagram-frame wide"><pre class="mermaid">flowchart TB
     A[반복 가능한 절차] --&gt; D[감사 품질 안정화]
-    B[Dynamic evidence 확보] --&gt; D
+    B[동적 증거 확보] --&gt; D
     C[Codex의 문맥 연결] --&gt; D
     D --&gt; E[검토하기 쉬운 보고서 초안]</pre></div>
 <ul><li>단순 자동화가 아니라, 증거 기반 감사 흐름을 반복 가능하게 만든다.</li></ul></div>
     </section>
 
-    <section class="slide section accent-blue" data-part="CLI만 쓸 때와 Codex를 붙였을 때">
-      <h1>CLI만 쓸 때와 Codex를 붙였을 때</h1>
-      <div class="deck-body section-body"><div class="diagram-frame wide"><pre class="mermaid">flowchart LR
+    <section class="slide surface markdown-slide diagram-slide accent-blue" data-part="CLI 단독 사용과 Codex 연동의 차이">
+      <h2>CLI 단독 사용과 Codex 연동의 차이</h2>
+      <div class="deck-body tight"><div class="diagram-frame wide"><pre class="mermaid">flowchart LR
     A[CLI 단독] --&gt; A1[명령 직접 실행]
     A --&gt; A2[산출물 직접 해석]
     A --&gt; A3[흐름 관리 수동]
 
     B[Codex + Skill + Plugin] --&gt; B1[절차 자동 조율]
     B --&gt; B2[결과 해석 보조]
-    B --&gt; B3[Evidence와 report 연결]</pre></div>
-<ul><li>CLI 단독도 가능하지만, Codex를 붙이면 사람이 흐름을 덜 놓친다.</li></ul></div>
+    B --&gt; B3[증거와 보고서 연결]</pre></div>
+<ul><li>CLI만으로도 실행할 수 있지만, Codex를 연동하면 절차 관리와 결과 해석 부담이 줄어든다.</li></ul></div>
     </section>
 
-    <section class="slide section accent-blue" data-part="결론">
-      <h1>결론</h1>
-      <div class="deck-body section-body"><div class="diagram-frame wide"><pre class="mermaid">flowchart LR
+    <section class="slide surface markdown-slide diagram-slide accent-blue" data-part="결론">
+      <h2>결론</h2>
+      <div class="deck-body tight"><div class="diagram-frame wide"><pre class="mermaid">flowchart LR
     A[CLI] --&gt; B[실행]
     C[init] --&gt; D[셋업]
     E[plugin] --&gt; F[연결]
     G[skill] --&gt; H[절차]
-    I[dynamic] --&gt; J[Evidence 확보 필수]
+    I[dynamic] --&gt; J[증거 확보 필수]
     J --&gt; K[신뢰할 수 있는 보고서]</pre></div>
 <p>정리</p>
-<ul><li>CLI는 분석 엔진이다.</li><li>init은 Codex가 그 엔진을 쓰게 만드는 셋업 단계다.</li><li>plugin은 연결점이고, skill은 절차다.</li><li>static만으로 끝내지 않고 dynamic까지 수행해야 evidence를 확보할 수 있다.</li></ul></div>
+<ul><li>CLI는 분석 엔진이다.</li><li>init은 Codex가 그 엔진을 쓰게 만드는 셋업 단계다.</li><li>plugin은 연결점이고, skill은 절차다.</li><li>정적 분석만으로 끝내지 않고 동적 검증까지 수행해야 증거를 확보할 수 있다.</li></ul></div>
     </section>
   </main>
 

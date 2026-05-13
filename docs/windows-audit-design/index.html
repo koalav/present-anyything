@@ -18,9 +18,9 @@
   <main class="slides" id="slides">
     <section class="slide cover accent-amber" data-part="Opening">
       <h1>LLM 기반 Windows 애플리케이션 보안 감사 운영 구조</h1>
-  <p class="sub">체크리스트 · 작업 보고 · Subagent 검증 게이트 설계</p>
+  <p class="sub">체크리스트 · 작업 보고 · 서브에이전트 검증 게이트 설계</p>
       <div class="deck-body cover-body"><div class="mt-8 text-lg opacity-80">
-<p>Windows 앱 보안 감사를 장기 작업·증적 중심 워크플로로 운영하기 위한 Slidev 자료</p>
+<p>Windows 앱 보안 감사를 장기 작업·증적 중심 워크플로로 운영하기 위한 정적 HTML 발표 자료</p>
 </div>
 <div class="mt-16 text-sm opacity-60">
 <p>작성일: 2026-04-24 · 범위: Windows 앱 보안 감사, LLM 에이전트 운영, MCP 보안 통제</p>
@@ -34,7 +34,7 @@
     <section class="slide surface markdown-slide accent-amber" data-part="Windows 앱 보안 감사의 난점">
       <h2>Windows 앱 보안 감사의 난점</h2>
       <div class="deck-body"><div class="generated-two-cols"><div><ul><li>감사 대상이 넓고 복잡함</li><li>EXE / DLL / MSI / MSIX</li><li>서비스, scheduled task, COM, shell extension</li><li>installer / updater / helper process</li><li>증적이 여러 위치에 흩어져 있음</li><li>파일, 레지스트리, 이벤트 로그, 프로세스 트레이스</li><li>LLM 단독 판단은 재현성과 감사 추적성이 약함</li><li>체크리스트만으로는 실제 실행 상태를 따라가기 어려움</li></ul></div><div><h3>운영 목표</h3>
-<ul><li>프로젝트 현황을 먼저 파악</li><li>체크리스트를 자산별 작업으로 분해</li><li>Auditor가 증적 기반으로 후보 finding 생성</li><li>Reviewer와 Verifier가 독립적으로 검증</li><li>Coordinator가 검증을 통과한 결과만 채택</li><li>최종 보고서에는 Verified finding만 반영</li></ul></div></div></div>
+<ul><li>프로젝트 현황을 먼저 파악</li><li>체크리스트를 자산별 작업으로 분해</li><li>Auditor가 증적 기반으로 후보 finding 생성</li><li>Reviewer와 Verifier가 독립적으로 검증</li><li>Coordinator가 검증을 통과한 결과만 채택</li><li>최종 보고서에는 검증된 finding만 반영</li></ul></div></div></div>
     </section>
 
     <section class="slide surface markdown-slide accent-amber" data-part="핵심 설계 질문">
@@ -45,11 +45,11 @@
 <div class="mt-10 grid grid-cols-2 gap-6">
 <div>
 <h4>피해야 할 구조</h4>
-<ul><li>단일 LLM이 모든 판단을 수행</li><li>raw evidence 없이 결론을 도출</li><li>체크리스트와 실행 상태를 혼합</li><li>MCP에 과도한 실행 권한을 부여</li><li>Reviewer 없이 finding을 확정</li></ul>
+<ul><li>단일 LLM이 모든 판단을 수행</li><li>원본 증거 없이 결론을 도출</li><li>체크리스트와 실행 상태를 혼합</li><li>MCP에 과도한 실행 권한을 부여</li><li>Reviewer 없이 finding을 확정</li></ul>
 </div>
 <div>
 <h4>지향할 구조</h4>
-<ul><li>짧은 지침 + 분리된 문서</li><li>skill 기반 반복 절차</li><li>좁은 subagent 역할</li><li>deterministic tool이 1차 증거를 생산</li><li>Reviewer / Verifier 게이트</li></ul>
+<ul><li>짧은 지침 + 분리된 문서</li><li>Skill 기반 반복 절차</li><li>좁은 서브에이전트 역할</li><li>결정론적 도구가 1차 증거를 생산</li><li>Reviewer / Verifier 게이트</li></ul>
 </div>
 </div></div>
     </section>
@@ -60,7 +60,7 @@
 
     <section class="slide surface markdown-slide accent-amber" data-part="권장 운영 구조">
       <h2>권장 운영 구조</h2>
-      <div class="deck-body"><div class="generated-two-cols"><div><ul><li>짧은 <code>AGENTS.md</code></li><li><code>PLANS.md</code> / 실행계획</li><li><code>docs/status</code>, <code>docs/evidence</code>, <code>docs/findings</code>, <code>docs/reports</code></li><li>반복 절차는 skills</li><li>병렬·전문화가 필요한 구간에만 subagents</li><li>Reviewer / Verifier 게이트</li><li>read-only 우선 MCP + allowlist</li><li>GitHub Projects + sub-issues + dependencies</li><li>Windows용 결정론적 검사 도구</li></ul></div><div><h3>이 구조를 권장하는 이유</h3>
+      <div class="deck-body"><div class="generated-two-cols"><div><ul><li>짧은 <code>AGENTS.md</code></li><li><code>PLANS.md</code> / 실행계획</li><li><code>docs/status</code>, <code>docs/evidence</code>, <code>docs/findings</code>, <code>docs/reports</code></li><li>반복 절차는 Skill</li><li>병렬·전문화가 필요한 구간에만 서브에이전트 사용</li><li>Reviewer / Verifier 게이트</li><li>읽기 전용 우선 MCP + 허용 목록</li><li>GitHub Projects + sub-issues + dependencies</li><li>Windows용 결정론적 검사 도구</li></ul></div><div><h3>이 구조를 권장하는 이유</h3>
 <ul><li>LLM 컨텍스트 오염 감소</li><li>장기 작업 상태 복원 가능</li><li>절차 재사용성 확보</li><li>감사 결과의 증거성 강화</li><li>오탐과 증거 부족 사례 축소</li><li>MCP/tool misuse 위험 완화</li><li>사람이 리뷰 가능한 산출물 유지</li></ul></div></div></div>
     </section>
 
@@ -69,7 +69,7 @@
       <div class="deck-body"><div class="grid grid-cols-2 gap-8 mt-8">
 <div>
 <h4><code>AGENTS.md</code></h4>
-<ul><li>전역 규칙</li><li>금지 행위</li><li>산출물 위치</li><li>subagent 사용 규칙</li><li>검증 게이트 규칙</li></ul>
+<ul><li>전역 규칙</li><li>금지 행위</li><li>산출물 위치</li><li>서브에이전트 사용 규칙</li><li>검증 게이트 규칙</li></ul>
 </div>
 <div>
 <h4><code>docs/</code></h4>
@@ -81,14 +81,14 @@
 </div></div>
     </section>
 
-    <section class="slide surface markdown-slide accent-amber" data-part="원칙 2: Skill 우선, Subagent는 제한적으로">
-      <h2>원칙 2: Skill 우선, Subagent는 제한적으로</h2>
+    <section class="slide surface markdown-slide accent-amber" data-part="원칙 2: Skill 우선, 서브에이전트는 제한적으로">
+      <h2>원칙 2: Skill 우선, 서브에이전트는 제한적으로</h2>
       <div class="deck-body"><div class="table-wrap"><table><thead><tr><th>구분</th><th>적합한 사용처</th><th>예시</th></tr></thead><tbody><tr><td>Skill</td><td>반복 가능한 절차</td><td>감사 bootstrap, 체크리스트 실행, finding 작성, evidence packaging</td></tr>
-<tr><td>Subagent</td><td>병렬·전문화 검토</td><td>Static Auditor, ACL Auditor, Runtime Tracer, Reviewer, Verifier</td></tr>
+<tr><td>서브에이전트</td><td>병렬·전문화 검토</td><td>Static Auditor, ACL Auditor, Runtime Tracer, Reviewer, Verifier</td></tr>
 <tr><td>MCP</td><td>외부 시스템 관찰</td><td>파일, 이벤트 로그, 레지스트리, GitHub Projects, CodeQL 결과</td></tr>
 <tr><td>Tool script</td><td>결정론적 증거 생성</td><td>BinSkim, Sigcheck, AccessChk, Procmon, Autoruns</td></tr></tbody></table></div>
 <div class="mt-8">
-<p>Subagent 수가 늘수록 관리 비용과 토큰 비용이 함께 증가합니다. 반복 절차는 skill로 고정하고, 실제로 역할 분리가 필요한 구간에만 subagent를 사용합니다.</p>
+<p>서브에이전트 수가 늘수록 관리 비용과 토큰 비용이 함께 증가합니다. 반복 절차는 Skill로 고정하고, 실제로 역할 분리가 필요한 구간에만 서브에이전트를 사용합니다.</p>
 </div></div>
     </section>
 
@@ -116,11 +116,11 @@ flowchart LR
 
     <section class="slide surface markdown-slide accent-amber" data-part="작업 단계별 산출물">
       <h2>작업 단계별 산출물</h2>
-      <div class="deck-body"><div class="table-wrap"><table><thead><tr><th>단계</th><th>담당</th><th>주요 산출물</th></tr></thead><tbody><tr><td>프로젝트 현황 파악</td><td>Coordinator, Project Mapper</td><td><code>docs/status/01_project_snapshot.md</code></td></tr>
+      <div class="deck-body tight"><div class="table-wrap"><table class="mini-table"><thead><tr><th>단계</th><th>담당</th><th>주요 산출물</th></tr></thead><tbody><tr><td>프로젝트 현황 파악</td><td>Coordinator, Project Mapper</td><td><code>docs/status/01_project_snapshot.md</code></td></tr>
 <tr><td>자산 인벤토리</td><td>Binary Inventory</td><td><code>docs/evidence/&lt;run-id&gt;/normalized/inventory.csv</code></td></tr>
 <tr><td>신뢰경계 정리</td><td>Coordinator, Project Mapper</td><td><code>docs/scope/trust_boundaries.md</code></td></tr>
 <tr><td>계획 수립</td><td>Coordinator</td><td><code>docs/plans/active/*.md</code></td></tr>
-<tr><td>체크리스트 실행</td><td>Auditors</td><td>raw evidence, normalized summary, finding candidate</td></tr>
+<tr><td>체크리스트 실행</td><td>Auditors</td><td>원본 증거, 정규화 요약, finding 후보</td></tr>
 <tr><td>검증</td><td>Reviewer, Verifier</td><td>review note, verification result</td></tr>
 <tr><td>보고</td><td>Report Writer</td><td>weekly report, final report</td></tr></tbody></table></div></div>
     </section>
@@ -149,7 +149,7 @@ flowchart LR
 
     <section class="slide surface markdown-slide accent-amber" data-part="조사 역할 분리">
       <h2>조사 역할 분리</h2>
-      <div class="deck-body"><div class="table-wrap"><table><thead><tr><th>Agent</th><th>주 책임</th><th>제한</th></tr></thead><tbody><tr><td>Coordinator</td><td>계획 수립, 작업 분배, 결과 병합, 상태 확정</td><td>직접 취약점 판정 금지</td></tr>
+      <div class="deck-body tight"><div class="table-wrap"><table class="mini-table"><thead><tr><th>Agent</th><th>주 책임</th><th>제한</th></tr></thead><tbody><tr><td>Coordinator</td><td>계획 수립, 작업 분배, 결과 병합, 상태 확정</td><td>직접 취약점 판정 금지</td></tr>
 <tr><td>Project Mapper</td><td>구조 파악, 신뢰경계 초안 작성</td><td>finding 생성 금지</td></tr>
 <tr><td>Binary Inventory</td><td>바이너리, 서비스, 작업 식별</td><td>위험도 판정 금지</td></tr>
 <tr><td>Static Auditor</td><td>정적 분석과 후보 finding 작성</td><td>최종 확정 금지</td></tr>
@@ -162,7 +162,7 @@ flowchart LR
       <h2>검증과 보고 역할</h2>
       <div class="deck-body"><div class="table-wrap"><table><thead><tr><th>Agent</th><th>주 책임</th><th>제한</th></tr></thead><tbody><tr><td>Reviewer</td><td>논리, 영향, 악용 가능성 검토</td><td>raw tool 실행 최소화</td></tr>
 <tr><td>Verifier</td><td>증거, 재현, 경로, 버전 검증</td><td>severity 단독 결정 금지</td></tr>
-<tr><td>Report Writer</td><td>Verified finding만 보고서화</td><td>미검증 finding 포함 금지</td></tr></tbody></table></div>
+<tr><td>Report Writer</td><td>검증된 finding만 보고서화</td><td>미검증 finding 포함 금지</td></tr></tbody></table></div>
 <div class="mt-8 p-4 border rounded">
 <p>검토 단계의 핵심은 <strong>조사 역할</strong>과 <strong>검증 역할</strong>을 분리해, 같은 사람이 증거 수집과 최종 판정을 동시에 하지 않게 만드는 것입니다.</p>
 </div></div>
@@ -204,11 +204,11 @@ flowchart LR
 <div>
 <h4>Verifier</h4>
 <p>검토 초점:</p>
-<ul><li>raw evidence 존재 여부</li><li>경로, 버전, 자산 식별 정확성</li><li>재현 절차 완결성</li><li>도구 출력과 주장 연결성</li><li>문서/OS 동작과의 충돌 여부</li></ul>
+<ul><li>원본 증거 존재 여부</li><li>경로, 버전, 자산 식별 정확성</li><li>재현 절차 완결성</li><li>도구 출력과 주장 연결성</li><li>문서/OS 동작과의 충돌 여부</li></ul>
 </div>
 </div>
 <div class="mt-8 p-4 border rounded">
-<p><strong>규칙:</strong> Reviewer와 Verifier가 모두 통과한 항목만 Verified Finding으로 승격합니다.</p>
+<p><strong>규칙:</strong> Reviewer와 Verifier가 모두 통과한 항목만 검증된 Finding으로 승격합니다.</p>
 </div></div>
     </section>
 
@@ -234,7 +234,7 @@ flowchart LR
 
     <section class="slide surface markdown-slide accent-amber" data-part="권장 폴더 구조">
       <h2>권장 폴더 구조</h2>
-      <div class="deck-body"><pre class="terminal-card"><code class="language-text">repo/
+      <div class="deck-body tight"><pre class="terminal-card"><code class="language-text">repo/
 ├─ AGENTS.md
 ├─ PLANS.md
 ├─ .agents/
@@ -260,7 +260,7 @@ flowchart LR
 
     <section class="slide surface markdown-slide accent-amber" data-part="문서와 실행 상태를 분리">
       <h2>문서와 실행 상태를 분리</h2>
-      <div class="deck-body"><div class="table-wrap"><table><thead><tr><th>위치</th><th>역할</th><th>예시</th></tr></thead><tbody><tr><td><code>docs/checklists/</code></td><td>기준서</td><td>Windows 앱 감사 항목</td></tr>
+      <div class="deck-body tight"><div class="table-wrap"><table class="mini-table"><thead><tr><th>위치</th><th>역할</th><th>예시</th></tr></thead><tbody><tr><td><code>docs/checklists/</code></td><td>기준서</td><td>Windows 앱 감사 항목</td></tr>
 <tr><td><code>docs/plans/active/</code></td><td>현재 실행 계획</td><td>phase, owner, gate, stop condition</td></tr>
 <tr><td><code>docs/evidence/&lt;run-id&gt;/raw/</code></td><td>원본 증거</td><td>tool output, logs, screenshots</td></tr>
 <tr><td><code>docs/evidence/&lt;run-id&gt;/normalized/</code></td><td>요약/정규화</td><td>csv, json, summary</td></tr>
@@ -271,7 +271,7 @@ flowchart LR
 
     <section class="slide surface markdown-slide accent-amber" data-part="GitHub Projects 필드 예시">
       <h2>GitHub Projects 필드 예시</h2>
-      <div class="deck-body"><div class="table-wrap"><table><thead><tr><th>Field</th><th>값 예시</th></tr></thead><tbody><tr><td>Status</td><td>Planned / In Progress / In Review / Needs Rework / Verified / Reported</td></tr>
+      <div class="deck-body tight"><div class="table-wrap"><table class="mini-table"><thead><tr><th>Field</th><th>값 예시</th></tr></thead><tbody><tr><td>Status</td><td>Planned / In Progress / In Review / Needs Rework / Verified / Reported</td></tr>
 <tr><td>Surface</td><td>UAC / DLL / ACL / Service / IPC / Installer / Updater / Persistence</td></tr>
 <tr><td>Asset</td><td><code>Updater.exe</code>, <code>ServiceA</code>, <code>MainUI.dll</code></td></tr>
 <tr><td>Evidence Ready</td><td>Yes / No</td></tr>
@@ -317,7 +317,7 @@ Final Status: In Review</code></pre></div>
 
     <section class="slide surface markdown-slide accent-amber" data-part="순차 실행 원칙">
       <h2>순차 실행 원칙</h2>
-      <div class="deck-body"><ol><li>가설 1문장 작성</li><li>테스트 방법 명시</li><li>raw evidence 저장</li><li>normalized summary 생성</li><li>Auditor candidate 작성</li><li>Reviewer가 논리 검토</li><li>Verifier가 증거 검증</li><li>Coordinator가 상태 확정</li><li>Verified 항목만 보고서에 반영</li></ol></div>
+      <div class="deck-body"><ol><li>가설 1문장 작성</li><li>테스트 방법 명시</li><li>원본 증거 저장</li><li>정규화 요약 생성</li><li>Auditor 후보 결과 작성</li><li>Reviewer가 논리 검토</li><li>Verifier가 증거 검증</li><li>Coordinator가 상태 확정</li><li>Verified 항목만 보고서에 반영</li></ol></div>
     </section>
 
     <section class="slide section accent-amber" data-part="8. 도구 · MCP 계층">
@@ -329,7 +329,7 @@ Final Status: In Review</code></pre></div>
       <div class="deck-body"><div class="diagram-frame wide"><pre class="mermaid">%%{init: {'themeVariables': {'fontSize': '12px'}, 'flowchart': {'nodeSpacing': 18, 'rankSpacing': 26, 'diagramPadding': 6, 'curve': 'linear'}}}%%
 flowchart LR
     A[Coordinator] --&gt; B[Skills]
-    A --&gt; C[Subagents]
+    A --&gt; C[서브에이전트]
     B --&gt; D[절차 실행]
     C --&gt; E[도메인 감사]
     E --&gt; F[Deterministic Tools&lt;br/&gt;BinSkim · Sigcheck · AccessChk · Procmon · Autoruns · CodeQL]
@@ -352,7 +352,7 @@ flowchart LR
 
     <section class="slide surface markdown-slide accent-amber" data-part="MCP 사용 원칙">
       <h2>MCP 사용 원칙</h2>
-      <div class="deck-body"><ul><li>기본은 read-only</li><li>allowlist 기반 tool exposure</li><li>실행형 PowerShell은 별도 승인</li><li>code editing agent와 host inspection MCP 분리</li><li>tool call audit log 유지</li><li>raw output과 LLM 결론 분리</li><li>운영 호스트보다 격리 VM 우선</li></ul></div>
+      <div class="deck-body"><ul><li>기본은 읽기 전용</li><li>허용 목록 기반 도구 노출</li><li>실행형 PowerShell은 별도 승인</li><li>코드 수정 에이전트와 호스트 조사 MCP 분리</li><li>도구 호출 감사 로그 유지</li><li>원본 출력과 LLM 결론 분리</li><li>운영 호스트보다 격리 VM 우선</li></ul></div>
     </section>
 
     <section class="slide section accent-amber" data-part="9. 에이전트와 MCP 보안 통제">
@@ -361,11 +361,11 @@ flowchart LR
 
     <section class="slide surface markdown-slide accent-amber" data-part="주요 위험">
       <h2>주요 위험</h2>
-      <div class="deck-body"><div class="table-wrap"><table><thead><tr><th>위험</th><th>설명</th><th>완화</th></tr></thead><tbody><tr><td>Prompt injection</td><td>외부 문서나 로그가 agent의 지시 해석을 오염</td><td>tool result를 명령으로 해석하지 않기</td></tr>
-<tr><td>Tool misuse</td><td>에이전트가 과도한 권한의 도구를 실행</td><td>read-only allowlist, approval gate</td></tr>
-<tr><td>Evidence contamination</td><td>raw evidence와 요약이 뒤섞임</td><td>raw/normalized 분리</td></tr>
+      <div class="deck-body"><div class="table-wrap"><table><thead><tr><th>위험</th><th>설명</th><th>완화</th></tr></thead><tbody><tr><td>Prompt injection</td><td>외부 문서나 로그가 에이전트의 지시 해석을 오염</td><td>도구 결과를 명령으로 해석하지 않기</td></tr>
+<tr><td>Tool misuse</td><td>에이전트가 과도한 권한의 도구를 실행</td><td>읽기 전용 허용 목록, 승인 게이트</td></tr>
+<tr><td>Evidence contamination</td><td>원본 증거와 요약이 뒤섞임</td><td>raw/normalized 분리</td></tr>
 <tr><td>False positive</td><td>LLM이 그럴듯한 결론을 생성</td><td>reviewer/verifier 이중 게이트</td></tr>
-<tr><td>Exfiltration</td><td>민감 파일이나 토큰이 노출</td><td>path allowlist, network 제한</td></tr>
+<tr><td>Exfiltration</td><td>민감 파일이나 토큰이 노출</td><td>경로 허용 목록, 네트워크 제한</td></tr>
 <tr><td>Irreversible action</td><td>삭제, 수정, 실행으로 환경이 훼손</td><td>격리 VM, snapshot, explicit approval</td></tr></tbody></table></div></div>
     </section>
 
@@ -382,7 +382,7 @@ flowchart LR
     HI -. approval required .-&gt; X
     X --&gt; HI</pre></div>
 <div class="mt-8">
-<p>Reviewer와 Verifier는 가능한 한 read-only로 유지합니다. 실행형 도구는 감사 수행 agent에만 제한적으로 제공합니다.</p>
+<p>Reviewer와 Verifier는 가능한 한 읽기 전용으로 유지합니다. 실행형 도구는 감사 수행 에이전트에만 제한적으로 제공합니다.</p>
 </div></div>
     </section>
 
@@ -423,8 +423,8 @@ flowchart LR
   <div class="box">
     <h3 class="mt-0">검증 정보에 꼭 들어갈 것</h3>
     <ul>
-      <li>raw evidence 경로</li>
-      <li>normalized summary 경로</li>
+      <li>원본 증거 경로</li>
+      <li>정규화 요약 경로</li>
       <li>Reviewer / Verifier 결과</li>
     </ul>
   </div>
@@ -436,7 +436,7 @@ flowchart LR
 
     <section class="slide surface markdown-slide accent-amber" data-part="보고서 작성 원칙">
       <h2>보고서 작성 원칙</h2>
-      <div class="deck-body"><ul><li>Verified finding만 본문에 포함</li><li>Draft와 Evidence Gap은 별도 부록</li><li>경영 요약과 기술 상세 분리</li><li>각 finding에 evidence path 포함</li><li>남은 blocker와 다음 액션 명확화</li><li>추후 재검증 가능한 재현 절차 유지</li></ul></div>
+      <div class="deck-body"><ul><li>검증된 finding만 본문에 포함</li><li>Draft와 Evidence Gap은 별도 부록</li><li>경영 요약과 기술 상세 분리</li><li>각 finding에 증거 경로 포함</li><li>남은 blocker와 다음 액션 명확화</li><li>추후 재검증 가능한 재현 절차 유지</li></ul></div>
     </section>
 
     <section class="slide section accent-amber" data-part="11. 다른 구조가 더 적합한 경우">
@@ -450,9 +450,9 @@ flowchart LR
 
     <section class="slide surface markdown-slide accent-amber" data-part="대안 비교">
       <h2>대안 비교</h2>
-      <div class="deck-body"><div class="table-wrap"><table><thead><tr><th>대안</th><th>더 나은 경우</th><th>단점</th></tr></thead><tbody><tr><td>Single agent + skills + reviewer</td><td>범위가 작고 병렬성이 낮음</td><td>복잡한 감사에서는 컨텍스트 혼잡이 커짐</td></tr>
+      <div class="deck-body"><div class="table-wrap"><table><thead><tr><th>대안</th><th>더 나은 경우</th><th>단점</th></tr></thead><tbody><tr><td>Single agent + Skill + reviewer</td><td>범위가 작고 병렬성이 낮음</td><td>복잡한 감사에서는 컨텍스트 혼잡이 커짐</td></tr>
 <tr><td>Custom workflow / orchestrator-worker</td><td>규제·감사상 상태기계가 필요함</td><td>구현과 유지보수 비용이 증가</td></tr>
-<tr><td>Repo-centric scanner 보강</td><td>코드 저장소 중심 취약점 탐지가 핵심</td><td>runtime/host inspection 커버리지가 약함</td></tr>
+<tr><td>Repo-centric scanner 보강</td><td>코드 저장소 중심 취약점 탐지가 핵심</td><td>런타임/호스트 조사 커버리지가 약함</td></tr>
 <tr><td>Full multi-agent</td><td>병렬 분석이 많고 도메인이 명확히 분리됨</td><td>비용, 지연, 조정 복잡도가 증가</td></tr></tbody></table></div></div>
     </section>
 
@@ -480,17 +480,17 @@ flowchart LR
 
     <section class="slide surface markdown-slide accent-amber" data-part="Auditor: 공통 프롬프트">
       <h2>Auditor: 공통 프롬프트</h2>
-      <div class="deck-body"><ul><li>할당된 범위만 점검합니다.</li><li>각 항목은 가설 1문장으로 시작하고 raw evidence를 먼저 저장합니다.</li><li>그다음 normalized summary를 작성하고 결과는 <code>candidate</code> 상태로만 남깁니다.</li><li>대상 자산, 버전, 경로, 명령, 출력, 재현 절차를 명확히 적고 최종 판정은 하지 않습니다.</li></ul></div>
+      <div class="deck-body"><ul><li>할당된 범위만 점검합니다.</li><li>각 항목은 가설 1문장으로 시작하고 원본 증거를 먼저 저장합니다.</li><li>그다음 정규화 요약을 작성하고 결과는 <code>candidate</code> 상태로만 남깁니다.</li><li>대상 자산, 버전, 경로, 명령, 출력, 재현 절차를 명확히 적고 최종 판정은 하지 않습니다.</li></ul></div>
     </section>
 
     <section class="slide surface markdown-slide accent-amber" data-part="Reviewer: 검토 프롬프트">
       <h2>Reviewer: 검토 프롬프트</h2>
-      <div class="deck-body"><ul><li>Auditor의 finding candidate를 반박 관점에서 검토합니다.</li><li>영향 범위, 악용 가능성, severity, remediation이 과장되지 않았는지 확인합니다.</li><li>오탐 가능성이 있으면 <code>Needs Rework</code>로 되돌리고, 결론의 논리와 보안 타당성을 중심으로 봅니다.</li></ul></div>
+      <div class="deck-body"><ul><li>Auditor의 finding 후보를 반박 관점에서 검토합니다.</li><li>영향 범위, 악용 가능성, severity, remediation이 과장되지 않았는지 확인합니다.</li><li>오탐 가능성이 있으면 <code>Needs Rework</code>로 되돌리고, 결론의 논리와 보안 타당성을 중심으로 봅니다.</li></ul></div>
     </section>
 
     <section class="slide surface markdown-slide accent-amber" data-part="Verifier: 검증 프롬프트">
       <h2>Verifier: 검증 프롬프트</h2>
-      <div class="deck-body"><ul><li>finding candidate의 증거가 주장과 직접 연결되는지 검증합니다.</li><li>raw evidence, normalized summary, 경로, 버전, 대상 자산 식별, 재현 절차가 다시 실행 가능한지 확인합니다.</li><li>증거가 부족하면 <code>Evidence Gap</code>으로 반려하고 severity 판단은 Reviewer에게 맡깁니다.</li></ul></div>
+      <div class="deck-body"><ul><li>finding 후보의 증거가 주장과 직접 연결되는지 검증합니다.</li><li>원본 증거, 정규화 요약, 경로, 버전, 대상 자산 식별, 재현 절차가 다시 실행 가능한지 확인합니다.</li><li>증거가 부족하면 <code>Evidence Gap</code>으로 반려하고 severity 판단은 Reviewer에게 맡깁니다.</li></ul></div>
     </section>
 
     <section class="slide surface markdown-slide accent-amber" data-part="Report Writer: 보고 프롬프트">
@@ -509,12 +509,12 @@ flowchart LR
 
     <section class="slide surface markdown-slide accent-amber" data-part="2주차: 도구·증적 기반 구축">
       <h2>2주차: 도구·증적 기반 구축</h2>
-      <div class="deck-body"><ul><li>BinSkim / Sigcheck / AccessChk / Procmon / Autoruns 래퍼 작성</li><li>raw / normalized evidence 저장 규칙 구현</li><li>inventory 생성 스크립트 작성</li><li>read-only MCP allowlist 구성</li><li>샌드박스 VM 스냅샷 운영 규칙 정의</li></ul></div>
+      <div class="deck-body"><ul><li>BinSkim / Sigcheck / AccessChk / Procmon / Autoruns 래퍼 작성</li><li>raw / normalized evidence 저장 규칙 구현</li><li>inventory 생성 스크립트 작성</li><li>읽기 전용 MCP 허용 목록 구성</li><li>샌드박스 VM 스냅샷 운영 규칙 정의</li></ul></div>
     </section>
 
-    <section class="slide surface markdown-slide accent-amber" data-part="3주차: Subagent 게이트 운영">
-      <h2>3주차: Subagent 게이트 운영</h2>
-      <div class="deck-body"><ul><li>Coordinator 지침 안정화</li><li>Auditor별 작업 범위 제한</li><li>Reviewer / Verifier read-only 운영</li><li>finding candidate → verified 전이 테스트</li><li>오탐 반려 시나리오 테스트</li></ul></div>
+    <section class="slide surface markdown-slide accent-amber" data-part="3주차: 서브에이전트 게이트 운영">
+      <h2>3주차: 서브에이전트 게이트 운영</h2>
+      <div class="deck-body"><ul><li>Coordinator 지침 안정화</li><li>Auditor별 작업 범위 제한</li><li>Reviewer / Verifier 읽기 전용 운영</li><li>finding 후보 → verified 전이 테스트</li><li>오탐 반려 시나리오 테스트</li></ul></div>
     </section>
 
     <section class="slide surface markdown-slide accent-amber" data-part="4주차: 보고와 반복 개선">
@@ -541,10 +541,6 @@ flowchart LR
       <div class="deck-body"><ul><li><a class="inline-link" href="https://csrc.nist.gov/pubs/sp/800/218/final">NIST SP 800-218 SSDF</a></li><li><a class="inline-link" href="https://learn.microsoft.com/en-us/compliance/assurance/assurance-microsoft-security-development-lifecycle">Microsoft Security Development Lifecycle</a></li><li><a class="inline-link" href="https://learn.microsoft.com/en-us/azure/security/develop/threat-modeling-tool">Microsoft Threat Modeling Tool</a></li><li><a class="inline-link" href="https://learn.microsoft.com/en-us/windows-hardware/drivers/driversecurity/binskim-check-binaries">BinSkim</a></li><li><a class="inline-link" href="https://learn.microsoft.com/en-us/sysinternals/downloads/accesschk">AccessChk</a></li><li><a class="inline-link" href="https://learn.microsoft.com/en-us/sysinternals/downloads/procmon">Process Monitor</a></li><li><a class="inline-link" href="https://learn.microsoft.com/en-us/sysinternals/downloads/autoruns">Autoruns</a></li><li><a class="inline-link" href="https://learn.microsoft.com/en-us/sysinternals/downloads/sigcheck">Sigcheck</a></li><li><a class="inline-link" href="https://docs.github.com/en/code-security/concepts/code-scanning/codeql/about-code-scanning-with-codeql">CodeQL</a></li></ul></div>
     </section>
 
-    <section class="slide surface markdown-slide accent-amber" data-part="Slidev 작성 참고 자료">
-      <h2>Slidev 작성 참고 자료</h2>
-      <div class="deck-body"><ul><li><a class="inline-link" href="https://sli.dev/guide/syntax">Slidev Syntax Guide</a></li><li><a class="inline-link" href="https://sli.dev/features/importing-slides">Slidev Importing Slides</a></li><li><a class="inline-link" href="https://sli.dev/guide/why">Slidev Why / Markdown-based</a></li></ul></div>
-    </section>
   </main>
 
   <nav class="nav" aria-label="Slide navigation">

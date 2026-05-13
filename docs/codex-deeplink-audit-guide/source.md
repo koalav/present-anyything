@@ -1,6 +1,6 @@
 # Codex와 Android Deeplink Audit 사용자 가이드
 
-CLI 설치, repo 셋업, Codex 활용 흐름을 사용자 가이드 형식으로 정리한 deck.
+CLI 설치, 저장소 초기화, Codex 연동 흐름을 사용자 가이드 형식으로 정리한 발표 자료입니다.
 
 ## Slide 01
 
@@ -14,17 +14,17 @@ CLI 설치, init 셋업, Codex 활용 흐름, 산출물 확인 방법
 
 ## Slide 02
 
-# Goals
+# 목표
 
 ```mermaid
 mindmap
-  root((Goals))
+  root((목표))
     설치 흐름 이해
     init 셋업 이해
     Codex 활용 방식 이해
-    Dynamic 검증 필수화 이해
+    동적 검증 필수화 이해
     Skill 세부 내용 이해
-    Evidence 확보 흐름 이해
+    증거 확보 흐름 이해
 ```
 
 ## Slide 03
@@ -37,15 +37,15 @@ flowchart LR
     B --> C[Skill]
     B --> D[Local Plugin]
     D --> E[Android Security Analyzer CLI]
-    E --> F[Static 분석]
-    E --> G[Dynamic 검증]
-    F --> H[Evidence]
+    E --> F[정적 분석]
+    E --> G[동적 검증]
+    F --> H[증거]
     G --> H
-    H --> I[Finding과 Report]
+    H --> I[Finding과 보고서]
 ```
 
 - 핵심은 Codex가 직접 분석 엔진이 아니라, 설치된 Skill과 CLI를 조율한다는 점이다.
-- Static만으로 끝내지 않고 Dynamic까지 수행해 evidence를 확보한다.
+- 정적 분석만으로 끝내지 않고 동적 검증까지 수행해 증거를 확보한다.
 
 ## Slide 04
 
@@ -93,7 +93,7 @@ flowchart TB
 ```
 
 - 이름은 두 개지만 내부 진입점은 하나다.
-- 그래서 alias가 달라도 동일한 실행 흐름을 탄다.
+- 그래서 명령 별칭이 달라도 동일한 실행 흐름을 탄다.
 
 ## Slide 06
 
@@ -103,7 +103,7 @@ flowchart TB
 sequenceDiagram
     participant User as 사용자
     participant CLI as CLI
-    participant Repo as 대상 Repo
+    participant Repo as 대상 저장소
     participant Codex as Codex 설정
     participant Plugin as Local Plugin
 
@@ -115,15 +115,15 @@ sequenceDiagram
     CLI-->>User: Codex에서 사용할 준비 완료
 ```
 
-- `init`은 분석을 수행하는 명령이 아니라, 분석을 위한 실행 환경을 repo에 심는 단계다.
+- `init`은 분석을 수행하는 명령이 아니라, 분석을 위한 실행 환경을 대상 저장소에 심는 단계다.
 
 ## Slide 07
 
-# 대상 repo에 생기는 구조
+# 대상 저장소에 생기는 구조
 
 ```mermaid
 flowchart TB
-    A[대상 Repo] --> B[tools/security/android-security-analyzer]
+    A[대상 저장소] --> B[tools/security/android-security-analyzer]
     A --> C[.codex]
     A --> D[plugins/android-security-analyzer]
     A --> E[.agents/plugins/marketplace.json]
@@ -169,29 +169,29 @@ flowchart LR
 
 ```mermaid
 sequenceDiagram
-    participant Repo as 대상 Repo
+    participant Repo as 대상 저장소
     participant Config as .codex 설정
     participant Codex as Codex 세션
     participant Plugin as Local Plugin
 
-    Repo->>Config: repo 전용 설정 저장
-    Config->>Codex: local plugin과 skill 위치 제공
+    Repo->>Config: 저장소 전용 설정 저장
+    Config->>Codex: 로컬 plugin과 skill 위치 제공
     Codex->>Plugin: 설치된 plugin 로드
     Plugin-->>Codex: 사용 가능한 분석 흐름 노출
 ```
 
-- Codex는 이 설정을 보고 repo별 도구를 인식한다.
+- Codex는 이 설정을 보고 저장소별 도구를 인식한다.
 - 이 단계가 없으면 일반 파일 편집 세션으로만 동작한다.
 
 ## Slide 10
 
-# local plugin 등록 방식
+# 로컬 plugin 등록 방식
 
 ```mermaid
 flowchart LR
     A[plugins/android-security-analyzer] --> B[marketplace.json]
     B --> C[local source path 등록]
-    C --> D[Codex가 repo local plugin으로 인식]
+    C --> D[Codex가 저장소 로컬 plugin으로 인식]
 ```
 
 - plugin은 “분석 기능이 여기 있다”는 연결점이다.
@@ -213,9 +213,9 @@ flowchart TB
 
 구체적으로 Skill에 들어가야 할 내용
 - 대상 입력값 형식
-- static에서 확인할 항목
-- dynamic에서 반드시 검증할 항목
-- evidence 저장 규칙
+- 정적 분석에서 확인할 항목
+- 동적 검증에서 반드시 확인할 항목
+- 증거 저장 규칙
 - finding 제목과 severity 형식
 - MASVS나 내부 기준 매핑 방식
 
@@ -231,11 +231,11 @@ sequenceDiagram
     participant Codex as Codex
     participant Plugin as Local Plugin
     participant CLI as CLI
-    participant Files as Reports and Evidence
+    participant Files as 보고서와 증거
 
     Codex->>Plugin: 사용 가능한 기능 조회
     Plugin->>CLI: 적절한 명령 실행 유도
-    CLI-->>Files: report와 evidence 생성
+    CLI-->>Files: 보고서와 증거 생성
     Files-->>Codex: 결과 읽기
 ```
 
@@ -250,7 +250,7 @@ sequenceDiagram
 flowchart LR
     A[doctor] --> B[static]
     B --> C[semgrep]
-    C --> D[dynamic 필수]
+    C --> D[동적 검증 필수]
     D --> E[report]
     E --> F[analyze 전체 실행]
 ```
@@ -260,10 +260,10 @@ flowchart LR
 - `static`: manifest와 소스에서 딥링크 엔트리 추출
 - `semgrep`: validation, sink, 위험 패턴 탐지
 - `dynamic`: 실제 호출로 증거 확보, 결과 검증
-- `report`: evidence를 묶어 finding과 보고서 생성
+- `report`: 증거를 묶어 finding과 보고서 생성
 
 중요
-- 여기서는 dynamic을 선택 기능이 아니라 필수 evidence 확보 단계로 본다.
+- 여기서는 동적 검증을 선택 기능이 아니라 필수 증거 확보 단계로 본다.
 
 ## Slide 14
 
@@ -275,8 +275,8 @@ sequenceDiagram
     participant Codex as Codex
     participant Skill as Skill
     participant CLI as CLI
-    participant Evidence as Evidence
-    participant Report as Report
+    participant Evidence as 증거
+    participant Report as 보고서
 
     User->>Codex: 딥링크 감사 요청
     Codex->>Skill: 절차와 기준 확인
@@ -298,13 +298,13 @@ sequenceDiagram
 flowchart TB
     A[사용자 요청] --> B[딥링크 inventory 해줘]
     A --> C[validation과 sink 확인해줘]
-    A --> D[dynamic까지 돌려서 evidence 확보해줘]
+    A --> D[동적 검증까지 수행해 증거 확보해줘]
     A --> E[보고서 초안 만들어줘]
 ```
 
 권장 요청 방식
 - 대상 앱과 범위를 먼저 명시
-- dynamic 검증까지 포함한다고 분명히 말하기
+- 동적 검증까지 포함한다고 분명히 말하기
 - 최종 산출물 형식도 같이 지정하기
 
 ## Slide 16
@@ -323,13 +323,13 @@ sequenceDiagram
     Codex->>Doctor: 환경 점검
     Codex->>Static: 엔트리 추출과 테스트 케이스 생성
     Codex->>Semgrep: 위험 패턴 확인
-    Codex->>Dynamic: 실제 딥링크 호출과 evidence 확보
+    Codex->>Dynamic: 실제 딥링크 호출과 증거 확보
     Codex->>Report: 결과 종합과 finding 작성
 ```
 
 이 흐름을 권장하는 이유
-- static만으로는 실제 재현 가능성을 확정하기 어렵다.
-- dynamic까지 해야 evidence가 살아난다.
+- 정적 분석만으로는 실제 재현 가능성을 확정하기 어렵다.
+- 동적 검증까지 해야 증거가 살아난다.
 
 ## Slide 17
 
@@ -347,8 +347,8 @@ flowchart LR
 각 파일의 의미
 - `static-report.json`: 엔트리포인트와 manifest 중심 정적 결과
 - `semgrep-report.json`: 코드 패턴과 위험 후보
-- `deeplink-tests.generated.json`: dynamic에서 재사용할 테스트 입력
-- `dynamic-report.json`: 실제 실행 기반 evidence
+- `deeplink-tests.generated.json`: 동적 검증에서 재사용할 테스트 입력
+- `dynamic-report.json`: 실제 실행 기반 증거
 - `final-report.md`: 보고서 초안
 
 ## Slide 18
@@ -358,7 +358,7 @@ flowchart LR
 ```mermaid
 flowchart TB
     A[반복 가능한 절차] --> D[감사 품질 안정화]
-    B[Dynamic evidence 확보] --> D
+    B[동적 증거 확보] --> D
     C[Codex의 문맥 연결] --> D
     D --> E[검토하기 쉬운 보고서 초안]
 ```
@@ -367,7 +367,7 @@ flowchart TB
 
 ## Slide 19
 
-# CLI만 쓸 때와 Codex를 붙였을 때
+# CLI 단독 사용과 Codex 연동의 차이
 
 ```mermaid
 flowchart LR
@@ -377,10 +377,10 @@ flowchart LR
 
     B[Codex + Skill + Plugin] --> B1[절차 자동 조율]
     B --> B2[결과 해석 보조]
-    B --> B3[Evidence와 report 연결]
+    B --> B3[증거와 보고서 연결]
 ```
 
-- CLI 단독도 가능하지만, Codex를 붙이면 사람이 흐름을 덜 놓친다.
+- CLI만으로도 실행할 수 있지만, Codex를 연동하면 절차 관리와 결과 해석 부담이 줄어든다.
 
 ## Slide 20
 
@@ -392,7 +392,7 @@ flowchart LR
     C[init] --> D[셋업]
     E[plugin] --> F[연결]
     G[skill] --> H[절차]
-    I[dynamic] --> J[Evidence 확보 필수]
+    I[dynamic] --> J[증거 확보 필수]
     J --> K[신뢰할 수 있는 보고서]
 ```
 
@@ -400,4 +400,4 @@ flowchart LR
 - CLI는 분석 엔진이다.
 - init은 Codex가 그 엔진을 쓰게 만드는 셋업 단계다.
 - plugin은 연결점이고, skill은 절차다.
-- static만으로 끝내지 않고 dynamic까지 수행해야 evidence를 확보할 수 있다.
+- 정적 분석만으로 끝내지 않고 동적 검증까지 수행해야 증거를 확보할 수 있다.

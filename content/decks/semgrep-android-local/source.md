@@ -1,6 +1,6 @@
-# Semgrep CE Local Rules for Android
+# Semgrep CE로 Android 보안 점검
 
-Semgrep CE CLI와 로컬 룰 2개만으로 Android 보안 후보를 찾고,
+Semgrep CE CLI와 로컬 룰 2개로 Android 보안 후보를 찾고, AI 분류로 오탐을 줄이는 운영 흐름을 설명하는 발표 자료입니다.
 
 ## Slide 01
 
@@ -45,7 +45,7 @@ semgrep scan --metrics=off \
   app/src/main
 ```
 
-- 두 룰은 한 파일 `rules/android-local.yml` 안에 묶어 두고, 새 룰이 생기면 같은 파일에 append 합니다.
+- 두 룰은 한 파일 `rules/android-local.yml` 안에 묶어 두고, 새 룰이 생기면 같은 파일에 추가합니다.
 - 목적은 "완성형 판정기"가 아니라, 후보를 빠르게 추출하고 분류 시간을 줄이는 데 있습니다.
 
 ## Slide 04
@@ -123,7 +123,7 @@ class PendingIntentLab {
 }
 ```
 
-- 이 함수는 학습용으로 5가지 안티패턴이 한 줄에 겹친 합성 예시입니다.
+- 이 함수는 학습용으로 5가지 안티패턴이 한 함수 안에 겹친 합성 예시입니다.
 - `FLAG_MUTABLE`: 받은 쪽이 미채워진 필드나 extras를 보강할 수 있습니다.
 - `Intent("ACTION")`: explicit component가 아니라 implicit `Intent`입니다.
 - `requestCode = 0`: 다른 토큰과 충돌하기 쉬운 기본값입니다.
@@ -183,7 +183,7 @@ rules:
 - 이 규칙은 의도적으로 넓게 `FLAG_MUTABLE` 사용처를 1차 수집합니다.
 - `metavariable-regex`의 `.*FLAG_MUTABLE.*`는 부분문자열 매칭이라 일부러 느슨하게 두고, 정확도는 AI 분류 단계에서 보강합니다.
 - 실제 위험도는 2차 분류에서 봅니다.
-- 즉, "mutable이 정말 필요한가", "Intent가 explicit인가", "추가 red flag가 있는가"를 사람이나 AI가 이어서 판단합니다.
+- 즉, "mutable이 정말 필요한가", "Intent가 explicit인가", "추가 위험 신호가 있는가"를 사람이나 AI가 이어서 판단합니다.
 
 ## Slide 10
 
@@ -208,14 +208,14 @@ $ semgrep scan --metrics=off \
          12┆ return PendingIntent.getBroadcast(
 ```
 
-- 여기서 바로 보는 질문:
+- 1차 확인 질문:
   - 이 mutable이 정말 필요한가
   - `Intent`가 explicit인가
   - `requestCode`, `URI grant`, `민감 action`이 같이 붙어 있는가
 
 ## Slide 11
 
-# 예시 1: 오탐 사례 (합법적인 mutable use case)
+# 예시 1: 오탐 사례 (정당한 mutable 사용 사례)
 
 ```kotlin
 object ReplyActionFactory {
@@ -237,18 +237,18 @@ object ReplyActionFactory {
 
 - notification inline reply처럼 시스템이 `RemoteInput` 결과를 채워야 하는 경우에는 mutable이 실제로 필요할 수 있습니다.
 - 이 경우에도 component/package는 고정하고, mutable이 필요한 이유를 PR 설명·코드 코멘트·RFC 중 한 곳에 남겨 둡니다.
-- 그래야 다음 분류 사이클에서 동일 패턴을 allowlist로 빠르게 분기할 수 있습니다.
+- 그래야 다음 분류 사이클에서 동일 패턴을 허용 목록으로 빠르게 분기할 수 있습니다.
 
 ## Slide 12
 
 # 예시 1: AI 분류 포인트
 
 ```text
-1. 이 use case가 inline reply / bubble / alarm 등으로 mutable이 정말 필요한지 확인한다.
+1. 이 사용 사례가 inline reply / bubble / alarm 등으로 mutable이 정말 필요한지 확인한다.
 2. Intent가 explicit component 또는 package로 고정돼 있는지 확인한다.
 3. requestCode가 고유한지, FLAG_UPDATE_CURRENT가 민감 extra를 덮어쓰지 않는지 본다.
 4. URI grant, 민감 action, 내부 receiver/service의 extra 신뢰 여부를 함께 본다.
-5. 실제로 필요 없는 mutable이면 true positive로, 합법적 시스템 use case면 allowlist 후보로 기록한다.
+5. 실제로 필요 없는 mutable이면 실제 취약점으로, 정당한 시스템 사용 사례면 허용 목록 후보로 기록한다.
 ```
 
 ## Slide 13
@@ -272,12 +272,12 @@ object ReplyActionFactory {
 추가 요청:
 1. 실제 취약점 / 오탐 / 추가 확인 필요 중 하나로 분류
 2. 그렇게 판단한 근거 3개
-3. explicit 여부, requestCode, URI grant, 민감 action 관점에서 더 확인할 call path
+3. explicit 여부, requestCode, URI grant, 민감 action 관점에서 더 확인할 호출 경로
 4. 규칙 튜닝 포인트 1개와 코드리뷰 코멘트 3줄
 ```
 
-- sample 1에서는 `FLAG_MUTABLE` 자체보다 implicit `Intent`, `URI grant`, 민감 action이 함께 붙는지까지 봐야 합니다.
-- AI에게는 "실제로 mutable이 필요한 use case인가"를 먼저 묻게 하는 편이 분류 효율이 좋습니다.
+- 예시 1에서는 `FLAG_MUTABLE` 자체보다 implicit `Intent`, `URI grant`, 민감 action이 함께 붙는지까지 봐야 합니다.
+- AI에게는 "실제로 mutable이 필요한 사용 사례인가"를 먼저 묻게 하는 편이 분류 효율이 좋습니다.
 
 ## Slide 14
 
@@ -351,7 +351,7 @@ class ManifestVerifier {
 - 기본 안전선:
   - `SHA-256` 이상, 서명은 `SHA256withRSA` / `SHA256withECDSA` 권장
   - 알고리즘 선택은 정책 한 곳에 모아 두고 호출부에서 분기 금지
-- 참고로 비교 함수도 timing-safe 한 `MessageDigest.isEqual` 사용 — 약한 해시와는 별개 이슈지만 같이 다듬어 두면 좋습니다.
+- 참고로 비교 함수도 타이밍 공격에 강한 `MessageDigest.isEqual` 사용 — 약한 해시와는 별개 이슈지만 같이 다듬어 두면 좋습니다.
 
 ## Slide 17
 
@@ -426,7 +426,7 @@ class CertificateScreen {
 }
 ```
 
-- 이 코드만 봐서는 SHA-1 지문이 trust decision에 쓰이는지, 단순 표시·기록용인지 가릴 수 없습니다.
+- 이 코드만 봐서는 SHA-1 지문이 신뢰 판단에 쓰이는지, 단순 표시·기록용인지 가릴 수 없습니다.
 - Semgrep은 호출 자체만 보기 때문에 우선 후보로 잡고, "어디에 쓰이는가"는 다음 단계에서 봅니다.
 
 ## Slide 20
@@ -458,19 +458,19 @@ AI 분류 포인트
 추가 요청:
 1. 실제 취약점 / 오탐 / 추가 확인 필요 중 하나로 분류
 2. 그렇게 판단한 근거 3개
-3. 이 값이 trust decision, UI 표시, 호환성 경로 중 어디에 쓰이는지 더 확인할 함수 / call path
+3. 이 값이 신뢰 판단, UI 표시, 호환성 경로 중 어디에 쓰이는지 더 확인할 함수 / 호출 경로
 4. SHA-256 이상 대체 방향과 규칙 튜닝 아이디어 1개
 ```
 
-- sample 2에서는 "약한 알고리즘을 썼다"보다 "그 결과가 실제 보안 판단에 쓰이는가"를 먼저 가려내는 것이 중요합니다.
-- `check_id`, 호출 코드, 주변 함수, helper 이름까지 함께 주는 것이 중요합니다.
+- 예시 2에서는 "약한 알고리즘을 썼다"보다 "그 결과가 실제 보안 판단에 쓰이는가"를 먼저 가려내는 것이 중요합니다.
+- `check_id`, 호출 코드, 주변 함수, 헬퍼 이름까지 함께 주는 것이 중요합니다.
 
 ## Slide 22
 
 # 정리
 
 - 룰은 의도적으로 넓게, 정확도는 AI 분류 단계에서 — 이 두 단계 구조가 발표의 핵심입니다.
-- 예시 1 (PendingIntent): `FLAG_MUTABLE`은 1차 수집, AI에게는 "mutable이 정말 필요한 use case인가"를 먼저 묻습니다.
-- 예시 2 (weak hash): 약한 해시 호출은 1차 수집, AI에게는 "이 결과가 trust decision에 쓰이는가"를 먼저 묻습니다.
-- 두 사례의 공통 패턴 — AI는 코드 자체보다 *사용 목적*과 *call path*를 가리는 데 가장 효과적입니다.
+- 예시 1 (PendingIntent): `FLAG_MUTABLE`은 1차 수집, AI에게는 "mutable이 정말 필요한 사용 사례인가"를 먼저 묻습니다.
+- 예시 2 (약한 해시): 약한 해시 호출은 1차 수집, AI에게는 "이 결과가 신뢰 판단에 쓰이는가"를 먼저 묻습니다.
+- 두 사례의 공통 패턴 — AI는 코드 자체보다 *사용 목적*과 *호출 경로*를 가리는 데 가장 효과적입니다.
 - Semgrep CE + 로컬 룰만으로도 후보 추출은 충분하고, 최종 판정은 사람·AI 분류와 묶을 때 정확도가 올라갑니다.

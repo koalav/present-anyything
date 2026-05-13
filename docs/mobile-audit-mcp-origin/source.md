@@ -1,6 +1,6 @@
 # MCP로 구성하는 AI 기반 모바일 앱 보안 감사
 
-MCP, Tool, Skill, 감사 시스템, 운영 통제를 중심으로
+MCP, Tool, Skill, 감사 시스템, 운영 통제를 중심으로 모바일 앱 보안 감사를 운영하는 방법을 설명하는 발표 자료입니다.
 
 ## Slide 01
 
@@ -61,12 +61,12 @@ Tool Result -> Evidence -> MASVS Mapping -> Finding
 
 ## Slide 05
 
-# AI Agent: 일반 LLM과의 차이
+# AI 에이전트: 일반 LLM과의 차이
 
 | 구분 | 특징 |
 |---|---|
 | 일반 LLM | 생성과 요약에 강하지만 도구 실행은 못함 |
-| AI Agent | 목표 분해, 도구 선택, 결과 해석, 다음 행동 결정 |
+| AI 에이전트 | 목표 분해, 도구 선택, 결과 해석, 다음 행동 결정 |
 
 ```mermaid
 flowchart LR
@@ -91,7 +91,7 @@ flowchart LR
 ```mermaid
 sequenceDiagram
     participant U as User
-    participant A as AI Agent (LLM)
+    participant A as AI 에이전트 (LLM)
     participant T as Tool
 
     Note over A: Tool 정의 사전 등록
@@ -124,7 +124,7 @@ sequenceDiagram
 
 ```mermaid
 flowchart TB
-    H["Host (AI Agent App)"]
+    H["Host (AI 에이전트 앱)"]
     C[MCP Client]
     S1["MCP Server #1<br>예: Android MCP"]
     S2["MCP Server #2<br>예: JADX MCP"]
@@ -142,10 +142,10 @@ flowchart TB
     S1 --> P
 ```
 
-- **Host**: AI Agent를 실행하는 앱 (Claude Code, Codex 등)
+- **Host**: AI 에이전트를 실행하는 앱 (Claude Code, Codex 등)
 - **MCP Client**: Host 안에서 서버와 표준 프로토콜로 통신
 - **MCP Server**: 도구 묶음을 노출 — Tools / Resources / Prompts
-- Client 1개에 Server N개 연결 가능
+- Client 하나에 여러 Server 연결 가능
 
 MCP는 AI 애플리케이션과 외부 도구를 연결하는 표준 프로토콜이다.
 
@@ -210,7 +210,7 @@ mobile-app-security-audit/
 ```
 
 - 서버별 로그와 버전 기록
-- 위험 Tool 자동 승인 금지
+- 위험 도구 자동 승인 금지
 
 ## Slide 12
 
@@ -219,7 +219,7 @@ mobile-app-security-audit/
 ```mermaid
 flowchart TB
     U[사용자]
-    A["AI Agent Client<br>(Skill 적용)"]
+    A["AI 에이전트 Client<br>(Skill 적용)"]
     M[MCP Server Layer]
     T["실제 보안 도구<br>JADX · Frida · Ghidra · MobSF · ..."]
     Tg[대상 앱 / 디바이스 / API]
@@ -231,14 +231,14 @@ flowchart TB
     E --> R
 ```
 
-- 사용자는 Agent에게 감사 요청
+- 사용자는 에이전트에게 감사 요청
 - Skill이 절차를 표준화, MCP Server Layer가 도구를 노출
 - 도구는 실제 대상에 작동, 결과를 Evidence Store로 모음
-- Report가 최종 산출물
+- 보고서가 최종 산출물
 
 ## Slide 13
 
-# HITL: 사람 승인이 필요한 작업
+# HITL: 사람 승인 지점
 
 승인 필요 작업
 - 앱 설치와 삭제
@@ -286,7 +286,7 @@ flowchart LR
 
 ```mermaid
 flowchart TB
-    U[감사자] --> A[AI Agent]
+    U[감사자] --> A[AI 에이전트]
     A --> S[Audit Skill]
     A --> T[Tool Registry]
     A --> G[Approval Gate]
@@ -298,7 +298,7 @@ flowchart TB
     G --> A
 ```
 
-- AI Agent
+- AI 에이전트
 - Audit Skill
 - Tool Registry
 - Approval Gate
@@ -465,9 +465,9 @@ frida-ps -U
 
 ## Slide 29
 
-# 여기까지 단독 도구
+# 단독 도구에서 묶음 도구로
 
-## 이제 묶음 도구로
+## 한 도구씩 보는 단계에서 여러 도구를 조합하는 단계로
 
 - 단독 도구: Android · JADX · Frida · Ghidra
 - 묶음 도구: WebView·웹 · 정적 스캐너 · 네트워크·워크플로우
@@ -497,7 +497,7 @@ frida-ps -U
 ```
 
 - WebView 디버깅 활성화 확인
-- 페이지 콘텐츠를 Agent 지시문으로 신뢰하지 않기
+- 페이지 콘텐츠를 에이전트 지시문으로 신뢰하지 않기
 
 ## Slide 32
 
@@ -578,7 +578,7 @@ scripts/
 ```mermaid
 sequenceDiagram
     participant Auditor as 감사자
-    participant Agent as AI Agent
+    participant Agent as AI 에이전트
     participant Android as Android MCP
     participant JADX as JADX MCP
     participant Frida as Frida MCP
@@ -602,7 +602,7 @@ sequenceDiagram
 
 ## Slide 40
 
-# Finding이 만들어지는 흐름
+# Finding 작성 흐름
 
 ```mermaid
 flowchart LR
@@ -685,7 +685,7 @@ evidence/{app_name}/{date}/
 - 증거 경로
 - 테스트 일시
 - 도구 버전
-- Tool Call 요약
+- 도구 호출 요약
 - 민감정보 마스킹 여부
 
 ## Slide 45
@@ -708,7 +708,7 @@ evidence/{app_name}/{date}/
 - 승인된 범위 문서 확보
 - 테스트 계정 준비
 - MCP Server 출처와 버전 확인
-- 위험 Tool 자동 승인 비활성화
+- 위험 도구 자동 승인 비활성화
 
 실행 중
 - 능동 스캔 전 승인 확인
@@ -727,7 +727,7 @@ evidence/{app_name}/{date}/
 - MCP는 도구를 연결하는 프로토콜
 - Tool은 실제 실행 단위
 - Skill은 절차와 판단 기준
-- Agent는 절차와 도구 호출을 조율하는 역할
+- 에이전트는 절차와 도구 호출을 조율하는 역할
 - 최종 판단과 책임은 감사자에게 남습니다
 
 ## Slide 48
