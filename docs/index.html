@@ -1,548 +1,85 @@
 <!doctype html>
-<html lang="ko" data-palette="slate-gray">
+<html lang="ko">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Presentation Index</title>
-  <script src="./palette.js"></script>
-  <style>
-    @import url("https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css");
-
-    :root {
-      color-scheme: light;
-      --bg: #f8fafc;
-      --panel: #ffffff;
-      --panel-soft: #f1f5f9;
-      --text: #1e293b;
-      --muted: #64748b;
-      --border: #e2e8f0;
-      --shadow: 0 16px 40px rgba(15, 23, 42, 0.06);
-      --accent: #475569;
-      --accent-soft: #e2e8f0;
-    }
-
-    html[data-palette="warm-gray"] {
-      --bg: #f7f7f5;
-      --panel: #ffffff;
-      --panel-soft: #f1f1ee;
-      --text: #2f3437;
-      --muted: #737373;
-      --border: #e7e5e4;
-      --accent: #78716c;
-      --accent-soft: #e7e5e4;
-    }
-
-    html[data-palette="slate-gray"] {
-      --bg: #f8fafc;
-      --panel: #ffffff;
-      --panel-soft: #f1f5f9;
-      --text: #1e293b;
-      --muted: #64748b;
-      --border: #e2e8f0;
-      --accent: #475569;
-      --accent-soft: #e2e8f0;
-    }
-
-    html[data-palette="graphite"] {
-      --bg: #f4f4f2;
-      --panel: #fbfbfa;
-      --panel-soft: #ececea;
-      --text: #27272a;
-      --muted: #71717a;
-      --border: #d4d4d8;
-      --accent: #52525b;
-      --accent-soft: #e4e4e7;
-    }
-
-    * {
-      box-sizing: border-box;
-    }
-
-    body {
-      margin: 0;
-      min-height: 100vh;
-      font-family: "Pretendard", "Noto Sans KR", "Apple SD Gothic Neo", "Malgun Gothic", sans-serif;
-      color: var(--text);
-      background: var(--bg);
-      transition: background-color 180ms ease, color 180ms ease;
-    }
-
-    main {
-      max-width: 1100px;
-      margin: 0 auto;
-      padding: 72px 24px 96px;
-    }
-
-    .hero {
-      margin-bottom: 28px;
-    }
-
-    .eyebrow {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      padding: 8px 14px;
-      border-radius: 999px;
-      background: var(--accent-soft);
-      color: var(--accent);
-      font-size: 14px;
-      font-weight: 700;
-      letter-spacing: 0.04em;
-      text-transform: uppercase;
-    }
-
-    h1 {
-      margin: 18px 0 12px;
-      font-size: clamp(40px, 6vw, 72px);
-      line-height: 0.94;
-      letter-spacing: -0.04em;
-    }
-
-    .lead {
-      max-width: 760px;
-      margin: 0;
-      color: var(--muted);
-      font-size: 18px;
-      line-height: 1.7;
-    }
-
-    .toolbar {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 12px;
-      align-items: center;
-      margin-top: 28px;
-      margin-bottom: 36px;
-      padding: 18px;
-      border: 1px solid var(--border);
-      border-radius: 20px;
-      background: var(--panel);
-      box-shadow: var(--shadow);
-    }
-
-    .toolbar-label {
-      font-size: 14px;
-      font-weight: 700;
-      color: var(--muted);
-      margin-right: 4px;
-    }
-
-    .palette-picker {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 10px;
-    }
-
-    .palette-btn {
-      appearance: none;
-      border: 1px solid var(--border);
-      background: var(--panel-soft);
-      color: var(--text);
-      border-radius: 999px;
-      padding: 10px 14px;
-      cursor: pointer;
-      font: inherit;
-      display: inline-flex;
-      align-items: center;
-      gap: 10px;
-      transition: transform 160ms ease, border-color 160ms ease, background 160ms ease;
-    }
-
-    .palette-btn:hover,
-    .palette-btn:focus-visible {
-      transform: translateY(-1px);
-      border-color: var(--accent);
-      outline: none;
-    }
-
-    .palette-btn.active {
-      background: var(--accent-soft);
-      border-color: var(--accent);
-      color: var(--accent);
-    }
-
-    .swatches {
-      display: inline-flex;
-      gap: 4px;
-    }
-
-    .swatch {
-      width: 14px;
-      height: 14px;
-      border-radius: 999px;
-      border: 1px solid rgba(0, 0, 0, 0.08);
-    }
-
-    .palette-preview {
-      display: grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-      gap: 14px;
-      margin-bottom: 28px;
-    }
-
-    .palette-card {
-      border: 1px solid var(--border);
-      border-radius: 20px;
-      background: var(--panel);
-      box-shadow: var(--shadow);
-      overflow: hidden;
-      transition: transform 160ms ease, border-color 160ms ease;
-    }
-
-    .palette-card:hover {
-      transform: translateY(-2px);
-      border-color: var(--accent);
-    }
-
-    .palette-card-top {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      height: 68px;
-    }
-
-    .palette-card-body {
-      padding: 14px 16px 16px;
-    }
-
-    .palette-card strong {
-      display: block;
-      font-size: 15px;
-      margin-bottom: 6px;
-    }
-
-    .palette-card span {
-      color: var(--muted);
-      font-size: 13px;
-      line-height: 1.5;
-    }
-
-    .deck-list {
-      display: grid;
-      gap: 18px;
-      margin-top: 20px;
-    }
-
-    .deck {
-      border: 1px solid var(--border);
-      border-radius: 24px;
-      background: var(--panel);
-      box-shadow: var(--shadow);
-      padding: 24px;
-      transition: transform 180ms ease, border-color 180ms ease, box-shadow 180ms ease;
-    }
-
-    .deck:hover,
-    .deck:focus-within {
-      transform: translateY(-3px);
-      border-color: var(--accent);
-      box-shadow: 0 24px 56px rgba(15, 23, 42, 0.1);
-    }
-
-    .deck-header {
-      display: flex;
-      gap: 18px;
-      align-items: flex-start;
-      justify-content: space-between;
-    }
-
-    .deck-copy {
-      min-width: 0;
-    }
-
-    .deck-copy strong {
-      display: block;
-      font-size: 24px;
-      line-height: 1.2;
-      margin-bottom: 8px;
-    }
-
-    .deck-copy span {
-      display: block;
-      color: var(--muted);
-      font-size: 16px;
-      line-height: 1.6;
-    }
-
-    .deck-link {
-      flex: none;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      min-height: 44px;
-      padding: 0 16px;
-      border-radius: 999px;
-      border: 1px solid var(--border);
-      background: var(--panel-soft);
-      color: var(--accent);
-      text-decoration: none;
-      font-weight: 700;
-      white-space: nowrap;
-    }
-
-    .deck-link:hover,
-    .deck-link:focus-visible {
-      border-color: var(--accent);
-      outline: none;
-    }
-
-    .deck-toc {
-      margin-top: 18px;
-      border-top: 1px solid var(--border);
-      padding-top: 16px;
-    }
-
-    .deck-toc summary {
-      cursor: pointer;
-      list-style: none;
-      font-weight: 700;
-      color: var(--accent);
-      user-select: none;
-    }
-
-    .deck-toc summary::-webkit-details-marker {
-      display: none;
-    }
-
-    .deck-toc summary::before {
-      content: "▸";
-      display: inline-block;
-      margin-right: 8px;
-      transition: transform 160ms ease;
-    }
-
-    .deck-toc[open] summary::before {
-      transform: rotate(90deg);
-    }
-
-    .deck-toc ul {
-      margin: 14px 0 0;
-      padding-left: 20px;
-      display: grid;
-      gap: 8px;
-      color: var(--text);
-      line-height: 1.6;
-    }
-
-    @media (max-width: 900px) {
-      .palette-preview {
-        grid-template-columns: 1fr;
-      }
-    }
-
-    @media (max-width: 640px) {
-      main {
-        padding-top: 56px;
-      }
-
-      .deck {
-        padding: 20px;
-      }
-
-      .deck-header {
-        flex-direction: column;
-      }
-
-      .toolbar {
-        padding: 14px;
-      }
-    }
-  </style>
+  <meta name="color-scheme" content="dark" />
+  <title>Presentation Scaffold</title>
+  <link rel="stylesheet" href="./assets/styles/hub.css" />
 </head>
 <body>
-  <main>
-    <section class="hero">
-      <div class="eyebrow">Slidev Static Site</div>
-      <h1>Presentation Index</h1>
-      <p class="lead">GitHub Pages에서 정적으로 제공되는 Slidev deck 목록입니다. 현재 build base는 <code>present-anyything</code> 저장소 이름을 기준으로 계산됩니다.</p>
+  <main class="wrap">
+    <header class="intro">
+      <p class="meta">GitHub Pages presentation scaffold</p>
+      <h1>발표자료 모음</h1>
+      <p class="lead">대상별 발표를 독립 HTML 덱으로 관리하는 정적 사이트입니다.</p>
+    </header>
+
+    <section class="decks" aria-label="Deck list">
+      <a class="card" href="./ai-agent-effective-use/">
+        <span class="tag tag-agent">AI 에이전트</span>
+        <h2>AI 에이전트의 효과적인 활용</h2>
+        <p>질의응답에서 도구 실행, 검증 루프, 보안 가드레일까지</p>
+      </a>
+
+      <a class="card" href="./indirect-prompt-injection/">
+        <span class="tag tag-security">AI 보안</span>
+        <h2>Indirect Prompt Injection과 Lethal Trifecta</h2>
+        <p>에이전트형 AI의 간접 프롬프트 인젝션과 권한 분리 설계</p>
+      </a>
+
+      <a class="card" href="./mobile-audit-mcp-origin/">
+        <span class="tag tag-mobile">모바일 보안</span>
+        <h2>MCP로 구성하는 AI 기반 모바일 앱 보안 감사</h2>
+        <p>Skill, MCP, 보안 도구를 엮는 모바일 감사 운영 구조</p>
+      </a>
+
+      <a class="card" href="./semgrep-android-local/">
+        <span class="tag tag-tool">Semgrep</span>
+        <h2>Semgrep CE로 Android 보안 점검</h2>
+        <p>로컬 룰 2개로 후보를 찾고 AI로 오탐 분류를 보강하는 흐름</p>
+      </a>
+
+      <a class="card" href="./codex-deeplink-audit-guide/">
+        <span class="tag tag-agent">Codex</span>
+        <h2>Codex와 Android Deeplink Audit 사용자 가이드</h2>
+        <p>CLI 설치, init 셋업, Codex 활용, evidence 산출물 확인</p>
+      </a>
+
+      <a class="card" href="./windows-audit-design/">
+        <span class="tag tag-security">감사 운영</span>
+        <h2>LLM 기반 Windows 애플리케이션 보안 감사 운영 구조</h2>
+        <p>체크리스트, 작업 보고, subagent 검증 게이트 설계</p>
+      </a>
+
+      <a class="card" href="./non-dev-seminar/">
+        <span class="tag tag-business">비개발 대상</span>
+        <h2>업무 세미나</h2>
+        <p>시장 변화, 업무 적용, 사례 중심의 설명형 발표 템플릿</p>
+      </a>
+
+      <a class="card" href="./dev-seminar/">
+        <span class="tag tag-dev">개발자 대상</span>
+        <h2>개발 세미나</h2>
+        <p>아키텍처, 워크플로, 실습 흐름을 담기 좋은 기술 발표 템플릿</p>
+      </a>
+
+      <a class="card" href="./leadership-hands-on/">
+        <span class="tag tag-leader">리더진 대상</span>
+        <h2>리더십 핸즈온</h2>
+        <p>의사결정, 지표, 실습 과제를 연결하는 워크숍 템플릿</p>
+      </a>
+
+      <a class="card" href="./controller-seminar/">
+        <span class="tag tag-team">팀 내부</span>
+        <h2>팀 공유 세미나</h2>
+        <p>운영 현황, 이슈, 다음 액션을 정리하는 내부 공유 템플릿</p>
+      </a>
     </section>
 
-    <section class="toolbar" aria-label="Palette picker">
-      <div class="toolbar-label">Palette</div>
-      <div class="palette-picker">
-        <button class="palette-btn" data-palette-option="warm-gray" type="button">
-          <span class="swatches"><span class="swatch" style="background:#f7f7f5"></span><span class="swatch" style="background:#2f3437"></span><span class="swatch" style="background:#78716c"></span></span>
-          Warm Gray
-        </button>
-        <button class="palette-btn" data-palette-option="slate-gray" type="button">
-          <span class="swatches"><span class="swatch" style="background:#f8fafc"></span><span class="swatch" style="background:#1e293b"></span><span class="swatch" style="background:#475569"></span></span>
-          Slate Gray
-        </button>
-        <button class="palette-btn" data-palette-option="graphite" type="button">
-          <span class="swatches"><span class="swatch" style="background:#f4f4f2"></span><span class="swatch" style="background:#27272a"></span><span class="swatch" style="background:#52525b"></span></span>
-          Graphite
-        </button>
-      </div>
-    </section>
-
-    <section class="palette-preview" aria-label="Palette preview cards">
-      <div class="palette-card">
-        <div class="palette-card-top">
-          <div style="background:#f7f7f5"></div>
-          <div style="background:#ffffff"></div>
-          <div style="background:#f1f1ee"></div>
-          <div style="background:#78716c"></div>
-        </div>
-        <div class="palette-card-body">
-          <strong>Warm Gray</strong>
-          <span>가장 마일드한 보고서 톤, 컨설팅 문서 느낌에 잘 맞음</span>
-        </div>
-      </div>
-      <div class="palette-card">
-        <div class="palette-card-top">
-          <div style="background:#f8fafc"></div>
-          <div style="background:#ffffff"></div>
-          <div style="background:#f1f5f9"></div>
-          <div style="background:#475569"></div>
-        </div>
-        <div class="palette-card-body">
-          <strong>Slate Gray</strong>
-          <span>보안, 아키텍처, 엔지니어링 발표에 가장 무난한 기본 선택</span>
-        </div>
-      </div>
-      <div class="palette-card">
-        <div class="palette-card-top">
-          <div style="background:#f4f4f2"></div>
-          <div style="background:#fbfbfa"></div>
-          <div style="background:#ececea"></div>
-          <div style="background:#52525b"></div>
-        </div>
-        <div class="palette-card-body">
-          <strong>Graphite</strong>
-          <span>조금 더 차분하고 무게감 있는 고급스러운 무채색 톤</span>
-        </div>
-      </div>
-    </section>
-
-    <section class="deck-list" aria-label="Presentation decks">
-      <article class="deck">
-        <div class="deck-header">
-          <div class="deck-copy">
-            <strong>Semgrep CE Local Rules for Android</strong>
-            <span>Semgrep CE CLI와 로컬 룰만으로 Android 보안 후보를 찾는 운영 방식</span>
-          </div>
-          <a class="deck-link" href="./semgrep-android-local/">Open deck</a>
-        </div>
-        <details class="deck-toc">
-          <summary>목차 펼치기</summary>
-          <ul>
-            <li>도입: 발표 범위와 로컬 실행 구조</li>
-            <li>예시 1 묶음: PendingIntent 토큰 성격, mutable red flag, 문제 코드, 검출 결과, AI 분류, AI 검토 입력</li>
-            <li>예시 2 묶음: weak hash 점검, 문제 코드, 규칙, 검출 결과, AI 분류, AI 검토 입력</li>
-            <li>마무리: 정리</li>
-          </ul>
-        </details>
-      </article>
-<article class="deck">
-        <div class="deck-header">
-          <div class="deck-copy">
-            <strong>Indirect Prompt Injection과 Lethal Trifecta</strong>
-            <span>Agentic AI에서 prompt injection을 구조적으로 제한하는 설계 원칙과 방어 패턴</span>
-          </div>
-          <a class="deck-link" href="./indirect-prompt-injection/">Open deck</a>
-        </div>
-        <details class="deck-toc">
-          <summary>목차 펼치기</summary>
-          <ul>
-            <li>도입: 문제 제기, Indirect Prompt Injection 정의, Lethal Trifecta</li>
-            <li>위협 전개: 공격 흐름과 프롬프트 방어의 한계</li>
-            <li>설계 원칙: Rule of Two와 capability 분리</li>
-            <li>구조 패턴: CaMeL 개념과 아키텍처</li>
-            <li>실무 적용: 방어 패턴, 운영 레이어, 필드 사례</li>
-            <li>마무리: 결론과 참고 자료</li>
-          </ul>
-        </details>
-      </article>
-<article class="deck">
-        <div class="deck-header">
-          <div class="deck-copy">
-            <strong>LLM 기반 Windows 애플리케이션 보안감사 운영 구조</strong>
-            <span>LLM 기반 운영 구조, 에이전트 역할, 검증 게이트, 증적 보고 체계</span>
-          </div>
-          <a class="deck-link" href="./windows-audit-design/">Open deck</a>
-        </div>
-        <details class="deck-toc">
-          <summary>목차 펼치기</summary>
-          <ul>
-            <li>1p 표지와 발표 범위</li>
-            <li>2p 문제 정의</li>
-            <li>3p 핵심 설계 원칙</li>
-            <li>4p 작업 구조도</li>
-            <li>5p 에이전트 관계도</li>
-            <li>6p Reviewer / Verifier 게이트</li>
-            <li>7p 폴더 구조와 상태 관리</li>
-            <li>8p 체크리스트 순차 실행 방식</li>
-            <li>9p Tool / MCP 계층</li>
-            <li>10p 에이전트와 MCP 보안 통제</li>
-            <li>11p 증적과 보고서 구조</li>
-            <li>12p 대안 비교와 선택 기준</li>
-            <li>13p 단계별 프롬프트 예시</li>
-            <li>14p 도입 로드맵</li>
-            <li>15p 참고 출처</li>
-          </ul>
-        </details>
-      </article>
-<article class="deck">
-        <div class="deck-header">
-          <div class="deck-copy">
-            <strong>MCP로 구성하는 AI 기반 모바일 앱 보안 감사</strong>
-            <span>모바일 앱 감사를 위한 MCP, Tool, Skill, 감사 시스템, 운영 통제 구조</span>
-          </div>
-          <a class="deck-link" href="./mobile-audit-mcp-origin/">Open deck</a>
-        </div>
-        <details class="deck-toc">
-          <summary>목차 펼치기</summary>
-          <ul>
-            <li>도입: 범위, 감사 흐름, Agent·MCP·Tool·Skill 개념</li>
-            <li>구축: 테스트 랩, Client 설정, 전체 아키텍처, 승인 범위</li>
-            <li>도구 적용: Android, JADX, Frida, Ghidra, WebView, 스캔, 네트워크 도구</li>
-            <li>감사 시스템: Orchestrator, 실행 흐름, Finding 템플릿</li>
-            <li>Skill과 운영 통제: Tool 매핑, 증거 묶음, 리스크, 체크리스트</li>
-            <li>참고 자료</li>
-          </ul>
-        </details>
-      </article>
-<article class="deck">
-        <div class="deck-header">
-          <div class="deck-copy">
-            <strong>Codex와 Android Deeplink Audit 사용자 가이드</strong>
-            <span>CLI 설치, repo 셋업, Codex 활용, skill과 plugin 동작 방식을 사용자 가이드 톤으로 정리한 deck</span>
-          </div>
-          <a class="deck-link" href="./codex-deeplink-audit-guide/">Open deck</a>
-        </div>
-        <details class="deck-toc">
-          <summary>목차 펼치기</summary>
-          <ul>
-            <li>발표 목표</li>
-            <li>설치와 init</li>
-            <li>repo 구조</li>
-            <li>Codex 설정과 plugin 등록</li>
-            <li>skill과 plugin 역할</li>
-            <li>실행 흐름과 산출물</li>
-            <li>CLI 단독 사용과 차이</li>
-          </ul>
-        </details>
-      </article>
-    </section>
+    <footer>
+      공용 리소스는 <code>docs/assets</code>, 각 발표는 <code>docs/&lt;deck-name&gt;/index.html</code>에 둡니다.
+    </footer>
   </main>
-  <script>
-    const picker = document.querySelectorAll('[data-palette-option]');
-    const paletteApi = window.__presentAnythingPalette;
-
-    const syncActive = () => {
-      const current = paletteApi?.current?.() || 'slate-gray';
-      picker.forEach((button) => {
-        button.classList.toggle('active', button.dataset.paletteOption === current);
-      });
-    };
-
-    picker.forEach((button) => {
-      button.addEventListener('click', () => {
-        paletteApi?.apply?.(button.dataset.paletteOption);
-        syncActive();
-      });
-    });
-
-    syncActive();
-  </script>
 </body>
 </html>

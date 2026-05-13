@@ -1,143 +1,100 @@
-# Slidev Static Presentation Site
+# GitHub Pages Presentation Scaffold
 
-GitHub Pages에서 정적 파일로 서빙되는 Slidev 기반 프리젠테이션 프로젝트입니다.
+정적 HTML/CSS/JS만으로 동작하는 발표자료 모음 사이트입니다.
+레퍼런스인 `presentation-scaffold`처럼 루트 허브에서 대상별 발표 덱으로 이동하는 구조입니다.
+GitHub Pages에서 `main` 브랜치의 `/docs` 폴더를 publish source로 지정하면 됩니다.
 
-## 요구사항
+## 구조
 
-- Node.js 22+
-- npm
-
-## 설치
-
-```bash
-npm install
+```text
+docs/
+  .nojekyll
+  index.html                 # 발표자료 허브
+  ai-agent-effective-use/
+    index.html               # AI 에이전트 활용 발표
+    source.md                # 공개용 대본 소스
+    visual-assets.md         # 필요한 그림/다이어그램 목록
+  codex-deeplink-audit-guide/
+    index.html               # 마이그레이션된 정적 HTML 덱
+    source.md                # 공개용 소스
+  indirect-prompt-injection/
+  mobile-audit-mcp-origin/
+  semgrep-android-local/
+  windows-audit-design/
+  non-dev-seminar/
+    index.html               # 비개발 대상 발표 템플릿
+  dev-seminar/
+    index.html               # 개발자 대상 발표 템플릿
+  leadership-hands-on/
+    index.html               # 리더진 핸즈온 템플릿
+  controller-seminar/
+    index.html               # 팀 내부 공유 템플릿
+  assets/
+    styles/
+      hub.css
+      deck.css
+    scripts/
+      deck.js
+    images/
+    videos/
+    labs/
+    data/
+scripts/
+  split_deck.py
+  migrate_decks.py           # 외부 Slidev 자료를 가져올 때 쓰는 변환 스크립트
+content/
+  decks/
+    ai-agent-effective-use/
+      source.md              # 작업용 대본 소스 위치 안내
+      visual-assets.md       # 작업용 비주얼 목록 위치 안내
+    <deck-name>/
+      source.md              # 마이그레이션된 작업용 소스
+  deck-outline-template.md
+  prompt-template.md
 ```
 
-## 로컬 실행
+## 로컬 확인
 
 ```bash
-npm run dev:semgrep
-npm run dev:indirect-prompt
-npm run dev:windows-design
-npm run dev:mobile-audit-mcp
-npm run dev:codex-deeplink-audit-guide
+cd docs
+python3 -m http.server 8080
 ```
 
-## 발표 소스 Markdown 위치
-
-실제로 수정해야 하는 원본 Markdown은 `docs/`가 아니라 `decks/` 아래에 있습니다.
-`docs/`는 빌드 결과물이고, 발표 내용을 고칠 때는 아래 파일들을 수정한 뒤 다시 `npm run build`를 실행하면 됩니다.
-
-- `decks/semgrep-android-local/slides.md`
-  - Semgrep 발표는 현재 단일 `slides.md` 파일로 관리합니다.
-- `decks/indirect-prompt-injection/slides.md`
-  - Indirect Prompt Injection 발표도 단일 `slides.md` 파일로 관리합니다.
-- `decks/windows-audit-design/slides.md`
-  - deck 엔트리 파일입니다.
-- `decks/windows-audit-design/pages/*.md`
-  - Windows 감사 발표의 실제 슬라이드 본문 파일입니다.
-- `decks/mobile-audit-mcp-origin/slides.md`
-  - deck 엔트리 파일입니다.
-- `decks/mobile-audit-mcp-origin/pages/*.md`
-  - 모바일 MCP 발표의 실제 슬라이드 본문 파일입니다.
-- `decks/codex-deeplink-audit-guide/slides.md`
-  - deck 엔트리 파일입니다.
-- `decks/codex-deeplink-audit-guide/pages/*.md`
-  - Codex Deeplink Guide 발표의 실제 슬라이드 본문 파일입니다.
-
-요약하면:
-
-- 단일 파일 deck: `semgrep-android-local`, `indirect-prompt-injection`
-- 분리형 deck: `windows-audit-design`, `mobile-audit-mcp-origin`, `codex-deeplink-audit-guide`
-
-## 정적 빌드
-
-```bash
-npm run build
-```
-
-빌드 결과는 `docs/`에 생성됩니다. 각 deck은 정적 HTML로 출력되고, 같은 과정에서 PDF도 미리 export 되어 `docs/downloads/`에 함께 생성됩니다.
-build 시 GitHub Pages base path는 `GITHUB_REPOSITORY`, `GITHUB_PAGES_REPO`, 또는 `git remote origin`에서 repository 이름을 읽어 자동 결정합니다.
-
-각 deck 화면에는 고정형 `PDF 다운로드` 버튼이 표시되며, 이 버튼은 미리 export 된 PDF 파일로 연결됩니다.
+브라우저에서 `http://localhost:8080`을 엽니다.
 
 ## GitHub Pages 배포
 
-이 프로젝트는 `main` 브랜치의 `docs/` 폴더를 GitHub Pages publish source로 사용하는 구성을 전제로 합니다.
-워크플로우는 배포를 대신하지 않고, `docs/`가 정상적으로 다시 빌드되는지만 검증합니다.
+1. 이 폴더 내용을 GitHub repository에 push합니다.
+2. Repository Settings -> Pages로 이동합니다.
+3. Source를 `Deploy from a branch`로 설정합니다.
+4. Branch는 `main`, folder는 `/docs`를 선택합니다.
+5. 저장 후 `https://<user>.github.io/<repo>/`에서 확인합니다.
 
-GitHub 저장소 설정에서 다음을 확인해야 합니다.
+## 콘텐츠 수정
 
-1. `Settings -> Pages`
-2. Source를 `Deploy from a branch`로 설정
-3. Branch를 `main`, Folder를 `/docs`로 설정
+각 발표자료는 독립된 HTML 파일입니다.
 
-## Base Path 주의사항
+- 허브 카드: `docs/index.html`
+- 발표 화면 공통 스타일: `docs/assets/styles/deck.css`
+- 슬라이드 이동 로직: `docs/assets/scripts/deck.js`
+- 발표별 슬라이드: `docs/<deck-name>/index.html`
+- 발표별 대본 소스: `docs/<deck-name>/source.md`
+- 발표별 그림 목록: `docs/<deck-name>/visual-assets.md`
 
-일반 repository pages는 다음 URL 구조를 사용합니다.
+작업용 원본은 `content/decks/<deck-name>/source.md`에 두고, 공개용 사본은 `docs/<deck-name>/source.md`에 둡니다.
 
-```text
-https://{github_user}.github.io/{repository_name}/
+슬라이드는 다음 형태로 추가합니다.
+
+```html
+<section class="slide surface accent-blue" data-part="Section 01 · 제목">
+  <h3>Sub topic</h3>
+  <h2>슬라이드 제목</h2>
+  <p class="sub">핵심 설명을 짧게 작성합니다.</p>
+</section>
 ```
 
-예를 들어 repository 이름이 `present-anyything`이면 다음 base path를 사용합니다.
+키보드 방향키, PageUp/PageDown, Space, Home/End로 이동할 수 있고 `F`로 전체화면을 전환합니다.
 
-```text
-/present-anyything/semgrep-android-local/
-/present-anyything/indirect-prompt-injection/
-/present-anyything/windows-audit-design/
-/present-anyything/mobile-audit-mcp-origin/
-/present-anyything/codex-deeplink-audit-guide/
-/present-anyything/downloads/semgrep-android-local.pdf
-```
+## 작성 시작
 
-root pages 저장소인 `{github_user}.github.io`를 사용하는 경우에는 base path를 `/` 기준으로 다시 조정해야 합니다.
-
-## 프로젝트 구조
-
-```text
-decks/
-  semgrep-android-local/
-    slides.md
-  indirect-prompt-injection/
-    slides.md
-  windows-audit-design/
-    slides.md
-    pages/
-  mobile-audit-mcp-origin/
-    slides.md
-    pages/
-  codex-deeplink-audit-guide/
-    slides.md
-    pages/
-scripts/
-  build-deck.js
-  build-index.js
-public/
-  images/
-  palette.js
-.github/
-  workflows/
-    deploy.yml
-docs/
-  index.html
-  semgrep-android-local/
-  indirect-prompt-injection/
-  windows-audit-design/
-  downloads/
-```
-
-## 검증
-
-다음 명령으로 로컬에서 정적 결과를 확인할 수 있습니다.
-
-```bash
-npm run build
-npx serve docs
-```
-
-또는
-
-```bash
-python3 -m http.server 8080 -d docs
-```
+`content/deck-outline-template.md`에 발표 흐름을 먼저 정리한 뒤, 대상에 맞는 `docs/<deck-name>/index.html`을 복사해서 내용을 채우면 됩니다.

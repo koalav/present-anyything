@@ -1,8 +1,0 @@
-# Ghidra MCP: 설치와 실행
-
-- Ghidra 설치
-- JDK 설치
-- `.so` 추출 후 로드
-- Auto Analysis 실행
-- MCP 플러그인과 Bridge 연결
-- Client에 ghidra 서버 등록

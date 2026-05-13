@@ -1,37 +1,31 @@
-<!doctype html>
-<html lang="ko">
-<head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <meta name="color-scheme" content="dark" />
-  <title>Indirect Prompt Injection과 Lethal Trifecta</title>
-  <link rel="stylesheet" href="../assets/styles/deck.css" />
-</head>
-<body data-deck-label="Indirect Prompt Injection과 Lethal Trifecta">
-  <div class="part-label" id="partLabel">Indirect Prompt Injection과 Lethal Trifecta</div>
-  <nav class="deck-links" aria-label="Deck source files">
-    <a href="../">Hub</a>
-    <a href="./source.html">Source</a>
-  </nav>
-  <div class="progress" id="progress"></div>
+# Indirect Prompt Injection과 Lethal Trifecta
 
-  <main class="slides" id="slides">
-    <section class="slide cover accent-rose" data-part="Opening">
-      <h1>Indirect Prompt Injection과 Lethal Trifecta</h1>
-  <p class="sub">에이전트형 AI를 안전하게 설계하는 법</p>
-      <div class="deck-body cover-body"><div class="text-center">
+에이전트형 AI에서 간접 프롬프트 인젝션이 왜 구조적 문제인지 설명하고,
+
+## Slide 01
+
+<div class="text-center">
+
+# Indirect Prompt Injection과 Lethal Trifecta
+
+## 에이전트형 AI를 안전하게 설계하는 법
+
 <div class="mt-10 text-lg opacity-80">
-<p>비신뢰 입력 처리, 민감 데이터 접근, 외부 전송·상태변경 액션이<br> 한 세션과 한 경로에 동시에 결합되면 구조적으로 취약해집니다.</p>
+비신뢰 입력 처리, 민감 데이터 접근, 외부 전송·상태변경 액션이<br>
+한 세션과 한 경로에 동시에 결합되면 구조적으로 취약해집니다.
 </div>
-<div class="mt-14 text-sm opacity-60">
-<p>핵심 메시지: 더 강한 프롬프트보다 경계와 권한 분리가 먼저입니다.</p>
-</div>
-</div></div>
-    </section>
 
-    <section class="slide surface markdown-slide accent-rose" data-part="왜 에이전트형 AI는 기존 앱보다 더 위험한가">
-      <h2>왜 에이전트형 AI는 기존 앱보다 더 위험한가</h2>
-      <div class="deck-body"><div class="deck-grid">
+<div class="mt-14 text-sm opacity-60">
+핵심 메시지: 더 강한 프롬프트보다 경계와 권한 분리가 먼저입니다.
+</div>
+
+</div>
+
+## Slide 02
+
+# 왜 에이전트형 AI는 기존 앱보다 더 위험한가
+
+<div class="deck-grid">
   <div class="card">
     <h3>하나의 자연어 루프에 너무 많은 권한이 연결됨</h3>
     <ul>
@@ -48,21 +42,29 @@
       <li>그래서 문제는 모델 성능보다 시스템 결합 구조에 가깝습니다.</li>
     </ul>
   </div>
-</div></div>
-    </section>
+</div>
 
-    <section class="slide surface markdown-slide accent-rose" data-part="Indirect Prompt Injection이란 무엇인가">
-      <h2>Indirect Prompt Injection이란 무엇인가</h2>
-      <div class="deck-body"><div class="kicker">정의</div>
-<ul><li>사용자가 직접 입력하지 않은 외부 콘텐츠의 지시가 에이전트 컨텍스트에 들어와 계획이나 행동을 바꾸는 공격입니다.</li><li>입력 표면은 웹 페이지, 이메일 본문, 첨부 문서, 이슈 티켓, 위키 문서, PDF, MCP 응답까지 포함됩니다.</li><li>전통적 인젝션과 달리, 악성 문자열이 "사람이 읽는 콘텐츠"처럼 보인다는 점이 핵심입니다.</li></ul>
+## Slide 03
+
+# Indirect Prompt Injection이란 무엇인가
+
+<div class="kicker">정의</div>
+
+- 사용자가 직접 입력하지 않은 외부 콘텐츠의 지시가 에이전트 컨텍스트에 들어와 계획이나 행동을 바꾸는 공격입니다.
+- 입력 표면은 웹 페이지, 이메일 본문, 첨부 문서, 이슈 티켓, 위키 문서, PDF, MCP 응답까지 포함됩니다.
+- 전통적 인젝션과 달리, 악성 문자열이 "사람이 읽는 콘텐츠"처럼 보인다는 점이 핵심입니다.
+
 <div class="flow-box">사용자 요청
-<p>-&gt; 에이전트가 외부 콘텐츠를 읽음 -&gt; 악성 지시가 컨텍스트에 섞임 -&gt; 모델이 행동 우선순위를 바꿈</p>
-  -> 민감 정보 조회 또는 외부 전송 발생</div></div>
-    </section>
+  -> 에이전트가 외부 콘텐츠를 읽음
+  -> 악성 지시가 컨텍스트에 섞임
+  -> 모델이 행동 우선순위를 바꿈
+  -> 민감 정보 조회 또는 외부 전송 발생</div>
 
-    <section class="slide surface markdown-slide accent-rose" data-part="Lethal Trifecta: 세 조건이 동시에 모이면 위험해진다">
-      <h2>Lethal Trifecta: 세 조건이 동시에 모이면 위험해진다</h2>
-      <div class="deck-body"><div class="triple-grid">
+## Slide 04
+
+# Lethal Trifecta: 세 조건이 동시에 모이면 위험해진다
+
+<div class="triple-grid">
   <div class="card">
     <h3>1. 비신뢰 입력</h3>
     <div class="mini">웹, 이메일, 문서, 티켓, 검색 결과, 외부 MCP 응답처럼 신뢰할 수 없는 입력</div>
@@ -76,26 +78,29 @@
     <div class="mini">외부 전송, 메시지 발송, 상태 변경, 시스템 명령 실행, 티켓 수정, 결제 요청</div>
   </div>
 </div>
+
 <div class="risk-center">
   <div class="strong">중앙 위험</div>
   <div class="mini">세 조건이 한 경로에서 합쳐지면 데이터 유출과 비인가 액션이 "모델이 속는 순간" 바로 실현될 수 있습니다.</div>
-</div></div>
-    </section>
+</div>
 
-    <section class="slide surface markdown-slide accent-rose" data-part="공격 흐름 예시">
-      <h2>공격 흐름 예시</h2>
-      <div class="deck-body"><div class="step-list">
+## Slide 05
+
+# 공격 흐름 예시
+
+<div class="step-list">
   <div class="step"><span class="strong">1.</span> 공격자가 악성 이메일이나 문서를 시스템 안으로 유입시킵니다.</div>
   <div class="step"><span class="strong">2.</span> 사용자는 "이 메일 요약하고 관련 문서 찾아줘" 같은 정상 요청을 보냅니다.</div>
   <div class="step"><span class="strong">3.</span> 에이전트는 메일 본문을 읽고 내부 검색 도구로 추가 문서를 가져옵니다.</div>
   <div class="step"><span class="strong">4.</span> 악성 지시가 모델의 우선순위를 바꾸어 secret, token, 내부 링크를 요약에 포함시킵니다.</div>
   <div class="step"><span class="strong">5.</span> 후속 단계에서 외부 메일, Slack, webhook, 브라우저 요청으로 데이터가 유출됩니다.</div>
-</div></div>
-    </section>
+</div>
 
-    <section class="slide surface markdown-slide accent-rose" data-part="왜 &quot;더 강한 프롬프트&quot;만으로는 못 막는가">
-      <h2>왜 "더 강한 프롬프트"만으로는 못 막는가</h2>
-      <div class="deck-body"><div class="deck-grid">
+## Slide 06
+
+# 왜 "더 강한 프롬프트"만으로는 못 막는가
+
+<div class="deck-grid">
   <div class="card">
     <h3>프롬프트는 정책 선언이지 강제 경계가 아님</h3>
     <ul>
@@ -112,13 +117,16 @@
       <li>즉 핵심은 탐지 자체보다 피해 범위를 제한하는 구조입니다.</li>
     </ul>
   </div>
-</div></div>
-    </section>
+</div>
 
-    <section class="slide surface markdown-slide accent-rose" data-part="Rule of Two: 원칙 자체는 단순하다">
-      <h2>Rule of Two: 원칙 자체는 단순하다</h2>
-      <div class="deck-body"><div class="kicker">Meta Agents Rule of Two</div>
-<ul><li>한 세션, 한 실행 경로, 한 자동화 단계에서 아래 세 가지를 동시에 주지 않습니다.</li></ul>
+## Slide 07
+
+# Rule of Two: 원칙 자체는 단순하다
+
+<div class="kicker">Meta Agents Rule of Two</div>
+
+- 한 세션, 한 실행 경로, 한 자동화 단계에서 아래 세 가지를 동시에 주지 않습니다.
+
 <div class="triple-grid">
   <div class="card">
     <h3>비신뢰 입력 처리</h3>
@@ -133,14 +141,16 @@
     <div class="mini">외부로 보내거나 시스템 상태를 바꾸는 능력</div>
   </div>
 </div>
-<div class="risk-center">
-<p>설계 목표는 "셋 중 최대 둘까지만 결합"입니다. 나머지 하나는 다른 단계나 다른 승인 경계 뒤로 밀어냅니다.</p>
-</div></div>
-    </section>
 
-    <section class="slide surface markdown-slide accent-rose" data-part="Rule of Two: 설계에 적용하면 어떻게 달라지나">
-      <h2>Rule of Two: 설계에 적용하면 어떻게 달라지나</h2>
-      <div class="deck-body"><div class="deck-grid">
+<div class="risk-center">
+  설계 목표는 "셋 중 최대 둘까지만 결합"입니다. 나머지 하나는 다른 단계나 다른 승인 경계 뒤로 밀어냅니다.
+</div>
+
+## Slide 08
+
+# Rule of Two: 설계에 적용하면 어떻게 달라지나
+
+<div class="deck-grid">
   <div class="card">
     <h3>문서 요약 전용 에이전트</h3>
     <div class="mini">비신뢰 입력 + 제한된 읽기</div>
@@ -170,12 +180,14 @@
     </ul>
   </div>
 </div>
-<div class="mini mt-4">핵심은 한 에이전트가 모든 역할을 다 하지 않게 나누는 것입니다.</div></div>
-    </section>
 
-    <section class="slide surface markdown-slide accent-rose" data-part="대표 구조: CaMeL 계열 접근">
-      <h2>대표 구조: CaMeL 계열 접근</h2>
-      <div class="deck-body"><div class="deck-grid">
+<div class="mini mt-4">핵심은 한 에이전트가 모든 역할을 다 하지 않게 나누는 것입니다.</div>
+
+## Slide 09
+
+# 대표 구조: CaMeL 계열 접근
+
+<div class="deck-grid">
   <div class="card">
     <h3>계획을 세우는 모델</h3>
     <ul>
@@ -193,14 +205,16 @@
     </ul>
   </div>
 </div>
-<div class="flow-box">사용자 요청 -> 계획 모델
-<p>외부 콘텐츠 -&gt; 추출 모델 -&gt; 구조화된 필드</p>
-계획 모델 -> 제한된 실행기 -> 정책 아래 도구 호출</div></div>
-    </section>
 
-    <section class="slide surface markdown-slide accent-rose" data-part="방어 패턴 1: Dual LLM 또는 입력 경계 분리">
-      <h2>방어 패턴 1: Dual LLM 또는 입력 경계 분리</h2>
-      <div class="deck-body"><div class="deck-grid">
+<div class="flow-box">사용자 요청 -> 계획 모델
+외부 콘텐츠 -> 추출 모델 -> 구조화된 필드
+계획 모델 -> 제한된 실행기 -> 정책 아래 도구 호출</div>
+
+## Slide 10
+
+# 방어 패턴 1: Dual LLM 또는 입력 경계 분리
+
+<div class="deck-grid">
   <div class="card">
     <h3>어떻게 나누나</h3>
     <ul>
@@ -218,12 +232,14 @@
     </ul>
   </div>
 </div>
-<div class="mini mt-4">실무 포인트: 추출 모델 출력은 JSON 스키마, enum, 최대 길이 제한처럼 해석 범위를 좁히는 편이 좋습니다.</div></div>
-    </section>
 
-    <section class="slide surface markdown-slide accent-rose" data-part="방어 패턴 2: Plan-Then-Execute">
-      <h2>방어 패턴 2: Plan-Then-Execute</h2>
-      <div class="deck-body"><div class="deck-grid">
+<div class="mini mt-4">실무 포인트: 추출 모델 출력은 JSON 스키마, enum, 최대 길이 제한처럼 해석 범위를 좁히는 편이 좋습니다.</div>
+
+## Slide 11
+
+# 방어 패턴 2: Plan-Then-Execute
+
+<div class="deck-grid">
   <div class="card">
     <h3>실행 전에 계획을 고정</h3>
     <ul>
@@ -241,14 +257,17 @@
     </ul>
   </div>
 </div>
-<div class="flow-box">계획 생성
-<p>-&gt; 정책 검토 -&gt; 제한된 실행</p>
-  -> 결과 요약</div></div>
-    </section>
 
-    <section class="slide surface markdown-slide accent-rose" data-part="방어 패턴 3: Code-Then-Execute">
-      <h2>방어 패턴 3: Code-Then-Execute</h2>
-      <div class="deck-body"><div class="deck-grid">
+<div class="flow-box">계획 생성
+  -> 정책 검토
+  -> 제한된 실행
+  -> 결과 요약</div>
+
+## Slide 12
+
+# 방어 패턴 3: Code-Then-Execute
+
+<div class="deck-grid">
   <div class="card">
     <h3>자연어를 바로 실행하지 않고 제한된 표현으로 바꾼다</h3>
     <ul>
@@ -265,12 +284,13 @@
       <li>허용되지 않은 액션은 결정적으로 차단할 수 있습니다.</li>
     </ul>
   </div>
-</div></div>
-    </section>
+</div>
 
-    <section class="slide surface markdown-slide accent-rose" data-part="방어 패턴 4: Structured Extraction만 허용">
-      <h2>방어 패턴 4: Structured Extraction만 허용</h2>
-      <div class="deck-body"><div class="deck-grid">
+## Slide 13
+
+# 방어 패턴 4: Structured Extraction만 허용
+
+<div class="deck-grid">
   <div class="card">
     <h3>자유 서술 대신 구조화된 값만 통과</h3>
     <ul>
@@ -287,12 +307,13 @@
       <li>PDF, HTML, 이메일처럼 표현력이 큰 입력에 특히 효과적입니다.</li>
     </ul>
   </div>
-</div></div>
-    </section>
+</div>
 
-    <section class="slide surface markdown-slide accent-rose" data-part="방어 패턴 5: 컨텍스트 최소화">
-      <h2>방어 패턴 5: 컨텍스트 최소화</h2>
-      <div class="deck-body"><div class="deck-grid">
+## Slide 14
+
+# 방어 패턴 5: 컨텍스트 최소화
+
+<div class="deck-grid">
   <div class="card">
     <h3>컨텍스트를 작게 유지</h3>
     <ul>
@@ -309,12 +330,13 @@
       <li>내부 문서와 외부 웹 문서를 함께 다뤄야 하는 조사형 에이전트</li>
     </ul>
   </div>
-</div></div>
-    </section>
+</div>
 
-    <section class="slide surface markdown-slide accent-rose" data-part="방어 패턴 6: Map-Reduce">
-      <h2>방어 패턴 6: Map-Reduce</h2>
-      <div class="deck-body"><div class="deck-grid">
+## Slide 15
+
+# 방어 패턴 6: Map-Reduce
+
+<div class="deck-grid">
   <div class="card">
     <h3>문서별로 먼저 처리하고 마지막에 합친다</h3>
     <ul>
@@ -331,12 +353,13 @@
       <li>대규모 검색·요약 작업에서 blast radius를 줄이는 데 효과적입니다.</li>
     </ul>
   </div>
-</div></div>
-    </section>
+</div>
 
-    <section class="slide surface markdown-slide accent-rose" data-part="방어 패턴 7: Action Selector와 승인 게이트">
-      <h2>방어 패턴 7: Action Selector와 승인 게이트</h2>
-      <div class="deck-body"><div class="deck-grid">
+## Slide 16
+
+# 방어 패턴 7: Action Selector와 승인 게이트
+
+<div class="deck-grid">
   <div class="card">
     <h3>외부 액션은 별도 선택 단계로 분리</h3>
     <ul>
@@ -353,23 +376,25 @@
       <li>누가 어떤 컨텍스트로 어떤 액션을 승인했는지 감사 로그 남기기</li>
     </ul>
   </div>
-</div></div>
-    </section>
+</div>
 
-    <section class="slide surface markdown-slide accent-rose" data-part="실무 적용 체크리스트">
-      <h2>실무 적용 체크리스트</h2>
-      <div class="deck-body"><div class="step-list">
+## Slide 17
+
+# 실무 적용 체크리스트
+
+<div class="step-list">
   <div class="step"><span class="strong">1.</span> 외부 입력을 읽는 도구와 민감 데이터를 읽는 도구를 분리합니다.</div>
   <div class="step"><span class="strong">2.</span> planner, extractor, executor를 분리하고 각자 tool scope를 다르게 부여합니다.</div>
   <div class="step"><span class="strong">3.</span> 외부 전송과 상태변경 도구는 allowlist, approval, audit log 뒤에 둡니다.</div>
   <div class="step"><span class="strong">4.</span> structured output, bounded schema, short-lived memory를 기본값으로 둡니다.</div>
   <div class="step"><span class="strong">5.</span> 한 세션 안에서 Lethal Trifecta가 다시 결합되는 우회 경로가 없는지 점검합니다.</div>
-</div></div>
-    </section>
+</div>
 
-    <section class="slide surface markdown-slide accent-rose" data-part="필드 사례가 보여주는 것">
-      <h2>필드 사례가 보여주는 것</h2>
-      <div class="deck-body"><div class="deck-grid">
+## Slide 18
+
+# 필드 사례가 보여주는 것
+
+<div class="deck-grid">
   <div class="card">
     <h3>EchoLeak이 보여준 구조</h3>
     <ul>
@@ -386,35 +411,44 @@
       <li>결국 agent 보안은 architecture 문제입니다.</li>
     </ul>
   </div>
-</div></div>
-    </section>
-
-    <section class="slide surface markdown-slide accent-rose" data-part="결론">
-      <h2>결론</h2>
-      <div class="deck-body"><div class="closing">
-<p>AI agent가 비신뢰 입력 처리, 민감 데이터 접근, 외부 전송·상태변경 액션을 동시에 가지면 indirect prompt injection은 모델 품질 문제가 아니라 구조적 취약점이 됩니다.</p>
 </div>
+
+## Slide 19
+
+# 결론
+
+<div class="closing">
+  AI agent가 비신뢰 입력 처리, 민감 데이터 접근, 외부 전송·상태변경 액션을 동시에 가지면
+  indirect prompt injection은 모델 품질 문제가 아니라 구조적 취약점이 됩니다.
+</div>
+
 <div class="closing mt-6">
-<p>따라서 근본 방어는 "더 강한 프롬프트"가 아니라, 세 조건이 한 세션과 한 경로에서 동시에 성립하지 않도록 경계를 나누는 일입니다. Lethal Trifecta와 Rule of Two는 그 경계를 점검하는 실무 기준입니다.</p>
-</div></div>
-    </section>
+  따라서 근본 방어는 "더 강한 프롬프트"가 아니라,
+  세 조건이 한 세션과 한 경로에서 동시에 성립하지 않도록 경계를 나누는 일입니다.
+  Lethal Trifecta와 Rule of Two는 그 경계를 점검하는 실무 기준입니다.
+</div>
 
-    <section class="slide surface markdown-slide accent-rose" data-part="참고 문헌 1: 연구와 개념">
-      <h2>참고 문헌 1: 연구와 개념</h2>
-      <div class="deck-body"><ul><li><a class="inline-link" href="https://arxiv.org/abs/2302.12173">Indirect Prompt Injection 논문 (2023)</a></li><li><a class="inline-link" href="https://arxiv.org/abs/2503.18813">CaMeL 논문</a></li><li><a class="inline-link" href="https://github.com/google-research/camel-prompt-injection">CaMeL research artifact</a></li><li><a class="inline-link" href="https://arxiv.org/abs/2505.22852">Operationalizing CaMeL</a></li><li><a class="inline-link" href="https://arxiv.org/abs/2506.08837">LLM Agent 방어 패턴 논문</a></li><li><a class="inline-link" href="https://simonwillison.net/2025/Jun/16/the-lethal-trifecta/">Lethal Trifecta 정리</a></li><li><a class="inline-link" href="https://ai.meta.com/blog/practical-ai-agent-security/">Meta Practical AI Agent Security</a></li></ul></div>
-    </section>
+## Slide 20
 
-    <section class="slide surface markdown-slide accent-rose" data-part="참고 문헌 2: 운영 가이드와 사례">
-      <h2>참고 문헌 2: 운영 가이드와 사례</h2>
-      <div class="deck-body"><ul><li><a class="inline-link" href="https://openai.com/index/designing-agents-to-resist-prompt-injection/">OpenAI: Prompt Injection 저항 설계</a></li><li><a class="inline-link" href="https://platform.openai.com/docs/guides/agent-builder-safety">OpenAI API: Agent Safety Guide</a></li><li><a class="inline-link" href="https://openai.com/index/ai-agent-link-safety/">OpenAI: 링크 클릭 안전성</a></li><li><a class="inline-link" href="https://cheatsheetseries.owasp.org/cheatsheets/AI_Agent_Security_Cheat_Sheet.html">OWASP AI Agent Security Cheat Sheet</a></li><li><a class="inline-link" href="https://cheatsheetseries.owasp.org/cheatsheets/MCP_Security_Cheat_Sheet.html">OWASP MCP Security Cheat Sheet</a></li><li><a class="inline-link" href="https://msrc.microsoft.com/blog/2025/07/how-microsoft-defends-against-indirect-prompt-injection-attacks/">MSRC: Indirect Prompt Injection 방어</a></li><li><a class="inline-link" href="https://www.aim.security/post/echoleak-blogpost">Aim Labs: EchoLeak 분석</a></li><li><a class="inline-link" href="https://labs.reversec.com/posts/2025/08/design-patterns-to-secure-llm-agents-in-action">Reversec: LLM Agent 방어 패턴 실습</a></li></ul></div>
-    </section>
-  </main>
+# 참고 문헌 1: 연구와 개념
 
-  <nav class="nav" aria-label="Slide navigation">
-    <button type="button" data-action="prev" aria-label="Previous slide">&#8592;</button>
-    <button type="button" data-action="next" aria-label="Next slide">&#8594;</button>
-  </nav>
-  <div class="page-num" id="pageNum">1 / 1</div>
-  <script src="../assets/scripts/deck.js"></script>
-</body>
-</html>
+- [Indirect Prompt Injection 논문 (2023)](https://arxiv.org/abs/2302.12173)
+- [CaMeL 논문](https://arxiv.org/abs/2503.18813)
+- [CaMeL research artifact](https://github.com/google-research/camel-prompt-injection)
+- [Operationalizing CaMeL](https://arxiv.org/abs/2505.22852)
+- [LLM Agent 방어 패턴 논문](https://arxiv.org/abs/2506.08837)
+- [Lethal Trifecta 정리](https://simonwillison.net/2025/Jun/16/the-lethal-trifecta/)
+- [Meta Practical AI Agent Security](https://ai.meta.com/blog/practical-ai-agent-security/)
+
+## Slide 21
+
+# 참고 문헌 2: 운영 가이드와 사례
+
+- [OpenAI: Prompt Injection 저항 설계](https://openai.com/index/designing-agents-to-resist-prompt-injection/)
+- [OpenAI API: Agent Safety Guide](https://platform.openai.com/docs/guides/agent-builder-safety)
+- [OpenAI: 링크 클릭 안전성](https://openai.com/index/ai-agent-link-safety/)
+- [OWASP AI Agent Security Cheat Sheet](https://cheatsheetseries.owasp.org/cheatsheets/AI_Agent_Security_Cheat_Sheet.html)
+- [OWASP MCP Security Cheat Sheet](https://cheatsheetseries.owasp.org/cheatsheets/MCP_Security_Cheat_Sheet.html)
+- [MSRC: Indirect Prompt Injection 방어](https://msrc.microsoft.com/blog/2025/07/how-microsoft-defends-against-indirect-prompt-injection-attacks/)
+- [Aim Labs: EchoLeak 분석](https://www.aim.security/post/echoleak-blogpost)
+- [Reversec: LLM Agent 방어 패턴 실습](https://labs.reversec.com/posts/2025/08/design-patterns-to-secure-llm-agents-in-action)

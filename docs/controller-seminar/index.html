@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="color-scheme" content="dark" />
+  <title>팀 공유 세미나 템플릿</title>
+  <link rel="stylesheet" href="../assets/styles/deck.css" />
+</head>
+<body data-deck-label="팀 공유 세미나">
+  <div class="part-label" id="partLabel">팀 공유 세미나</div>
+  <div class="progress" id="progress"></div>
+
+  <main class="slides" id="slides">
+    <section class="slide cover accent-team" data-part="Opening">
+      <h1>Team<br />Seminar</h1>
+      <p class="sub">팀 내부 공유와 액션 아이템 정리를 위한 템플릿</p>
+      <p class="meta">팀명 · 발표자 · YYYY. MM</p>
+    </section>
+
+    <section class="slide surface accent-team">
+      <h2>공유 순서</h2>
+      <div class="agenda">
+        <span>01</span><span class="active">현황</span><span>이번 주 핵심 지표</span>
+        <span>02</span><span>이슈</span><span>막힌 지점과 원인</span>
+        <span>03</span><span>대응</span><span>진행 중인 조치</span>
+        <span>04</span><span>요청</span><span>필요한 결정</span>
+        <span>05</span><span>다음</span><span>담당자와 일정</span>
+      </div>
+    </section>
+
+    <section class="slide section accent-team" data-part="Section 01 · Status">
+      <p class="meta">SECTION 01</p>
+      <h1>Status</h1>
+      <p class="sub">상태 공유는 지표와 판단을 분리합니다.</p>
+    </section>
+
+    <section class="slide surface accent-team">
+      <h3>Weekly snapshot</h3>
+      <h2>핵심 지표</h2>
+      <div class="stat-grid">
+        <div class="stat"><span class="label">Done</span><span class="value">12</span><p class="desc">완료된 작업</p></div>
+        <div class="stat"><span class="label">Open</span><span class="value">5</span><p class="desc">진행 중인 작업</p></div>
+        <div class="stat"><span class="label">Blocker</span><span class="value">2</span><p class="desc">결정이 필요한 이슈</p></div>
+      </div>
+    </section>
+
+    <section class="slide section accent-rose" data-part="Section 02 · Issues">
+      <p class="meta">SECTION 02</p>
+      <h1>Issues</h1>
+      <p class="sub">문제는 영향도 순서로만 보여줍니다.</p>
+    </section>
+
+    <section class="slide surface accent-rose">
+      <h3>Blockers</h3>
+      <h2>논의가 필요한 항목</h2>
+      <ul class="list">
+        <li><strong>이슈 1:</strong> 영향과 필요한 결정</li>
+        <li><strong>이슈 2:</strong> 현재 대응과 남은 리스크</li>
+        <li><strong>이슈 3:</strong> 다음 미팅 전까지 할 일</li>
+      </ul>
+    </section>
+
+    <section class="slide section accent-blue" data-part="Section 03 · Action">
+      <p class="meta">SECTION 03</p>
+      <h1>Action</h1>
+      <p class="sub">마지막은 실행 항목으로 닫습니다.</p>
+    </section>
+
+    <section class="slide surface accent-blue">
+      <h3>Owner map</h3>
+      <h2>다음 액션</h2>
+      <div class="steps">
+        <div class="step"><span class="step-num">A</span><p>담당자</p></div>
+        <div class="step"><span class="step-num">B</span><p>마감일</p></div>
+        <div class="step"><span class="step-num">C</span><p>검증 기준</p></div>
+        <div class="step"><span class="step-num">D</span><p>공유 채널</p></div>
+      </div>
+    </section>
+  </main>
+
+  <nav class="nav" aria-label="Slide navigation">
+    <button type="button" data-action="prev" aria-label="Previous slide">&#8592;</button>
+    <button type="button" data-action="next" aria-label="Next slide">&#8594;</button>
+  </nav>
+  <div class="page-num" id="pageNum">1 / 1</div>
+  <script src="../assets/scripts/deck.js"></script>
+</body>
+</html>

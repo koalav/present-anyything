@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="color-scheme" content="dark" />
+  <title>개발 세미나 템플릿</title>
+  <link rel="stylesheet" href="../assets/styles/deck.css" />
+</head>
+<body data-deck-label="개발 세미나">
+  <div class="part-label" id="partLabel">개발 세미나</div>
+  <div class="progress" id="progress"></div>
+
+  <main class="slides" id="slides">
+    <section class="slide cover accent-dev" data-part="Opening">
+      <h1>기술 발표<br />제목</h1>
+      <p class="sub">아키텍처 · 워크플로 · 실습을 한 흐름으로</p>
+      <p class="meta">팀명 · 발표자 · YYYY. MM</p>
+    </section>
+
+    <section class="slide surface accent-dev">
+      <h2>오늘 다룰 것</h2>
+      <div class="agenda">
+        <span>01</span><span class="active">문제</span><span>현재 병목</span>
+        <span>02</span><span>구조</span><span>핵심 컴포넌트</span>
+        <span>03</span><span>흐름</span><span>실행 순서</span>
+        <span>04</span><span>데모</span><span>입력과 결과</span>
+        <span>05</span><span>운영</span><span>리스크와 다음 작업</span>
+      </div>
+    </section>
+
+    <section class="slide section accent-dev" data-part="Section 01 · Architecture">
+      <p class="meta">SECTION 01</p>
+      <h1>Architecture</h1>
+      <p class="sub">큰 그림을 먼저 보여주고 세부 구현으로 내려갑니다.</p>
+    </section>
+
+    <section class="slide surface accent-dev">
+      <h3>System shape</h3>
+      <h2>컴포넌트는 역할 단위로 나눕니다</h2>
+      <div class="resource-grid">
+        <div class="resource">
+          <h3>Input</h3>
+          <p>요청, 파일, 외부 데이터</p>
+        </div>
+        <div class="resource">
+          <h3>Processor</h3>
+          <p>비즈니스 규칙과 실행 로직</p>
+        </div>
+        <div class="resource">
+          <h3>Output</h3>
+          <p>결과물, 로그, 검증 지표</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="slide section accent-blue" data-part="Section 02 · Workflow">
+      <p class="meta">SECTION 02</p>
+      <h1>Workflow</h1>
+      <p class="sub">코드보다 먼저 반복 가능한 작업 흐름을 설명합니다.</p>
+    </section>
+
+    <section class="slide surface accent-blue">
+      <h3>Execution flow</h3>
+      <h2>실습 흐름</h2>
+      <div class="steps">
+        <div class="step"><span class="step-num">01</span><p>환경 준비</p></div>
+        <div class="step"><span class="step-num">02</span><p>입력 작성</p></div>
+        <div class="step"><span class="step-num">03</span><p>실행</p></div>
+        <div class="step"><span class="step-num">04</span><p>검증</p></div>
+      </div>
+      <p class="note">데모 슬라이드에는 성공 경로뿐 아니라 실패했을 때 확인할 로그 위치도 함께 둡니다.</p>
+    </section>
+
+    <section class="slide section accent-amber" data-part="Section 03 · Operations">
+      <p class="meta">SECTION 03</p>
+      <h1>Operations</h1>
+      <p class="sub">운영 기준과 남은 리스크를 마지막에 분리합니다.</p>
+    </section>
+
+    <section class="slide surface accent-amber">
+      <h3>Risk map</h3>
+      <h2>기술 발표의 끝은 결정 사항입니다</h2>
+      <ul class="list">
+        <li><strong>결정:</strong> 이번에 채택할 방식</li>
+        <li><strong>보류:</strong> 아직 검증이 필요한 영역</li>
+        <li><strong>다음:</strong> 담당자와 마감일</li>
+      </ul>
+    </section>
+  </main>
+
+  <nav class="nav" aria-label="Slide navigation">
+    <button type="button" data-action="prev" aria-label="Previous slide">&#8592;</button>
+    <button type="button" data-action="next" aria-label="Next slide">&#8594;</button>
+  </nav>
+  <div class="page-num" id="pageNum">1 / 1</div>
+  <script src="../assets/scripts/deck.js"></script>
+</body>
+</html>

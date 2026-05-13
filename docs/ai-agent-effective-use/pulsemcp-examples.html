@@ -1,0 +1,184 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="color-scheme" content="dark" />
+  <title>PulseMCP 예시 - AI 에이전트의 효과적인 활용</title>
+  <link rel="stylesheet" href="../assets/styles/source-viewer.css" />
+</head>
+<body>
+  <main class="shell">
+    <nav class="top" aria-label="Document navigation">
+      <a href="./">← Presentation</a>
+      <div class="links">
+        <a href="./source.html">Script</a>
+        <a href="./visual-assets.html">Visuals</a>
+        <a href="./mermaid-diagrams.html">Mermaid</a>
+        <a href="https://www.pulsemcp.com/">PulseMCP</a>
+      </div>
+    </nav>
+
+    <p class="meta">MCP examples</p>
+    <article>
+      <h1>PulseMCP에서 볼 수 있는 예시</h1>
+      <p>
+        확인일: 2026-05-13. PulseMCP는 MCP 서버, MCP 클라이언트, 실제 유스케이스를 모아 보는 디렉터리입니다.
+        발표 중에는 아래 링크를 열어 “MCP가 실제로 어떤 업무 도구와 연결되는가”를 보여주면 됩니다.
+      </p>
+
+      <h2>바로가기</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>페이지</th>
+            <th>볼 내용</th>
+            <th>링크</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Home</td>
+            <td>서버, 클라이언트, 유스케이스, 글 모음</td>
+            <td><a href="https://www.pulsemcp.com/">pulsemcp.com</a></td>
+          </tr>
+          <tr>
+            <td>MCP Servers</td>
+            <td>AI가 호출할 수 있는 외부 도구/데이터 연결 서버</td>
+            <td><a href="https://www.pulsemcp.com/servers">/servers</a></td>
+          </tr>
+          <tr>
+            <td>MCP Clients</td>
+            <td>MCP 서버를 붙여 쓰는 앱, IDE, 코딩 에이전트</td>
+            <td><a href="https://www.pulsemcp.com/clients">/clients</a></td>
+          </tr>
+          <tr>
+            <td>Use Cases</td>
+            <td>실제 업무 흐름에 MCP를 붙인 사례</td>
+            <td><a href="https://www.pulsemcp.com/use-cases">/use-cases</a></td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h2>서버 예시</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>타입</th>
+            <th>예시</th>
+            <th>발표에서 연결할 메시지</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>브라우저 / 디버깅</td>
+            <td>Playwright, Chrome DevTools</td>
+            <td>웹뷰, 콘솔, 네트워크, 성능을 실제 브라우저로 확인한다.</td>
+          </tr>
+          <tr>
+            <td>코드 / 저장소</td>
+            <td>Git, Filesystem, GitHub, GitLab</td>
+            <td>답변이 아니라 파일 수정, diff, PR까지 작업 루프에 넣는다.</td>
+          </tr>
+          <tr>
+            <td>문서 / 검색</td>
+            <td>Context7, Fetch, AWS Documentation, searchcode</td>
+            <td>모델 기억 대신 최신 문서와 코드 인덱스를 컨텍스트로 넣는다.</td>
+          </tr>
+          <tr>
+            <td>업무 시스템</td>
+            <td>Jira, Confluence, Notion, Slack</td>
+            <td>요구사항, 이슈, 결정 사항을 에이전트 작업 입력으로 연결한다.</td>
+          </tr>
+          <tr>
+            <td>데이터 / 분석</td>
+            <td>PostgreSQL, DuckDB, SQL, Supabase, MongoDB</td>
+            <td>가설을 데이터 조회와 검증 가능한 증거로 닫는다.</td>
+          </tr>
+          <tr>
+            <td>자동화 / 제작</td>
+            <td>Figma, Storybook, n8n, Excel, PowerPoint</td>
+            <td>디자인, UI 테스트, 문서 생성 같은 반복 작업을 도구화한다.</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h2>클라이언트 예시</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>타입</th>
+            <th>예시</th>
+            <th>역할</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>IDE / 에디터</td>
+            <td>VS Code, Zed, Continue, Cline 계열</td>
+            <td>개발 중인 코드베이스와 MCP 서버를 같은 작업 흐름에 둔다.</td>
+          </tr>
+          <tr>
+            <td>터미널 코딩 에이전트</td>
+            <td>Gemini CLI, OpenCode, Goose</td>
+            <td>셸 실행, 파일 수정, 테스트 루프를 중심으로 작업한다.</td>
+          </tr>
+          <tr>
+            <td>데스크톱 챗</td>
+            <td>Claude Desktop, Cherry Studio, LibreChat</td>
+            <td>일반 대화형 UI에서 외부 도구와 데이터를 호출한다.</td>
+          </tr>
+          <tr>
+            <td>프레임워크 / 디버깅</td>
+            <td>mcp-agent, fast-agent, MCP Inspector</td>
+            <td>직접 에이전트나 MCP 서버를 만들고 테스트한다.</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h2>유스케이스 예시</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>사례</th>
+            <th>Client</th>
+            <th>말하고 싶은 포인트</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>코딩 중 웹 검색 붙이기</td>
+            <td>Cursor IDE</td>
+            <td>최신 문서를 찾아 코드 설계 중 바로 반영한다.</td>
+          </tr>
+          <tr>
+            <td>GitHub 저장소 코드 변경과 PR</td>
+            <td>Goose</td>
+            <td>질문 답변이 아니라 repository action까지 연결된다.</td>
+          </tr>
+          <tr>
+            <td>코드베이스를 지식 그래프로 만들기</td>
+            <td>Cline</td>
+            <td>대형 repo에서 컨텍스트 선택과 구조 이해를 보강한다.</td>
+          </tr>
+          <tr>
+            <td>Figma를 HTML/CSS로 변환</td>
+            <td>Claude Desktop</td>
+            <td>디자인 도구를 컨텍스트와 실행 도구로 연결한다.</td>
+          </tr>
+          <tr>
+            <td>Supabase schema 동기화</td>
+            <td>Windsurf IDE</td>
+            <td>DB 상태를 IDE 작업과 맞춰 hallucination을 줄인다.</td>
+          </tr>
+          <tr>
+            <td>Stripe invoice 발행</td>
+            <td>Claude Desktop</td>
+            <td>외부 API 호출은 편리하지만 승인, 권한, 로그가 필요하다.</td>
+          </tr>
+        </tbody>
+      </table>
+    </article>
+  </main>
+</body>
+</html>
