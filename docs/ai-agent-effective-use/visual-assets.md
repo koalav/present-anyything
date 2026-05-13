@@ -48,7 +48,7 @@ Mermaid로 바로 만들기 좋은 후보는 `index.html` 본문에 반영했고
 | 19 | Prompt card | 터미널 프롬프트 카드 |
 | 20 | Checklist | 목표, 범위, 제약, 검증 방법 체크리스트 |
 | 20-1 | Section | Skill 섹션 구분 슬라이드 |
-| 20-2 | Flow | 반복 prompt → reusable workflow 변환 |
+| 20-2 | Flow | 반복 감사 절차 → reusable audit workflow 변환 |
 | 20-3 | Text tree | `SKILL.md`, scripts, references, assets 폴더 구조 |
 | 20-4 | Compare | Tool / MCP / Skill 3분할 비교 |
 | 20-5 | Mermaid | progressive disclosure: metadata → SKILL.md → resources/scripts → tool execution |
