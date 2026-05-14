@@ -4,10 +4,10 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="color-scheme" content="dark" />
-  <title>AI 에이전트의 효과적인 활용</title>
+  <title>Effective AI Agent Use</title>
   <link rel="stylesheet" href="../assets/styles/deck.css" />
   <style>
-    body[data-deck-label="AI 에이전트 활용"] .slide::before {
+    body[data-deck-label="AI Agent Use"] .slide::before {
       background:
         linear-gradient(rgba(255, 255, 255, 0.036) 1px, transparent 1px),
         linear-gradient(90deg, rgba(255, 255, 255, 0.032) 1px, transparent 1px);
@@ -15,214 +15,452 @@
       opacity: 0.18;
     }
 
-    body[data-deck-label="AI 에이전트 활용"] .diagram-frame {
+    body[data-deck-label="AI Agent Use"] .diagram-frame {
       max-height: 68vh;
       margin-top: 2.4vh;
       padding-block: 24px;
       overflow: visible;
     }
 
-    body[data-deck-label="AI 에이전트 활용"] .diagram-frame.compact {
+    body[data-deck-label="AI Agent Use"] .diagram-frame.compact {
       max-height: 62vh;
     }
 
-    body[data-deck-label="AI 에이전트 활용"] .mermaid {
+    body[data-deck-label="AI Agent Use"] .mermaid {
       font-size: 1rem;
     }
 
-    body[data-deck-label="AI 에이전트 활용"] .resource-grid.tool-grid {
+    body[data-deck-label="AI Agent Use"] .resource-grid.tool-grid {
       width: min(1180px, 100%);
       grid-template-columns: repeat(4, minmax(0, 1fr));
     }
 
-    body[data-deck-label="AI 에이전트 활용"] .resource-grid.tool-grid .resource {
+    body[data-deck-label="AI Agent Use"] .resource-grid.tool-grid .resource {
       min-height: 140px;
       padding-inline: clamp(16px, 2vw, 26px);
     }
 
-    body[data-deck-label="AI 에이전트 활용"] .mermaid svg {
+    body[data-deck-label="AI Agent Use"] .mermaid svg {
       width: 100% !important;
       height: auto !important;
       max-width: 100% !important;
       max-height: 62vh !important;
     }
 
-    body[data-deck-label="AI 에이전트 활용"] .mermaid svg > g {
+    body[data-deck-label="AI Agent Use"] .mermaid svg > g {
       transform: scale(1.16);
       transform-box: fill-box;
       transform-origin: center;
     }
 
-    body[data-deck-label="AI 에이전트 활용"] .mermaid .nodeLabel,
-    body[data-deck-label="AI 에이전트 활용"] .mermaid .edgeLabel,
-    body[data-deck-label="AI 에이전트 활용"] .mermaid .label {
+    body[data-deck-label="AI Agent Use"] .mermaid .nodeLabel,
+    body[data-deck-label="AI Agent Use"] .mermaid .edgeLabel,
+    body[data-deck-label="AI Agent Use"] .mermaid .label {
       font-size: 1.02rem !important;
     }
 
-    body[data-deck-label="AI 에이전트 활용"] .diagram-frame.compact .mermaid svg > g {
+    body[data-deck-label="AI Agent Use"] .diagram-frame.compact .mermaid svg > g {
       transform: translateY(-1%) scale(1.08);
     }
 
-    body[data-deck-label="AI 에이전트 활용"] .diagram-frame.role-flow .mermaid svg > g {
+    body[data-deck-label="AI Agent Use"] .diagram-frame.role-flow .mermaid svg > g {
       transform: translateY(-1%) scale(1.45);
     }
 
-    body[data-deck-label="AI 에이전트 활용"] .diagram-frame.diagram-dense {
+    body[data-deck-label="AI Agent Use"] .diagram-frame.diagram-dense {
       max-height: 64vh;
       padding: 18px 20px;
     }
 
-    body[data-deck-label="AI 에이전트 활용"] .diagram-frame.diagram-dense .mermaid {
+    body[data-deck-label="AI Agent Use"] .diagram-frame.diagram-dense .mermaid {
       font-size: 0.88rem;
     }
 
-    body[data-deck-label="AI 에이전트 활용"] .diagram-frame.diagram-dense .mermaid svg {
+    body[data-deck-label="AI Agent Use"] .diagram-frame.diagram-dense .mermaid svg {
       max-height: 58vh !important;
     }
 
-    body[data-deck-label="AI 에이전트 활용"] .diagram-frame.diagram-dense .mermaid svg > g {
+    body[data-deck-label="AI Agent Use"] .diagram-frame.diagram-dense .mermaid svg > g {
       transform: none;
     }
 
-    body[data-deck-label="AI 에이전트 활용"] .deck-visual {
+    body[data-deck-label="AI Agent Use"] .deck-visual {
       width: min(920px, 100%);
       margin: 3vh auto 0;
       overflow: hidden;
-      border: 1px solid rgba(148, 163, 184, 0.2);
+      border: 1px solid var(--line);
       border-radius: 8px;
-      background: rgba(255, 255, 255, 0.94);
-      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.65);
+      background: transparent;
     }
 
-    body[data-deck-label="AI 에이전트 활용"] .deck-visual img {
+    body[data-deck-label="AI Agent Use"] .deck-visual img {
       display: block;
       width: 100%;
       height: auto;
     }
 
-    body[data-deck-label="AI 에이전트 활용"] .deck-visual:not(.wide-visual):not(.cover-visual) img {
+    body[data-deck-label="AI Agent Use"] .deck-visual:not(.wide-visual):not(.cover-visual) img {
       height: min(460px, 48vh);
       object-fit: contain;
     }
 
-    body[data-deck-label="AI 에이전트 활용"] .deck-visual.wide-visual {
+    body[data-deck-label="AI Agent Use"] .deck-visual.wide-visual {
       width: min(1040px, 100%);
     }
 
-    body[data-deck-label="AI 에이전트 활용"] .deck-visual.wide-visual img {
+    body[data-deck-label="AI Agent Use"] .deck-visual.wide-visual img {
       height: min(500px, 46vh);
       object-fit: contain;
     }
 
-    body[data-deck-label="AI 에이전트 활용"] .deck-visual.cover-visual {
+    body[data-deck-label="AI Agent Use"] .deck-visual.cover-visual {
       width: min(720px, 74vw);
       margin-top: 3.2vh;
     }
 
-    body[data-deck-label="AI 에이전트 활용"] .deck-visual.cover-visual img {
+    body[data-deck-label="AI Agent Use"] .deck-visual.cover-visual img {
       height: min(360px, 30vh);
       object-fit: contain;
     }
 
+    body[data-deck-label="AI Agent Use"] .workflow-shift {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+      align-items: stretch;
+      gap: 18px;
+      width: min(1120px, 100%);
+      margin: 2.6vh auto 0;
+    }
+
+    body[data-deck-label="AI Agent Use"] .workflow-panel {
+      overflow: hidden;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: transparent;
+    }
+
+    body[data-deck-label="AI Agent Use"] .workflow-panel h3 {
+      margin: 0;
+      padding: 12px 14px;
+      border-bottom: 1px solid var(--line);
+      background: var(--panel);
+      color: var(--muted);
+      font-size: 0.95rem;
+      letter-spacing: 0;
+    }
+
+    body[data-deck-label="AI Agent Use"] .workflow-panel img {
+      display: block;
+      width: 100%;
+      height: min(360px, 37vh);
+      object-fit: contain;
+    }
+
+    body[data-deck-label="AI Agent Use"] .workflow-arrow {
+      display: grid;
+      place-items: center;
+      color: var(--accent);
+      font-size: clamp(2rem, 4vw, 4rem);
+      font-weight: 800;
+    }
+
+    body[data-deck-label="AI Agent Use"] .tool-contrast {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 20px;
+      width: min(1120px, 100%);
+      margin: 2.4vh auto 0;
+    }
+
+    body[data-deck-label="AI Agent Use"] .tool-column {
+      display: grid;
+      gap: 14px;
+      align-content: start;
+      padding: 22px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: rgba(15, 23, 42, 0.64);
+    }
+
+    body[data-deck-label="AI Agent Use"] .tool-column.negative {
+      border-color: rgba(248, 113, 113, 0.44);
+    }
+
+    body[data-deck-label="AI Agent Use"] .tool-column.positive {
+      border-color: rgba(45, 212, 191, 0.48);
+    }
+
+    body[data-deck-label="AI Agent Use"] .tool-column-title {
+      margin: 0;
+      color: var(--text);
+      font-size: clamp(1.28rem, 2vw, 1.68rem);
+      line-height: 1.18;
+      letter-spacing: 0;
+    }
+
+    body[data-deck-label="AI Agent Use"] .tool-column-sub {
+      margin: 0;
+      color: var(--muted);
+      font-size: 1rem;
+      line-height: 1.45;
+    }
+
+    body[data-deck-label="AI Agent Use"] .tool-step-list {
+      display: grid;
+      gap: 10px;
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    body[data-deck-label="AI Agent Use"] .tool-step-list li {
+      display: grid;
+      grid-template-columns: 30px minmax(0, 1fr);
+      gap: 12px;
+      align-items: start;
+      padding: 12px 14px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: rgba(2, 6, 23, 0.42);
+      color: var(--text);
+      font-size: 0.98rem;
+      line-height: 1.36;
+    }
+
+    body[data-deck-label="AI Agent Use"] .step-dot {
+      display: grid;
+      width: 30px;
+      height: 30px;
+      place-items: center;
+      border-radius: 999px;
+      background: rgba(37, 99, 235, 0.95);
+      color: #eff6ff;
+      font-weight: 800;
+      font-size: 0.9rem;
+    }
+
+    body[data-deck-label="AI Agent Use"] .tool-flow-rail {
+      display: grid;
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+      gap: 14px;
+      width: min(1120px, 100%);
+      margin: 2.4vh auto 0;
+    }
+
+    body[data-deck-label="AI Agent Use"] .tool-flow-card,
+    body[data-deck-label="AI Agent Use"] .tool-fan-card {
+      min-height: 128px;
+      padding: 18px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: rgba(15, 23, 42, 0.68);
+    }
+
+    body[data-deck-label="AI Agent Use"] .tool-flow-card h3,
+    body[data-deck-label="AI Agent Use"] .tool-fan-card h3 {
+      margin: 0 0 10px;
+      color: var(--text);
+      font-size: 1.06rem;
+      letter-spacing: 0;
+    }
+
+    body[data-deck-label="AI Agent Use"] .tool-flow-card p,
+    body[data-deck-label="AI Agent Use"] .tool-fan-card p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 0.95rem;
+      line-height: 1.35;
+    }
+
+    body[data-deck-label="AI Agent Use"] .tool-fanout {
+      display: grid;
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+      gap: 14px;
+      width: min(1160px, 100%);
+      margin: 2.4vh auto 0;
+    }
+
+    body[data-deck-label="AI Agent Use"] .outcome-matrix {
+      display: grid;
+      grid-template-columns: 0.9fr 1.1fr;
+      gap: 20px;
+      width: min(1080px, 100%);
+      margin: 2.4vh auto 0;
+      align-items: stretch;
+    }
+
+    body[data-deck-label="AI Agent Use"] .outcome-stack {
+      display: grid;
+      gap: 12px;
+    }
+
+    body[data-deck-label="AI Agent Use"] .outcome-chip {
+      padding: 16px 18px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: rgba(15, 23, 42, 0.7);
+    }
+
+    body[data-deck-label="AI Agent Use"] .outcome-chip strong {
+      display: block;
+      margin-bottom: 6px;
+      color: var(--text);
+      font-size: 1.02rem;
+    }
+
+    body[data-deck-label="AI Agent Use"] .outcome-chip span {
+      color: var(--muted);
+      font-size: 0.96rem;
+      line-height: 1.36;
+    }
+
+    body[data-deck-label="AI Agent Use"] .outcome-band {
+      display: grid;
+      place-items: center;
+      padding: 28px;
+      border: 1px solid rgba(45, 212, 191, 0.46);
+      border-radius: 8px;
+      background: rgba(6, 78, 59, 0.42);
+      text-align: center;
+    }
+
+    body[data-deck-label="AI Agent Use"] .outcome-band strong {
+      color: #ccfbf1;
+      font-size: clamp(1.5rem, 2.6vw, 2.15rem);
+      line-height: 1.2;
+    }
+
+    body[data-deck-label="AI Agent Use"] .outcome-band span {
+      display: block;
+      margin-top: 12px;
+      color: var(--muted);
+      font-size: 1.02rem;
+      line-height: 1.38;
+    }
+
     @media (max-width: 820px) {
-      body[data-deck-label="AI 에이전트 활용"] .diagram-frame,
-      body[data-deck-label="AI 에이전트 활용"] .diagram-frame.compact,
-      body[data-deck-label="AI 에이전트 활용"] .diagram-frame.wide {
+      body[data-deck-label="AI Agent Use"] .diagram-frame,
+      body[data-deck-label="AI Agent Use"] .diagram-frame.compact,
+      body[data-deck-label="AI Agent Use"] .diagram-frame.wide {
         max-height: 54vh;
         padding-block: 18px;
       }
 
-      body[data-deck-label="AI 에이전트 활용"] .slide.surface {
+      body[data-deck-label="AI Agent Use"] .slide.surface {
         justify-content: flex-start;
         overflow-y: auto;
         padding-top: 116px;
       }
 
-      body[data-deck-label="AI 에이전트 활용"] .slide.surface h2 {
+      body[data-deck-label="AI Agent Use"] .slide.surface h2 {
         font-size: clamp(2rem, 10.8vw, 2.85rem);
       }
 
-      body[data-deck-label="AI 에이전트 활용"] .slide.surface .sub {
+      body[data-deck-label="AI Agent Use"] .slide.surface .sub {
         font-size: 1.08rem;
       }
 
-      body[data-deck-label="AI 에이전트 활용"] .mermaid svg {
+      body[data-deck-label="AI Agent Use"] .mermaid svg {
         width: 100% !important;
         height: auto !important;
         max-height: 50vh !important;
       }
 
-      body[data-deck-label="AI 에이전트 활용"] .mermaid svg > g,
-      body[data-deck-label="AI 에이전트 활용"] .diagram-frame.compact .mermaid svg > g {
+      body[data-deck-label="AI Agent Use"] .mermaid svg > g,
+      body[data-deck-label="AI Agent Use"] .diagram-frame.compact .mermaid svg > g {
         transform: scale(1.12);
       }
 
-      body[data-deck-label="AI 에이전트 활용"] .part-label {
+      body[data-deck-label="AI Agent Use"] .part-label {
         top: 58px;
         max-width: calc(100vw - 40px);
       }
 
-      body[data-deck-label="AI 에이전트 활용"] .resource-grid.tool-grid {
+      body[data-deck-label="AI Agent Use"] .resource-grid.tool-grid {
         grid-template-columns: repeat(2, minmax(0, 1fr));
       }
 
-      body[data-deck-label="AI 에이전트 활용"] .resource-grid.tool-grid .resource {
+      body[data-deck-label="AI Agent Use"] .resource-grid.tool-grid .resource {
         min-height: 118px;
         padding: 18px 10px;
         border-right: 1px solid var(--line);
         border-bottom: 1px solid var(--line);
       }
 
-      body[data-deck-label="AI 에이전트 활용"] .resource-grid.tool-grid .resource:nth-child(2n) {
+      body[data-deck-label="AI Agent Use"] .resource-grid.tool-grid .resource:nth-child(2n) {
         border-right: 0;
       }
 
-      body[data-deck-label="AI 에이전트 활용"] .resource-grid.tool-grid .resource:nth-last-child(-n + 2) {
+      body[data-deck-label="AI Agent Use"] .resource-grid.tool-grid .resource:nth-last-child(-n + 2) {
         border-bottom: 0;
       }
 
-      body[data-deck-label="AI 에이전트 활용"] .deck-visual,
-      body[data-deck-label="AI 에이전트 활용"] .deck-visual.wide-visual,
-      body[data-deck-label="AI 에이전트 활용"] .deck-visual.cover-visual {
+      body[data-deck-label="AI Agent Use"] .deck-visual,
+      body[data-deck-label="AI Agent Use"] .deck-visual.wide-visual,
+      body[data-deck-label="AI Agent Use"] .deck-visual.cover-visual {
         width: 100%;
+      }
+
+      body[data-deck-label="AI Agent Use"] .workflow-shift {
+        grid-template-columns: 1fr;
+        gap: 12px;
+      }
+
+      body[data-deck-label="AI Agent Use"] .workflow-arrow {
+        min-height: 24px;
+        transform: rotate(90deg);
+      }
+
+      body[data-deck-label="AI Agent Use"] .workflow-panel img {
+        height: min(260px, 26vh);
+      }
+
+      body[data-deck-label="AI Agent Use"] .tool-contrast,
+      body[data-deck-label="AI Agent Use"] .outcome-matrix {
+        grid-template-columns: 1fr;
+      }
+
+      body[data-deck-label="AI Agent Use"] .tool-flow-rail,
+      body[data-deck-label="AI Agent Use"] .tool-fanout {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
       }
     }
 
     @media (max-height: 760px) {
-      body[data-deck-label="AI 에이전트 활용"] .diagram-frame,
-      body[data-deck-label="AI 에이전트 활용"] .diagram-frame.wide {
+      body[data-deck-label="AI Agent Use"] .diagram-frame,
+      body[data-deck-label="AI Agent Use"] .diagram-frame.wide {
         max-height: 52vh;
         margin-top: 1.6vh;
         padding-block: 16px;
       }
 
-      body[data-deck-label="AI 에이전트 활용"] .diagram-frame.compact {
+      body[data-deck-label="AI Agent Use"] .diagram-frame.compact {
         max-height: 52vh;
       }
 
-      body[data-deck-label="AI 에이전트 활용"] .mermaid {
+      body[data-deck-label="AI Agent Use"] .mermaid {
         font-size: 0.9rem;
       }
 
-      body[data-deck-label="AI 에이전트 활용"] .mermaid .nodeLabel,
-      body[data-deck-label="AI 에이전트 활용"] .mermaid .edgeLabel,
-      body[data-deck-label="AI 에이전트 활용"] .mermaid .label {
+      body[data-deck-label="AI Agent Use"] .mermaid .nodeLabel,
+      body[data-deck-label="AI Agent Use"] .mermaid .edgeLabel,
+      body[data-deck-label="AI Agent Use"] .mermaid .label {
         font-size: 0.92rem !important;
       }
 
-      body[data-deck-label="AI 에이전트 활용"] .mermaid svg {
+      body[data-deck-label="AI Agent Use"] .mermaid svg {
         max-height: 48vh !important;
       }
 
-      body[data-deck-label="AI 에이전트 활용"] .mermaid svg > g,
-      body[data-deck-label="AI 에이전트 활용"] .diagram-frame.compact .mermaid svg > g {
+      body[data-deck-label="AI Agent Use"] .mermaid svg > g,
+      body[data-deck-label="AI Agent Use"] .diagram-frame.compact .mermaid svg > g {
         transform: scale(1.08);
       }
     }
   </style>
 </head>
-<body data-deck-label="AI 에이전트 활용">
-  <div class="part-label" id="partLabel">AI 에이전트 활용</div>
+<body data-deck-label="AI Agent Use">
+  <div class="part-label" id="partLabel">AI Agent Use</div>
   <nav class="deck-links" aria-label="Deck source files">
     <a href="./source.html">Script</a>
     <a href="./visual-assets.html">Visuals</a>
@@ -233,70 +471,65 @@
 
   <main class="slides" id="slides">
     <section class="slide cover accent-blue" data-part="Opening">
-      <h1>AI 에이전트의<br />효과적인 활용</h1>
-      <p class="sub">채팅형 질의응답에서 실행 가능한 분석 루프로</p>
+      <h1>Effective AI Agent<br />Use</h1>
+      <p class="sub">From Chat Q&A to Executable Analysis Loops</p>
       <p class="meta">Agent workflow seminar</p>
-      <figure class="deck-visual cover-visual">
-        <img src="../assets/images/ai-agent-effective-use/ai-human-report-loop.png" alt="AI 분석, 사람 검토, 보고서 산출 흐름 일러스트" />
-      </figure>
     </section>
 
     <section class="slide surface accent-blue" data-part="Opening">
-      <h2>오늘의 흐름</h2>
+      <h2>Agenda</h2>
       <div class="agenda">
-        <span>01</span><span class="active">채팅형 AI의 한계</span><span>질문 · 답변 · 복붙 오케스트레이션</span>
-        <span>02</span><span>MCP</span><span>표준 커넥터와 도구 생태계</span>
-        <span>03</span><span>Skill</span><span>반복 작업 프롬프트의 패키징</span>
-        <span>04</span><span>Agent Workflow</span><span>MCP 도구와 Skill 절차를 실행 루프로 연결</span>
-        <span>05</span><span>Effective Instruction</span><span>역할 경계와 Harness 설계</span>
-        <span>06</span><span>APK Analyzer</span><span>재현 가능한 APK 분석 Harness</span>
+        <span>01</span><span class="active">Chat Interface Limits</span><span>Copy-paste orchestration</span>
+        <span>02</span><span>MCP</span><span>Standard tool connector</span>
+        <span>03</span><span>Skills</span><span>Reusable prompt packaging</span>
+        <span>04</span><span>Agent Workflow</span><span>MCP tools + Skill procedures</span>
+        <span>05</span><span>Harness Design</span><span>Control and verification boundaries</span>
+        <span>06</span><span>APK Analyzer</span><span>Reproducible APK analysis harness</span>
       </div>
     </section>
 
-    <section class="slide section accent-blue" data-part="Part 01 · 채팅형 AI의 한계">
+    <section class="slide section accent-blue" data-part="Part 01 · Chat Interface Limits">
       <p class="meta">PART 01</p>
-      <h1>채팅형 AI의<br />한계</h1>
-      <p class="sub">답변 중심 사용이 왜 실행 가능한 작업 흐름으로 바로 이어지지 않는지 봅니다.</p>
+      <h1>Chat Interface<br />Limits</h1>
+      <p class="sub">Limits of answer-only workflows</p>
     </section>
 
     <section class="slide surface accent-blue">
       <h3>Chat-style workflow</h3>
-      <h2>질문 · 답변 · 복사 · 실행</h2>
-      <p class="sub">일반 채팅형 AI는 작업을 끝내는 대신 다음 행동을 설명합니다.</p>
-      <figure class="deck-visual wide-visual">
-        <img src="../assets/images/ai-agent-effective-use/chat-ai-tools.png" alt="채팅형 AI와 여러 작업 도구를 오가는 사람의 작업 흐름 일러스트" />
-      </figure>
+      <h2>Copy-Paste to<br />Tool Calls</h2>
+      <p class="sub">From manual orchestration to controlled tool-call evidence</p>
+      <div class="workflow-shift">
+        <figure class="workflow-panel">
+          <h3>Before · Manual Orchestration</h3>
+          <img src="../assets/images/ai-agent-effective-use/before-manual-orchestration.png" alt="Manual orchestration across analysis tools and reports" />
+        </figure>
+        <div class="workflow-arrow" aria-hidden="true">→</div>
+        <figure class="workflow-panel">
+          <h3>After · Tool-Call Loop</h3>
+          <img src="../assets/images/ai-agent-effective-use/chat-ai-tools.png" alt="AI-driven workflow with multiple tool calls" />
+        </figure>
+      </div>
     </section>
 
     <section class="slide surface accent-blue">
       <h3>Starting point</h3>
-      <h2>답변은 작업 완료가 아닙니다</h2>
-      <div class="diagram-frame wide">
-        <pre class="mermaid">flowchart TB
-  Q["질문"]:::input --> A(("텍스트 답변")):::core
-  A --> Human["사람이 복사하고 오케스트레이션"]:::human
-  A -.-> F["APK / Manifest는 그대로"]:::gap
-  A -.-> R["재현 결과 없음"]:::gap
-  A -.-> V["검증 증거 없음"]:::gap
-  A -.-> C["대상 상태 모름"]:::gap
-  Human --> Done["보조/대체 구조는 아직 아님"]:::warn
-  classDef input fill:#0f172a,stroke:#60a5fa,color:#dbeafe,stroke-width:2px;
-  classDef core fill:#1d4ed8,stroke:#bfdbfe,color:#ffffff,stroke-width:2.6px;
-  classDef human fill:#111827,stroke:#94a3b8,color:#f8fafc,stroke-width:1.8px;
-  classDef gap fill:#3f1d1d,stroke:#fca5a5,color:#fee2e2,stroke-width:1.8px;
-  classDef warn fill:#422006,stroke:#fbbf24,color:#fffbeb,stroke-width:2px;</pre>
+      <h2>Answer Is Not Completion</h2>
+      <div class="resource-grid">
+        <div class="resource"><h3>Files Unchanged</h3><p>No APK, source, or report artifact changes.</p></div>
+        <div class="resource"><h3>No Execution Evidence</h3><p>No command, test, ADB, or Frida evidence.</p></div>
+        <div class="resource"><h3>No Target State</h3><p>Manifest, build variant, and device state as external inputs.</p></div>
       </div>
     </section>
 
     <section class="slide accent-amber">
       <h3>Why tools matter</h3>
-      <h2>도구가 붙어야<br />상태가 들어옵니다</h2>
-      <p class="sub">AndroidManifest, decompiled code, device state, 실행 로그는 모델 밖에서 들어옵니다.</p>
+      <h2>External State<br />Inputs</h2>
+      <p class="sub">Manifest, decompiled code, device state, and logs come from outside the model.</p>
     </section>
 
     <section class="slide surface accent-blue">
       <h3>Tool calling</h3>
-      <h2>모델이 고른다</h2>
+      <h2>Model Tool Selection</h2>
       <div class="diagram-frame wide">
         <pre class="mermaid">sequenceDiagram
   autonumber
@@ -316,18 +549,105 @@
       </div>
     </section>
 
+    <section class="slide surface accent-blue">
+      <h3>Variant 01</h3>
+      <h2>Manual vs<br />Tool-Calling Work</h2>
+      <p class="sub">Same security question, different execution path</p>
+      <div class="tool-contrast">
+        <div class="tool-column negative">
+          <h3 class="tool-column-title">Without Tool Calling</h3>
+          <p class="tool-column-sub">Answer-only AI response, followed by human-led code review.</p>
+          <ul class="tool-step-list">
+            <li><span class="step-dot">1</span><span>Generic vulnerability list from the model</span></li>
+            <li><span class="step-dot">2</span><span>Manual search across source, manifest, and dependencies</span></li>
+            <li><span class="step-dot">3</span><span>Higher effort, slower review, missing-evidence risk</span></li>
+          </ul>
+        </div>
+        <div class="tool-column positive">
+          <h3 class="tool-column-title">With Tool Calling</h3>
+          <p class="tool-column-sub">Target artifact plus request, then controlled tool execution.</p>
+          <ul class="tool-step-list">
+            <li><span class="step-dot">1</span><span>APK or repository as concrete target input</span></li>
+            <li><span class="step-dot">2</span><span>File analysis, code search, web search, dependency analysis</span></li>
+            <li><span class="step-dot">3</span><span>Evidence-backed summary with impact, reproduction, and caveats</span></li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <section class="slide surface accent-amber">
+      <h3>Variant 02</h3>
+      <h2>Manual Process<br />Decomposition</h2>
+      <p class="sub">What the user has to do when the model only answers</p>
+      <div class="tool-flow-rail">
+        <div class="tool-flow-card"><h3>Ask</h3><p>Security question without application state.</p></div>
+        <div class="tool-flow-card"><h3>Answer</h3><p>General checklist such as OWASP Top 10.</p></div>
+        <div class="tool-flow-card"><h3>Search</h3><p>Manual navigation across codebase and manifests.</p></div>
+        <div class="tool-flow-card"><h3>Interpret</h3><p>User-side vulnerability pattern matching.</p></div>
+        <div class="tool-flow-card"><h3>Summarize</h3><p>Human-written evidence and result cleanup.</p></div>
+      </div>
+    </section>
+
+    <section class="slide surface accent-teal">
+      <h3>Variant 03</h3>
+      <h2>Automated Tool-Calling Flow</h2>
+      <p class="sub">Target input, tool execution, and comprehensive response</p>
+      <div class="diagram-frame wide">
+        <pre class="mermaid">flowchart LR
+  Target["Target + request<br/>app.apk + security task"]:::input --> AI["AI<br/>tool-call planning"]:::ai
+  AI --> Tools["Controlled tools<br/>file · code · web · dependency"]:::tool
+  Tools --> Evidence["Evidence bundle<br/>paths · versions · findings · links"]:::evidence
+  Evidence --> Response["Comprehensive response<br/>summary · impact · repro · remediation"]:::success
+  classDef input fill:#0f172a,stroke:#64748b,color:#e2e8f0,stroke-width:1.6px;
+  classDef ai fill:#1d4ed8,stroke:#bfdbfe,color:#ffffff,stroke-width:2.4px;
+  classDef tool fill:#0f766e,stroke:#99f6e4,color:#ffffff,stroke-width:2.2px;
+  classDef evidence fill:#422006,stroke:#fbbf24,color:#fffbeb,stroke-width:2px;
+  classDef success fill:#064e3b,stroke:#5eead4,color:#ecfeff,stroke-width:2.2px;</pre>
+      </div>
+    </section>
+
+    <section class="slide surface accent-teal">
+      <h3>Variant 04</h3>
+      <h2>Multi-Tool<br />Evidence Fan-Out</h2>
+      <p class="sub">Tool calls convert one request into parallel evidence sources</p>
+      <div class="tool-fanout">
+        <div class="tool-fan-card"><h3>File Analysis</h3><p>APK structure, manifest parsing, resource extraction.</p></div>
+        <div class="tool-fan-card"><h3>Code Search</h3><p>Sensitive function search, pattern detection, flow tracing.</p></div>
+        <div class="tool-fan-card"><h3>Web Search</h3><p>CVE references, security advisories, recent exploit context.</p></div>
+        <div class="tool-fan-card"><h3>Dependency Analysis</h3><p>Library inventory, version checks, known vulnerability lookup.</p></div>
+        <div class="tool-fan-card"><h3>Other Tools</h3><p>Device checks, dynamic probes, custom harness functions.</p></div>
+      </div>
+    </section>
+
+    <section class="slide surface accent-blue">
+      <h3>Variant 05</h3>
+      <h2>Outcome Delta</h2>
+      <p class="sub">The value is not a longer answer, but a verifiable analysis path</p>
+      <div class="outcome-matrix">
+        <div class="outcome-stack">
+          <div class="outcome-chip"><strong>Manual Mode</strong><span>AI answer as checklist, user as orchestrator.</span></div>
+          <div class="outcome-chip"><strong>Tool-Calling Mode</strong><span>AI as planner, harness as executor, tools as evidence sources.</span></div>
+          <div class="outcome-chip"><strong>Review Mode</strong><span>User reviews evidence and decides the final disposition.</span></div>
+        </div>
+        <div class="outcome-band">
+          <strong>Faster, more accurate vulnerability analysis</strong>
+          <span>Concrete target input, automatic tool use, reproducible evidence, and complete response structure.</span>
+        </div>
+      </div>
+    </section>
+
     <section class="slide section accent-teal" data-part="Part 02 · MCP">
       <p class="meta">PART 02</p>
       <h1>MCP</h1>
-      <p class="sub">AI용 표준 커넥터</p>
+      <p class="sub">Standard connector for AI tools</p>
     </section>
 
     <section class="slide surface accent-teal">
       <h3>MCP structure</h3>
-      <h2>Model이 판단하고<br />Client가 연결한다</h2>
+      <h2>Model Decision<br />Client Connection</h2>
       <div class="diagram-frame wide">
         <pre class="mermaid">flowchart TB
-  Model(["AI Model: tool call 판단"]):::model --> Host["Host App: context + policy"]:::host
+  Model(["AI Model: tool-call decision"]):::model --> Host["Host App: context + policy"]:::host
   Host --> C1["IDE / Coding Client"]:::client
   Host --> C2["Mobile Audit Harness"]:::client
   Host --> C3["Reverse Engineering UI"]:::client
@@ -349,7 +669,7 @@
 
     <section class="slide surface accent-teal">
       <h3>Before and after</h3>
-      <h2>MCP 이전과 이후</h2>
+      <h2>MCP Before / After</h2>
       <div class="diagram-frame wide">
         <pre class="mermaid">flowchart TB
   subgraph ABefore["Before: custom wiring"]
@@ -382,11 +702,11 @@
 
     <section class="slide surface accent-teal">
       <h3>Filesystem MCP</h3>
-      <h2>파일 접근도<br />도구 호출로 제한한다</h2>
-      <p class="sub">허용된 디렉터리 안에서 read · list · search · parse</p>
+      <h2>File Access via<br />Tool Calls</h2>
+      <p class="sub">read · list · search · parse within allowed roots</p>
       <div class="diagram-frame compact">
         <pre class="mermaid">flowchart TB
-  Request["요청: exported components 찾기"]:::input --> Host["Host / MCP Client<br/>model selects tool"]:::host
+  Request["Request: exported components"]:::input --> Host["Host / MCP Client<br/>model selects tool"]:::host
   Host --> Server[["Filesystem MCP Server"]]:::server
   Server --> Verify["allowed roots check<br/>read / list / search / parse<br/>manifest / source / JSON<br/>evidence review"]:::success
   classDef input fill:#111827,stroke:#94a3b8,color:#f8fafc,stroke-width:1.5px;
@@ -401,35 +721,18 @@
       </div>
     </section>
 
-    <section class="slide accent-teal">
-      <h3>Standardization</h3>
-      <h2>여러 클라이언트<br />여러 모델<br />같은 외부 도구</h2>
-    </section>
-
-    <section class="slide surface accent-teal">
-      <h3>MCP directory</h3>
-      <h2>Mobile Security MCP</h2>
-      <p class="sub">분석 도구를 AI가 호출 가능한 서버로 감쌉니다.</p>
-      <div class="resource-grid">
-        <div class="resource"><h3>Static</h3><p>jadx · apktool · aapt</p></div>
-        <div class="resource"><h3>Dynamic</h3><p>adb · Frida · objection</p></div>
-        <div class="resource"><h3>Native</h3><p>Ghidra · IDA Pro</p></div>
-      </div>
-      <p class="meta">도구는 실행하고, AI는 결과를 해석합니다.</p>
-    </section>
-
     <section class="slide accent-amber">
       <h3>Important distinction</h3>
       <h2>MCP ≠ Agent</h2>
-      <p class="sub">연결은 시작이고, 실행 루프가 핵심입니다.</p>
+      <p class="sub">Connection layer, not execution loop.</p>
     </section>
 
     <section class="slide surface accent-teal">
       <h3>MCP in daily work</h3>
-      <h2>MCP로 일상 작업을 실행합니다</h2>
+      <h2>Daily Work via MCP</h2>
       <div class="diagram-frame wide">
         <pre class="mermaid">flowchart LR
-  Ask["이 repo에서<br/>exported Activity 찾아줘"]:::ask --> Model["AI"]:::model
+  Ask["Find exported<br/>Activities in this repo"]:::ask --> Model["AI"]:::model
   Model --> Tools["MCP tools"]:::tool
   Tools --> T1["list files"]:::step
   Tools --> T2["read manifest"]:::step
@@ -449,31 +752,25 @@
 
     <section class="slide surface accent-teal">
       <h3>From prompt to skill</h3>
-      <h2>반복 작업은<br />프롬프트 패턴이 됩니다</h2>
+      <h2>Reusable Prompt<br />Patterns</h2>
       <div class="resource-grid">
-        <div class="resource"><h3>주의사항</h3><p>건드리면 안 되는 파일, 기기 실행 권한, false positive 기준</p></div>
-        <div class="resource"><h3>작업 순서</h3><p>manifest → source hit → permission → evidence → report</p></div>
-        <div class="resource"><h3>사용 툴</h3><p>read_file, rg, manifest parser, jadx, adb, Frida</p></div>
-        <div class="resource"><h3>출력 형식</h3><p>component, risk, evidence, caveat, validation command</p></div>
+        <div class="resource"><h3>Cautions</h3><p>protected files, device permissions, false-positive criteria</p></div>
+        <div class="resource"><h3>Procedure</h3><p>manifest → source hit → permission → evidence → report</p></div>
+        <div class="resource"><h3>Tool Set</h3><p>read_file, rg, manifest parser, jadx, adb, Frida</p></div>
+        <div class="resource"><h3>Output Schema</h3><p>component, risk, evidence, caveat, validation command</p></div>
       </div>
-      <p class="meta">이 최적화된 프롬프트를 패키징하고 관리하는 형태가 Skill입니다.</p>
+      <p class="meta">Packaged prompt patterns as managed Skills</p>
     </section>
 
     <section class="slide section accent-teal" data-part="Part 03 · Skills">
       <p class="meta">PART 03</p>
       <h1>Skills</h1>
-      <p class="sub">반복되는 감사 절차를 표준화하는 방식입니다.</p>
-    </section>
-
-    <section class="slide accent-teal">
-      <h3>Reusable audit procedure</h3>
-      <h2>반복되는 감사 절차는<br />Skill로 형식화합니다</h2>
-      <p class="sub">작업 지시의 4요소를 매번 붙여넣는 대신, 팀의 표준 감사 workflow로 재사용합니다.</p>
+      <p class="sub">Reusable audit procedure packaging</p>
     </section>
 
     <section class="slide surface accent-teal">
       <h3>Agent Skill</h3>
-      <h2>Skill은 실행 도구가 아니라<br />절차 패키지입니다</h2>
+      <h2>Skill as<br />Procedure Package</h2>
       <pre class="terminal-card">my-skill/
 ├── SKILL.md      # metadata + instructions
 ├── scripts/      # optional executable code
@@ -483,17 +780,17 @@
 
     <section class="slide surface accent-teal">
       <h3>Tool · MCP · Skill</h3>
-      <h2>무엇을 할 수 있는가와<br />어떻게 할 것인가는 다릅니다</h2>
+      <h2>Capability vs<br />Procedure</h2>
       <div class="resource-grid">
-        <div class="resource"><h3>Tool</h3><p>read, jadx, adb, frida처럼 실행 가능한 기능</p></div>
-        <div class="resource"><h3>MCP</h3><p>외부 도구와 데이터를 연결하는 표준 프로토콜</p></div>
-        <div class="resource"><h3>Skill</h3><p>도구를 어떤 순서와 기준으로 쓸지 정한 workflow</p></div>
+        <div class="resource"><h3>Tool</h3><p>Executable capability: read, jadx, adb, frida</p></div>
+        <div class="resource"><h3>MCP</h3><p>Standard protocol for external tools and data</p></div>
+        <div class="resource"><h3>Skill</h3><p>Reusable workflow for tool order and judgment criteria</p></div>
       </div>
     </section>
 
     <section class="slide surface accent-teal">
       <h3>Progressive disclosure</h3>
-      <h2>필요할 때만 자세히 읽습니다</h2>
+      <h2>On-Demand Context Loading</h2>
       <div class="diagram-frame wide">
         <pre class="mermaid">flowchart TB
   Catalog["name + description"]:::catalog --> Match{"task matches?"}:::decision
@@ -516,17 +813,17 @@
 
     <section class="slide surface accent-blue">
       <h3>Good candidates</h3>
-      <h2>절차가 중요한 작업이 Skill 후보입니다</h2>
+      <h2>Skill Candidate Workflows</h2>
       <div class="resource-grid">
         <div class="resource"><h3>android-audit</h3><p>manifest, storage, network, crypto, logs</p></div>
-        <div class="resource"><h3>webview-audit</h3><p>bridge, file access, mixed content, 허용 목록</p></div>
+        <div class="resource"><h3>webview-audit</h3><p>bridge, file access, mixed content, allowlist</p></div>
         <div class="resource"><h3>open-components</h3><p>exported, permission, intent-filter, deep link</p></div>
       </div>
     </section>
 
     <section class="slide surface accent-blue">
       <h3>Skill template</h3>
-      <h2>좋은 Skill은 작업 지시서처럼 씁니다</h2>
+      <h2>Skill Runbook Template</h2>
       <pre class="terminal-card">---
 name: android-open-components
 description: Use when auditing exported Android components, deep links, and missing permissions.
@@ -544,7 +841,7 @@ Output: component table, evidence, risk, validation command.</pre>
     <section class="slide section accent-blue" data-part="Part 04 · Agent Workflow">
       <p class="meta">PART 04</p>
       <h1>Agent Workflow</h1>
-      <p class="sub">MCP 도구와 Skill 절차를 실행 루프로 연결합니다.</p>
+      <p class="sub">Execution loop over MCP tools and Skill procedures</p>
       <div class="diagram-frame wide">
         <pre class="mermaid">flowchart TB
   Task["User task"]:::input --> Skill["Skill<br/>procedure · cautions · output schema"]:::skill
@@ -576,7 +873,7 @@ Output: component table, evidence, risk, validation command.</pre>
   Tools["MCP tools / Shell / ADB / Frida"]:::tool --> Agent
   Skill["Skill procedure"]:::skill --> Agent
   Verify["Verification evidence"]:::verify --> Agent
-  Agent --> Work["실행 가능한 분석 루프"]:::success
+  Agent --> Work["Executable analysis loop"]:::success
   classDef input fill:#0f172a,stroke:#64748b,color:#e2e8f0,stroke-width:1.5px;
   classDef core fill:#1d4ed8,stroke:#bfdbfe,color:#ffffff,stroke-width:2.4px;
   classDef tool fill:#0f766e,stroke:#99f6e4,color:#ffffff,stroke-width:2px;
@@ -588,18 +885,8 @@ Output: component table, evidence, risk, validation command.</pre>
     </section>
 
     <section class="slide surface accent-blue">
-      <h3>Coding harness</h3>
-      <h2>모바일 보안 감사 에이전트</h2>
-      <div class="resource-grid">
-        <div class="resource"><h3>Codex</h3><p>repo · manifest 탐색</p></div>
-        <div class="resource"><h3>Claude Code</h3><p>계획 · 스크립트 · 리포트</p></div>
-        <div class="resource"><h3>Gemini CLI</h3><p>ReAct + MCP 분석</p></div>
-      </div>
-    </section>
-
-    <section class="slide surface accent-blue">
       <h3>Common anatomy</h3>
-      <h2>구조는 거의 비슷합니다</h2>
+      <h2>Common Agent Anatomy</h2>
       <div class="diagram-frame wide">
         <pre class="mermaid">flowchart TB
   LLM[LLM]:::core --> Tools[Tool layer]:::tool
@@ -622,7 +909,7 @@ Output: component table, evidence, risk, validation command.</pre>
 
     <section class="slide surface accent-blue">
       <h3>File and code tools</h3>
-      <h2>Manifest와 코드 탐색이 기본입니다</h2>
+      <h2>Manifest and Code Discovery</h2>
       <div class="resource-grid">
         <div class="resource"><h3>Manifest</h3><p>exported, permission, intent-filter</p></div>
         <div class="resource"><h3>Search</h3><p>rg, fd, grep, jadx output</p></div>
@@ -632,7 +919,7 @@ Output: component table, evidence, risk, validation command.</pre>
 
     <section class="slide surface accent-blue">
       <h3>Execution tools</h3>
-      <h2>증거가 있어야<br />진단합니다</h2>
+      <h2>Evidence-Based<br />Diagnosis</h2>
       <pre class="terminal-card">./gradlew test
 adb shell pm dump
 aapt dump xmltree app.apk AndroidManifest.xml
@@ -643,58 +930,32 @@ semgrep --config android-audit.yml</pre>
 
     <section class="slide surface accent-blue">
       <h3>Context management</h3>
-      <h2>대형 repo는 다 넣을 수 없습니다</h2>
+      <h2>Context Budgeting</h2>
       <ul class="list">
-        <li>관련 파일만 선택</li>
-        <li>중요 함수만 추출</li>
-        <li>최근 수정 파일 우선</li>
-        <li>dependency graph와 summary memory 활용</li>
+        <li>Relevant file selection</li>
+        <li>Important function extraction</li>
+        <li>Recent-change priority</li>
+        <li>Dependency graph + summary memory</li>
       </ul>
-    </section>
-
-    <section class="slide surface accent-teal">
-      <h3>What matters</h3>
-      <h2>현업 성능을 가르는 진짜 도구</h2>
-      <div class="compare">
-        <div class="cell"><span class="cell-title">Very important</span><h3>manifest parser · jadx · aapt · adb · frida · evidence log</h3></div>
-        <div class="cell"><span class="cell-title">Boosters</span><h3>Ghidra · IDA Pro · call graph · taint rules · structured extractor</h3></div>
-      </div>
     </section>
 
     <section class="slide surface accent-rose">
       <h3>Security extension</h3>
-      <h2>모바일 보안 감사 Harness는 도구가 더 붙습니다</h2>
+      <h2>Mobile Security Tool Harness</h2>
       <pre class="terminal-card">LLM
  ├─ manifest parser / rg / structured extractor
- ├─ jadx / apktool / aapt: APK와 DEX 정적 분석
- ├─ adb / Frida / objection: 기기 실행과 런타임 확인
- ├─ Semgrep / androguard: 규칙 기반 코드 점검
- └─ Ghidra / IDA Pro: native library 분석</pre>
-    </section>
-
-    <section class="slide surface accent-blue">
-      <h3>Agent workflow</h3>
-      <h2>사람 일을 보조하거나 대체합니다</h2>
-      <div class="diagram-frame wide role-flow">
-        <pre class="mermaid">flowchart TB
-  Work["Human work"]:::start --> Harness["Tool / Harness<br/>collect · parse · run"]:::tool
-  Harness --> AI["AI judgment<br/>analysis · PoC<br/>diagnosis"]:::step
-  AI --> Evidence["Evidence report"]:::evidence
-  Evidence --> Human["Human<br/>final analysis · follow-up"]:::success
-  classDef start fill:#1d4ed8,stroke:#bfdbfe,color:#ffffff,stroke-width:2.5px;
-  classDef tool fill:#0f766e,stroke:#99f6e4,color:#ffffff,stroke-width:2.2px;
-  classDef step fill:#111827,stroke:#60a5fa,color:#dbeafe,stroke-width:1.8px;
-  classDef evidence fill:#422006,stroke:#fbbf24,color:#fffbeb,stroke-width:2px;
-  classDef success fill:#064e3b,stroke:#5eead4,color:#ecfeff,stroke-width:2px;</pre>
-      </div>
+ ├─ jadx / apktool / aapt: APK and DEX static analysis
+ ├─ adb / Frida / objection: device and runtime checks
+ ├─ Semgrep / androguard: rule-based code audit
+ └─ Ghidra / IDA Pro: native library analysis</pre>
     </section>
 
     <section class="slide surface accent-blue">
       <h3>Real routine</h3>
-      <h2>Open components를 찾는 루프</h2>
+      <h2>Open Component Discovery Loop</h2>
       <div class="diagram-frame wide">
         <pre class="mermaid">flowchart TB
-  Ask["open components 찾아줘"]:::run --> Find[find AndroidManifest]:::step
+  Ask["Find open components"]:::run --> Find[find AndroidManifest]:::step
   Find --> Grep[rg exported / intent-filter]:::step
   Grep --> Guess[AI interprets candidates]:::warn
   Guess --> Miss{missing risk?}:::decision
@@ -711,17 +972,17 @@ semgrep --config android-audit.yml</pre>
 
     <section class="slide surface accent-blue">
       <h3>Example prompt</h3>
-      <h2>요청은 이렇게 구체화합니다</h2>
-      <pre class="terminal-card">목표: Android 앱의 exported component를 찾아 위험도를 판단하세요.
-범위: app 모듈의 merged manifest와 decompiled code만 보세요.
-제약: 소스 수정 없이 분석 리포트만 작성하세요.
-검증: manifest extractor JSON과 aapt 출력이 일치해야 합니다.
-보고: component, exported 이유, permission, evidence, risk를 표로 내세요.</pre>
+      <h2>Structured Audit Request</h2>
+      <pre class="terminal-card">Goal: exported Android component risk review
+Scope: app module merged manifest + decompiled code
+Constraint: analysis report only, no source edits
+Verification: manifest extractor JSON vs aapt output
+Report: component, export reason, permission, evidence, risk</pre>
     </section>
 
     <section class="slide surface accent-teal">
       <h3>Done report</h3>
-      <h2>끝은 요약이 아니라 증거입니다</h2>
+      <h2>Evidence-Based Completion</h2>
       <pre class="terminal-card">Finding: LoginDeepLinkActivity is exported by intent-filter.
 
 Evidence:
@@ -732,40 +993,40 @@ Evidence:
 Risk:
 - external app can trigger login flow
 
-남은 리스크:
+Residual risk:
 - dynamic validation on device is still required</pre>
     </section>
 
-    <section class="slide section accent-teal" data-part="Part 05 · 효과적인 지시와 Harness 설계">
+    <section class="slide section accent-teal" data-part="Part 05 · Harness Design">
       <p class="meta">PART 05</p>
-      <h1>효과적인 지시와<br />Harness 설계</h1>
-      <p class="sub">모바일 보안 감사에서 적은 토큰으로 정확한 결과를 만드는 구조</p>
+      <h1>Instruction and<br />Harness Design</h1>
+      <p class="sub">High-accuracy mobile security audits with smaller token budgets</p>
     </section>
 
     <section class="slide surface accent-amber">
       <h3>Guardrail boundary</h3>
-      <h2>도구만으로는 부족합니다</h2>
-      <p class="sub">"하지 마"는 확률적이고, Hook은 결정적입니다.</p>
+      <h2>Runtime Guardrails</h2>
+      <p class="sub">Probabilistic prompt guard vs deterministic runtime hook</p>
       <div class="compare">
-        <div class="cell"><span class="cell-title">Prompt guard</span><h3>위험한 명령은 실행하지 마</h3><p>모델이 지시를 따르도록 유도하지만, tool call이 생성될 가능성 자체를 제거하지는 못합니다.</p></div>
-        <div class="cell"><span class="cell-title">Runtime hook</span><h3>실행 전에 정책으로 차단</h3><p>Harness가 tool call을 가로채고 allowlist, 권한, 경로, 대상 앱, 로그, 종료 조건을 검사합니다.</p></div>
+        <div class="cell"><span class="cell-title">Prompt guard</span><h3>Prompt-Level Denial</h3><p>Risk reduction through instruction, without tool-call elimination.</p></div>
+        <div class="cell"><span class="cell-title">Runtime hook</span><h3>Runtime Policy Block</h3><p>Harness interception with allowlist, permission, path, target app, log, and stop-condition checks.</p></div>
       </div>
     </section>
 
     <section class="slide surface accent-teal">
       <h3>Instruction quality</h3>
-      <h2>AI에게는 일이 아니라<br />작업 경계를 줍니다</h2>
+      <h2>Task Boundary<br />Definition</h2>
       <div class="steps">
-        <div class="step"><span class="step-num">Goal</span><p>무엇을 끝내야 하는가</p></div>
+        <div class="step"><span class="step-num">Goal</span><p>Completion target</p></div>
         <div class="step"><span class="step-num">Android App Context</span><p>manifest, API level, policy</p></div>
-        <div class="step"><span class="step-num">Boundary</span><p>어디까지 바꿀 수 있는가</p></div>
-        <div class="step"><span class="step-num">Evidence</span><p>무엇으로 판단을 증명하는가</p></div>
+        <div class="step"><span class="step-num">Boundary</span><p>Allowed change scope</p></div>
+        <div class="step"><span class="step-num">Evidence</span><p>Judgment proof</p></div>
       </div>
     </section>
 
     <section class="slide surface accent-teal">
       <h3>Accuracy and token budget</h3>
-      <h2>정확도는 넓은 컨텍스트가 아니라<br />좋은 선별에서 나옵니다</h2>
+      <h2>Context Selection<br />for Accuracy</h2>
       <div class="diagram-frame wide">
         <pre class="mermaid">flowchart TB
   Request["User request"]:::input --> Spec["Audit spec"]:::core
@@ -785,7 +1046,7 @@ Risk:
 
     <section class="slide surface accent-teal">
       <h3>Harness job</h3>
-      <h2>Harness는 귀찮은 일을 도구화합니다</h2>
+      <h2>Harnessed Audit Workflow</h2>
       <div class="diagram-frame wide role-flow">
         <pre class="mermaid">flowchart TB
   Work["Human audit task"]:::input --> Spec["Audit spec"]:::core
@@ -805,44 +1066,29 @@ Risk:
       </div>
     </section>
 
-    <section class="slide surface accent-teal">
-      <h3>Required parts</h3>
-      <h2>좋은 Harness의 구성 요소</h2>
-      <div class="resource-grid">
-        <div class="resource"><h3>Human Workflow Map</h3><p>사람이 하던 보안 감사 업무를 분해</p></div>
-        <div class="resource"><h3>Tool / Harness</h3><p>귀찮고 결정적인 처리를 코드화</p></div>
-        <div class="resource"><h3>Android App Context</h3><p>Manifest, Gradle, API 정책만 주입</p></div>
-      </div>
-      <div class="resource-grid">
-        <div class="resource"><h3>AI Judgment Boundary</h3><p>코드 분석, PoC 시도, 취약점 진단</p></div>
-        <div class="resource"><h3>Stop Conditions</h3><p>성공, 실패, 질문, 예산 초과</p></div>
-        <div class="resource"><h3>Human Follow-up</h3><p>최종 분석, 조치, 티켓과 패치</p></div>
-      </div>
-    </section>
-
     <section class="slide surface accent-blue">
       <h3>Deterministic output</h3>
-      <h2>귀찮고 결정적인 일은<br />Harness가 합니다</h2>
+      <h2>Deterministic<br />Harness Output</h2>
       <div class="compare">
-        <div class="cell"><span class="cell-title">Code agent only</span><h3>find AndroidManifest + rg</h3><p>사람이 하던 검색을 AI가 텍스트로 반복하면 대체로 맞지만 누락될 수 있고 시간과 비용이 듭니다.</p></div>
-        <div class="cell"><span class="cell-title">Structured extractor</span><h3>merged manifest → JSON</h3><p>Harness가 facts를 만들고, AI는 취약점 여부와 영향 판단에 집중합니다.</p></div>
+        <div class="cell"><span class="cell-title">Code agent only</span><h3>find AndroidManifest + rg</h3><p>Text-based repetition with miss risk, latency, and extra cost.</p></div>
+        <div class="cell"><span class="cell-title">Structured extractor</span><h3>merged manifest → JSON</h3><p>Harness-generated facts, AI-focused vulnerability judgment.</p></div>
       </div>
     </section>
 
     <section class="slide surface accent-blue">
       <h3>Reproducibility</h3>
-      <h2>재현성은 도구 증거에서 나옵니다</h2>
+      <h2>Tool Evidence Reproducibility</h2>
       <div class="steps">
-        <div class="step"><span class="step-num">Input</span><p>고정된 APK / source</p></div>
-        <div class="step"><span class="step-num">Tool</span><p>동일한 parser와 명령</p></div>
-        <div class="step"><span class="step-num">Env</span><p>API level과 기기 상태</p></div>
-        <div class="step"><span class="step-num">Log</span><p>실행 증거와 JSON</p></div>
+        <div class="step"><span class="step-num">Input</span><p>Fixed APK / source</p></div>
+        <div class="step"><span class="step-num">Tool</span><p>Same parser and commands</p></div>
+        <div class="step"><span class="step-num">Env</span><p>API level and device state</p></div>
+        <div class="step"><span class="step-num">Log</span><p>Execution evidence and JSON</p></div>
       </div>
     </section>
 
     <section class="slide surface accent-amber">
       <h3>Stop conditions</h3>
-      <h2>종료 조건을 Harness에 박아둡니다</h2>
+      <h2>Harness Stop Conditions</h2>
       <div class="diagram-frame compact">
         <pre class="mermaid">flowchart TB
   Verify{Verification result}:::decision
@@ -861,55 +1107,55 @@ Risk:
 
     <section class="slide surface accent-amber">
       <h3>Ambiguous input</h3>
-      <h2>불명확하면 바로 실행하지 않습니다</h2>
+      <h2>Ambiguity Gate</h2>
       <div class="compare">
-        <div class="cell"><span class="cell-title">Bad</span><h3>모바일 앱 취약점 찾아줘</h3><p>대상 APK, build variant, 권한 기준, 검증 방법이 없습니다.</p></div>
-        <div class="cell"><span class="cell-title">Better</span><h3>감사 범위와 산출물을 좁힙니다</h3><p>open components, WebView, storage, crypto처럼 검사 항목을 먼저 정합니다.</p></div>
+        <div class="cell"><span class="cell-title">Bad</span><h3>Find mobile app vulnerabilities</h3><p>No target APK, build variant, permission baseline, or validation method.</p></div>
+        <div class="cell"><span class="cell-title">Better</span><h3>Scoped Audit Output</h3><p>Early audit category selection: open components, WebView, storage, crypto.</p></div>
       </div>
     </section>
 
     <section class="slide surface accent-rose">
       <h3>WebView example</h3>
-      <h2>웹뷰 취약점 요청을 구조화합니다</h2>
+      <h2>WebView Audit Request Structure</h2>
       <div class="steps">
-        <div class="step"><span class="step-num">01</span><p>취약점 후보군 나열</p></div>
+        <div class="step"><span class="step-num">01</span><p>Candidate finding inventory</p></div>
         <div class="step"><span class="step-num">02</span><p>manifest / jadx scan</p></div>
-        <div class="step"><span class="step-num">03</span><p>허용 목록 / bridge 확인</p></div>
-        <div class="step"><span class="step-num">04</span><p>ADB / Frida 증거 보고</p></div>
+        <div class="step"><span class="step-num">03</span><p>allowlist / bridge checks</p></div>
+        <div class="step"><span class="step-num">04</span><p>ADB / Frida evidence report</p></div>
       </div>
     </section>
 
     <section class="slide surface accent-rose">
       <h3>Tool-backed verification</h3>
-      <h2>더 좋은 Harness는 확인 도구를 제공합니다</h2>
-      <pre class="terminal-card">요청: 웹뷰 취약점 찾아줘
+      <h2>Tool-Backed Validation</h2>
+      <pre class="terminal-card">Request: WebView vulnerability review
 
-Harness가 바꾸는 방식:
-1. 후보군: JS bridge 노출, file access, mixed content, 허용 목록 우회
-2. 정적 검사: AndroidManifest, WebView 설정, addJavascriptInterface 검색
-3. 동적 확인: ADB로 Activity를 실행하고 Frida로 bridge 호출 관찰
-4. 도구: jadx / adb / Frida MCP로 코드, 기기, 런타임 증거 수집
-5. 종료: 재현 가능 증거 또는 확인 불가 사유 보고</pre>
+Harness transformation:
+1. Candidates: JS bridge exposure, file access, mixed content, allowlist bypass
+2. Static checks: AndroidManifest, WebView settings, addJavascriptInterface hits
+3. Dynamic checks: ADB Activity launch, Frida bridge-call observation
+4. Tools: jadx / adb / Frida MCP for code, device, runtime evidence
+5. Exit: reproducible evidence or unverifiable-state rationale</pre>
     </section>
 
     <section class="slide section accent-rose" data-part="Part 06 · APK Analyzer">
       <p class="meta">PART 06</p>
       <h1>APK Analyzer</h1>
-      <p class="sub">재현 가능한 APK 분석 파이프라인 위에 LLM 탐색 Harness를 얹습니다.</p>
+      <p class="sub">LLM exploration over reproducible APK analysis artifacts</p>
     </section>
 
     <section class="slide surface accent-rose">
       <h3>Architecture overview</h3>
-      <h2>전체 아키텍처</h2>
+      <h2>Architecture Overview</h2>
       <div class="diagram-frame wide diagram-dense">
         <pre class="mermaid">flowchart TD
-  A["APK 업로드 / 분석 요청"]:::input --> B["job.json 생성<br/>artifacts/{jobId} workspace"]:::setup
-  B --> C["APK 로컬 분석<br/>Manifest · JADX · Semgrep · XML report"]:::local
+  A["APK upload / analysis request"]:::input --> B["job.json creation<br/>artifacts/{jobId} workspace"]:::setup
+  B --> C["Local APK analysis<br/>Manifest · JADX · Semgrep · XML report"]:::local
   C --> D["LLM Task Queue"]:::queue
-  D --> X["LLM 호출 레이어<br/>CodexCliAdapter · codex exec"]:::llm
-  X --> F["Finding별 LLM Follow-up"]:::finding
-  F --> R["Report / Scenario / Autonomous 종합 분석<br/>summary · scenario review · ASR"]:::review
-  R --> Z["최종 산출물<br/>XML report + follow-up + summary + scenario + ASR"]:::output
+  D --> X["LLM invocation layer<br/>CodexCliAdapter · codex exec"]:::llm
+  X --> F["Per-finding LLM follow-up"]:::finding
+  F --> R["Report / Scenario / Autonomous review<br/>summary · scenario review · ASR"]:::review
+  R --> Z["Final artifacts<br/>XML report + follow-up + summary + scenario + ASR"]:::output
   classDef input fill:#0f172a,stroke:#64748b,color:#e2e8f0,stroke-width:1.5px;
   classDef setup fill:#111827,stroke:#94a3b8,color:#f8fafc,stroke-width:1.6px;
   classDef local fill:#0f766e,stroke:#99f6e4,color:#ffffff,stroke-width:2.2px;
@@ -926,27 +1172,27 @@ Harness가 바꾸는 방식:
       <h2>LLM Invocation Layer</h2>
       <div class="diagram-frame wide diagram-dense">
         <pre class="mermaid">flowchart TD
-  A["LLM 작업 요청<br/>finding follow-up / report audit / scenario / ASR"]:::input --> B["LlmInvocationSpec 생성"]:::spec
+  A["LLM task request<br/>finding follow-up / report audit / scenario / ASR"]:::input --> B["LlmInvocationSpec creation"]:::spec
   B --> C["LLM Runtime Abstraction<br/>LlmRuntimePort"]:::port
-  C --> D{"Provider 선택<br/>APK_ANALYSIS_LLM_PROVIDER"}:::decision
+  C --> D{"Provider selection<br/>APK_ANALYSIS_LLM_PROVIDER"}:::decision
   D -->|codex| E["CodexCliAdapter"]:::codex
   D -->|api_harness| H["HarnessRuntimeAdapter"]:::harness
 
-  subgraph CODEX["Codex 경로"]
-    E --> E1["prompt + context files 구성"]:::step
+  subgraph CODEX["Codex path"]
+    E --> E1["prompt + context files"]:::step
     E1 --> E2["codex exec --json --ephemeral"]:::run
-    E2 --> E3["output.json 생성"]:::artifact
-    E2 --> E4["llm-cli-exec.txt / metrics 저장"]:::artifact
+    E2 --> E3["output.json creation"]:::artifact
+    E2 --> E4["llm-cli-exec.txt / metrics storage"]:::artifact
   end
 
-  subgraph HARNESS["API Harness 경로"]
-    H --> H1["harness-request.json 생성"]:::step
-    H1 --> H2["llm_harness CLI 실행<br/>run-spec"]:::run
-    H2 --> H3["OpenAI-compatible API 호출"]:::api
+  subgraph HARNESS["API Harness path"]
+    H --> H1["harness-request.json creation"]:::step
+    H1 --> H2["llm_harness CLI execution<br/>run-spec"]:::run
+    H2 --> H3["OpenAI-compatible API call"]:::api
     H3 --> H4["tool loop<br/>rg / read_file / list_dir / lookup"]:::tool
-    H4 --> H5["strict JSON output 생성"]:::json
-    H5 --> H6["output.json 생성"]:::artifact
-    H5 --> H7["tool-trace.jsonl / metadata 저장"]:::artifact
+    H4 --> H5["strict JSON output"]:::json
+    H5 --> H6["output.json creation"]:::artifact
+    H5 --> H7["tool-trace.jsonl / metadata storage"]:::artifact
   end
   classDef input fill:#0f172a,stroke:#64748b,color:#e2e8f0,stroke-width:1.5px;
   classDef spec fill:#422006,stroke:#fbbf24,color:#fffbeb,stroke-width:2px;
@@ -968,14 +1214,14 @@ Harness가 바꾸는 방식:
       <h2>Finding Follow-up</h2>
       <div class="diagram-frame wide diagram-dense">
         <pre class="mermaid">flowchart TD
-  E["Finding별 LLM Follow-up 작업"]:::start --> F1["finding-1<br/>context.json"]:::ctx
+  E["Per-finding LLM follow-up task"]:::start --> F1["finding-1<br/>context.json"]:::ctx
   E --> F2["finding-2<br/>context.json"]:::ctx
   E --> F3["finding-N<br/>context.json"]:::ctx
-  F1 --> X["LLM 호출 레이어"]:::llm
+  F1 --> X["LLM invocation layer"]:::llm
   F2 --> X
   F3 --> X
-  X --> G["각 finding summary / report 저장<br/>raw/finding_follow_up/..."]:::store
-  G --> H0["Report 종합 분석 시작"]:::next
+  X --> G["Per-finding summary / report storage<br/>raw/finding_follow_up/..."]:::store
+  G --> H0["Report-Level Analysis start"]:::next
   classDef start fill:#422006,stroke:#fbbf24,color:#fffbeb,stroke-width:2px;
   classDef ctx fill:#111827,stroke:#60a5fa,color:#dbeafe,stroke-width:1.8px;
   classDef llm fill:#1d4ed8,stroke:#bfdbfe,color:#ffffff,stroke-width:2.4px;
@@ -986,37 +1232,16 @@ Harness가 바꾸는 방식:
 
     <section class="slide surface accent-teal">
       <h3>Report analysis</h3>
-      <h2>Report 종합 분석</h2>
+      <h2>Report-Level Analysis</h2>
       <div class="diagram-frame wide diagram-dense">
         <pre class="mermaid">flowchart TD
-  H0["Report 종합 분석 시작"]:::start --> H1["기존 findings + follow-up 결과 통합"]:::step
-  H1 --> H2["evidence preview / summary context 생성"]:::step
-  H2 --> H3["Report-level LLM audit 호출<br/>context.json + output schema"]:::llm
-  H3 --> H4["executive summary + priority 정리"]:::judge
-  H4 --> H5["report summary 생성 및 XML 반영"]:::done
+  H0["Report-Level Analysis start"]:::start --> H1["findings + follow-up integration"]:::step
+  H1 --> H2["evidence preview / summary context"]:::step
+  H2 --> H3["Report-level LLM audit call<br/>context.json + output schema"]:::llm
+  H3 --> H4["executive summary + priority"]:::judge
+  H4 --> H5["report summary + XML update"]:::done
   classDef start fill:#422006,stroke:#fbbf24,color:#fffbeb,stroke-width:2px;
   classDef step fill:#111827,stroke:#5eead4,color:#ccfbf1,stroke-width:1.8px;
-  classDef llm fill:#1d4ed8,stroke:#bfdbfe,color:#ffffff,stroke-width:2.4px;
-  classDef judge fill:#312e81,stroke:#c4b5fd,color:#ffffff,stroke-width:2px;
-  classDef done fill:#064e3b,stroke:#5eead4,color:#ecfeff,stroke-width:2.2px;</pre>
-      </div>
-    </section>
-
-    <section class="slide surface accent-teal">
-      <h3>Scenario review</h3>
-      <h2>Scenario Review</h2>
-      <div class="diagram-frame wide diagram-dense">
-        <pre class="mermaid">flowchart TD
-  S0["Scenario Review 시작"]:::start --> S1["현재 앱 주요 findings<br/>report summary 로드"]:::step
-  S1 --> S2["자체 DB에서 다른 앱 취약점 후보 조회<br/>package · component · deeplink · WebView · permission 유사도"]:::db
-  S2 --> S3["scenario context 생성<br/>현재 앱 후보 + 다른 앱 후보 source"]:::context
-  S3 --> S4["Scenario Review LLM 호출"]:::llm
-  S4 --> S5["공격 시나리오 후보 선택<br/>validation plan / caveat 정리"]:::judge
-  S5 --> S6["scenario-review 산출물 저장"]:::done
-  classDef start fill:#422006,stroke:#fbbf24,color:#fffbeb,stroke-width:2px;
-  classDef step fill:#111827,stroke:#5eead4,color:#ccfbf1,stroke-width:1.8px;
-  classDef db fill:#0f172a,stroke:#94a3b8,color:#f8fafc,stroke-width:1.8px;
-  classDef context fill:#0f766e,stroke:#99f6e4,color:#ffffff,stroke-width:2px;
   classDef llm fill:#1d4ed8,stroke:#bfdbfe,color:#ffffff,stroke-width:2.4px;
   classDef judge fill:#312e81,stroke:#c4b5fd,color:#ffffff,stroke-width:2px;
   classDef done fill:#064e3b,stroke:#5eead4,color:#ecfeff,stroke-width:2.2px;</pre>
@@ -1028,12 +1253,12 @@ Harness가 바꾸는 방식:
       <h2>Autonomous Review</h2>
       <div class="diagram-frame wide diagram-dense">
         <pre class="mermaid">flowchart TD
-  I["Autonomous Security Review 시작"]:::start --> I1["attack surface + candidate pool 초기화"]:::pool
-  I1 --> I2["반복 LLM 분석 수행"]:::llm
-  I2 --> I3["candidate merge / memory 갱신"]:::merge
-  I3 --> I4["최종 candidate 검증 및 filtering"]:::filter
-  I4 --> I5["autonomous-security-review 생성"]:::done
-  I5 --> Z["최종 산출물에 반영"]:::output
+  I["Autonomous Security Review start"]:::start --> I1["attack surface + candidate pool initialization"]:::pool
+  I1 --> I2["iterative LLM analysis"]:::llm
+  I2 --> I3["candidate merge / memory update"]:::merge
+  I3 --> I4["final candidate validation + filtering"]:::filter
+  I4 --> I5["autonomous-security-review generation"]:::done
+  I5 --> Z["Final artifact update"]:::output
   I3 -.-> I2
   classDef start fill:#422006,stroke:#fbbf24,color:#fffbeb,stroke-width:2px;
   classDef pool fill:#111827,stroke:#5eead4,color:#ccfbf1,stroke-width:1.8px;
@@ -1049,19 +1274,19 @@ Harness가 바꾸는 방식:
       <h3>Tool introduction</h3>
       <h2>APK Analyzer Pipeline</h2>
       <div class="resource-grid">
-        <div class="resource"><h3>APK intake</h3><p>업로드 / CLI 입력과 fingerprint 고정</p></div>
+        <div class="resource"><h3>APK intake</h3><p>upload / CLI input + fingerprint pinning</p></div>
         <div class="resource"><h3>Static pipeline</h3><p>decompile, manifest, network, certificate, Semgrep, SBOM</p></div>
-        <div class="resource"><h3>API Harness</h3><p>제한된 tool loop와 strict output schema</p></div>
+        <div class="resource"><h3>API Harness</h3><p>bounded tool loop + strict output schema</p></div>
       </div>
-      <p class="sub">LLM은 산출물 위에서 follow-up, report exploration, scenario review를 수행합니다.</p>
+      <p class="sub">LLM follow-up, report exploration, and scenario review over artifacts</p>
     </section>
 
     <section class="slide surface accent-rose">
       <h3>Deterministic first</h3>
       <h2>Deterministic Facts</h2>
       <div class="compare">
-        <div class="cell"><span class="cell-title">LLM only</span><h3>파일을 읽고 바로 판단</h3><p>경로, 라인, Android 정책을 잘못 기억하면 false positive가 됩니다.</p></div>
-        <div class="cell"><span class="cell-title">APK Analyzer</span><h3>facts를 먼저 artifact로 고정</h3><p>component, permission, source hit, certificate, Semgrep 결과를 JSON/XML로 남깁니다.</p></div>
+        <div class="cell"><span class="cell-title">LLM only</span><h3>Direct File Reading</h3><p>False-positive risk from path, line, or Android policy memory errors.</p></div>
+        <div class="cell"><span class="cell-title">APK Analyzer</span><h3>Artifact-Backed Facts</h3><p>component, permission, source hit, certificate, Semgrep results as JSON/XML.</p></div>
       </div>
     </section>
 
@@ -1091,16 +1316,16 @@ Harness가 바꾸는 방식:
       <h3>Android reference</h3>
       <h2>Android Reference</h2>
       <div class="steps">
-        <div class="step"><span class="step-num">Permissions</span><p>system permission protection level을 repo-local 데이터로 조회</p></div>
-        <div class="step"><span class="step-num">Broadcasts</span><p>protected broadcast 여부를 lookup으로 확인</p></div>
-        <div class="step"><span class="step-num">Triage</span><p>exported component와 receiver finding의 과탐을 줄임</p></div>
-        <div class="step"><span class="step-num">Evidence</span><p>모델 기억이 아니라 같은 reference 결과를 보고서에 남김</p></div>
+        <div class="step"><span class="step-num">Permissions</span><p>repo-local system permission protection level lookup</p></div>
+        <div class="step"><span class="step-num">Broadcasts</span><p>protected broadcast lookup</p></div>
+        <div class="step"><span class="step-num">Triage</span><p>exported component and receiver false-positive reduction</p></div>
+        <div class="step"><span class="step-num">Evidence</span><p>reference-backed report evidence, not model memory</p></div>
       </div>
     </section>
 
     <section class="slide surface accent-blue">
       <h3>Finding workflow</h3>
-      <h2>Static Candidate + Skill 검증</h2>
+      <h2>Static Candidate + Skill Validation</h2>
       <div class="diagram-frame wide">
         <pre class="mermaid">flowchart LR
   Static["Static scan<br/>manifest · source · semgrep"]:::scan --> Candidate["Candidate pool"]:::candidate
@@ -1109,7 +1334,7 @@ Harness가 바꾸는 방식:
   Skill --> Dynamic["Validation plan<br/>ADB · Frida · WebView"]:::dynamic
   Lookup --> Finding["Evidence-backed finding"]:::success
   Dynamic --> Finding
-  Finding --> Reject["False positive 제거"]:::reject
+  Finding --> Reject["False positive filtering"]:::reject
   classDef scan fill:#111827,stroke:#60a5fa,color:#dbeafe,stroke-width:1.8px;
   classDef candidate fill:#422006,stroke:#fbbf24,color:#fffbeb,stroke-width:2px;
   classDef skill fill:#881337,stroke:#fda4af,color:#fff1f2,stroke-width:2.4px;
@@ -1122,49 +1347,189 @@ Harness가 바꾸는 방식:
 
     <section class="slide surface accent-teal">
       <h3>Dynamic validation</h3>
-      <h2>Finding type별 검증 Harness를<br />준비하고 있습니다</h2>
+      <h2>Finding-Type<br />Validation Harnesses</h2>
       <div class="resource-grid tool-grid">
         <div class="resource"><h3>ADB</h3><p>Activity, deeplink, broadcast, logcat evidence</p></div>
-        <div class="resource"><h3>Frida</h3><p>runtime hook, method trace, WebView 관찰성 강화</p></div>
-        <div class="resource"><h3>WebView</h3><p>DevTools, console probe, marker URL 도달성 확인</p></div>
-        <div class="resource"><h3>Ghidra</h3><p>native entrypoint와 JNI 흐름 검증 보조</p></div>
+        <div class="resource"><h3>Frida</h3><p>runtime hook, method trace, WebView observability</p></div>
+        <div class="resource"><h3>WebView</h3><p>DevTools, console probe, marker URL reachability</p></div>
+        <div class="resource"><h3>Ghidra</h3><p>native entrypoint and JNI flow validation</p></div>
       </div>
-      <p class="sub">사전 정의된 함수만 호출하게 만들면 동적 검증도 evidence 중심으로 자동화할 수 있습니다.</p>
+      <p class="sub">Evidence-first dynamic validation with predefined functions</p>
     </section>
 
     <section class="slide surface accent-teal">
       <h3>WebView + Frida example</h3>
-      <h2>정적 WebView 후보를<br />실행 증거로 좁힙니다</h2>
-      <pre class="terminal-card">1. Static: addJavascriptInterface + setJavaScriptEnabled + loadUrl 후보 확인
-2. ADB: 승인된 테스트 marker URL로 후보 Activity / deep link 실행
-3. Frida: WebView.setWebContentsDebuggingEnabled(true) 적용
-4. Hook: loadUrl / evaluateJavascript 호출과 URL을 로그로 저장
-5. DevTools: console에서 benign JavaScript 실행 가능 여부 확인
-6. Evidence: 외부 주소 로드, JS 활성화, bridge 도달성, logcat / screenshot 저장</pre>
+      <h2>WebView Runtime<br />Evidence</h2>
+      <pre class="terminal-card">1. Static: addJavascriptInterface + setJavaScriptEnabled + loadUrl candidates
+2. ADB: approved test marker URL via candidate Activity / deep link
+3. Frida: WebView.setWebContentsDebuggingEnabled(true)
+4. Hook: loadUrl / evaluateJavascript call and URL logging
+5. DevTools: benign JavaScript execution check in console
+6. Evidence: external URL load, JS enablement, bridge reachability, logcat / screenshot</pre>
     </section>
 
     <section class="slide surface accent-teal">
       <h3>Report-level review</h3>
       <h2>Report-Level Review</h2>
       <figure class="deck-visual">
-        <img src="../assets/images/ai-agent-effective-use/report-delivery.png" alt="분석 화면에서 보고서 산출물로 이어지는 일러스트" />
+        <img src="../assets/images/ai-agent-effective-use/report-delivery.png" alt="Analysis workspace to report artifact workflow" />
       </figure>
     </section>
 
     <section class="slide cover accent-blue" data-part="Closing">
-      <h1>Harness가 덜고<br />AI가 판단하고<br />사람이 결정한다</h1>
-      <p class="sub">반복 작업 도구화 · 취약점 1차 진단 자동화 · 최종 분석과 후속 조치</p>
+      <h1>Harnessed Work<br />AI Judgment<br />Human Decision</h1>
+      <p class="sub">Tool automation · AI triage · Human follow-up</p>
+    </section>
+
+    <section class="slide accent-teal" data-part="Backup">
+      <p class="meta">BACKUP</p>
+      <h3>Standardization</h3>
+      <h2>Shared Tools<br />Across Clients<br />and Models</h2>
+    </section>
+
+    <section class="slide surface accent-teal" data-part="Backup">
+      <p class="meta">BACKUP</p>
+      <h3>MCP directory</h3>
+      <h2>Mobile Security MCP</h2>
+      <p class="sub">AI-callable servers for analysis tools</p>
+      <div class="resource-grid">
+        <div class="resource"><h3>Static</h3><p>jadx · apktool · aapt</p></div>
+        <div class="resource"><h3>Dynamic</h3><p>adb · Frida · objection</p></div>
+        <div class="resource"><h3>Native</h3><p>Ghidra · IDA Pro</p></div>
+      </div>
+      <p class="meta">Tools execute, AI interprets results.</p>
+    </section>
+
+    <section class="slide surface accent-teal" data-part="Backup">
+      <p class="meta">BACKUP</p>
+      <h3>APK analysis example</h3>
+      <h2>APK Analysis<br />Routing</h2>
+      <div class="diagram-frame wide diagram-dense">
+        <pre class="mermaid">flowchart TD
+  U["APK attachment<br/>'Find issues in this app'"]:::input --> H["AI Host / MCP Client"]:::host
+  H --> S["Static MCP tools"]:::static
+  H --> D["Dynamic MCP tools"]:::dynamic
+
+  S --> S1["apk decompile<br/>JADX / apktool"]:::tool
+  S --> S2["file read<br/>manifest / source / config"]:::tool
+  S --> S3["static tests<br/>Semgrep / rules / parser"]:::tool
+  S --> S4["Ghidra<br/>native library analysis"]:::tool
+
+  D --> D1["adb install"]:::tool
+  D --> D2["adb shell / logcat"]:::tool
+  D --> D3["dynamic tests<br/>intent / deeplink / WebView"]:::tool
+
+  S1 --> E["Evidence bundle"]:::evidence
+  S2 --> E
+  S3 --> E
+  S4 --> E
+  D1 --> E
+  D2 --> E
+  D3 --> E
+  E --> F["AI triage<br/>candidate findings + caveats"]:::success
+  classDef input fill:#0f172a,stroke:#67e8f9,color:#ecfeff,stroke-width:2px;
+  classDef host fill:#1d4ed8,stroke:#bfdbfe,color:#ffffff,stroke-width:2.4px;
+  classDef static fill:#0f766e,stroke:#99f6e4,color:#ffffff,stroke-width:2.2px;
+  classDef dynamic fill:#312e81,stroke:#c4b5fd,color:#ffffff,stroke-width:2.2px;
+  classDef tool fill:#111827,stroke:#60a5fa,color:#dbeafe,stroke-width:1.8px;
+  classDef evidence fill:#422006,stroke:#fbbf24,color:#fffbeb,stroke-width:2px;
+  classDef success fill:#064e3b,stroke:#5eead4,color:#ecfeff,stroke-width:2.2px;</pre>
+      </div>
+    </section>
+
+    <section class="slide accent-teal" data-part="Backup">
+      <p class="meta">BACKUP</p>
+      <h3>Reusable audit procedure</h3>
+      <h2>Reusable Audit<br />Procedure</h2>
+      <p class="sub">Reusable team audit workflow instead of repeated instruction paste.</p>
+    </section>
+
+    <section class="slide surface accent-blue" data-part="Backup">
+      <p class="meta">BACKUP</p>
+      <h3>Coding harness</h3>
+      <h2>Mobile Security Audit Agents</h2>
+      <div class="resource-grid">
+        <div class="resource"><h3>Codex</h3><p>repo · manifest exploration</p></div>
+        <div class="resource"><h3>Claude Code</h3><p>plan · script · report</p></div>
+        <div class="resource"><h3>Gemini CLI</h3><p>ReAct + MCP analysis</p></div>
+      </div>
+    </section>
+
+    <section class="slide surface accent-teal" data-part="Backup">
+      <p class="meta">BACKUP</p>
+      <h3>What matters</h3>
+      <h2>Production-Grade Audit Tools</h2>
+      <div class="compare">
+        <div class="cell"><span class="cell-title">Very important</span><h3>manifest parser · jadx · aapt · adb · frida · evidence log</h3></div>
+        <div class="cell"><span class="cell-title">Boosters</span><h3>Ghidra · IDA Pro · call graph · taint rules · structured extractor</h3></div>
+      </div>
+    </section>
+
+    <section class="slide surface accent-blue" data-part="Backup">
+      <p class="meta">BACKUP</p>
+      <h3>Agent workflow</h3>
+      <h2>Human Work Augmentation</h2>
+      <div class="diagram-frame wide role-flow">
+        <pre class="mermaid">flowchart TB
+  Work["Human work"]:::start --> Harness["Tool / Harness<br/>collect · parse · run"]:::tool
+  Harness --> AI["AI judgment<br/>analysis · PoC<br/>diagnosis"]:::step
+  AI --> Evidence["Evidence report"]:::evidence
+  Evidence --> Human["Human<br/>final analysis · follow-up"]:::success
+  classDef start fill:#1d4ed8,stroke:#bfdbfe,color:#ffffff,stroke-width:2.5px;
+  classDef tool fill:#0f766e,stroke:#99f6e4,color:#ffffff,stroke-width:2.2px;
+  classDef step fill:#111827,stroke:#60a5fa,color:#dbeafe,stroke-width:1.8px;
+  classDef evidence fill:#422006,stroke:#fbbf24,color:#fffbeb,stroke-width:2px;
+  classDef success fill:#064e3b,stroke:#5eead4,color:#ecfeff,stroke-width:2px;</pre>
+      </div>
+    </section>
+
+    <section class="slide surface accent-teal" data-part="Backup">
+      <p class="meta">BACKUP</p>
+      <h3>Required parts</h3>
+      <h2>Harness Components</h2>
+      <div class="resource-grid">
+        <div class="resource"><h3>Human Workflow Map</h3><p>security audit task decomposition</p></div>
+        <div class="resource"><h3>Tool / Harness</h3><p>deterministic routine automation</p></div>
+        <div class="resource"><h3>Android App Context</h3><p>Manifest, Gradle, API policy inputs</p></div>
+      </div>
+      <div class="resource-grid">
+        <div class="resource"><h3>AI Judgment Boundary</h3><p>code analysis, PoC attempt, vulnerability diagnosis</p></div>
+        <div class="resource"><h3>Stop Conditions</h3><p>success, failure, question, budget exceeded</p></div>
+        <div class="resource"><h3>Human Follow-up</h3><p>final analysis, action, ticket, patch</p></div>
+      </div>
+    </section>
+
+    <section class="slide surface accent-teal" data-part="Backup">
+      <p class="meta">BACKUP</p>
+      <h3>Scenario review</h3>
+      <h2>Scenario Review</h2>
+      <div class="diagram-frame wide diagram-dense">
+        <pre class="mermaid">flowchart TD
+  S0["Scenario Review start"]:::start --> S1["current-app findings<br/>report summary load"]:::step
+  S1 --> S2["cross-app candidate lookup<br/>package · component · deeplink · WebView · permission similarity"]:::db
+  S2 --> S3["scenario context creation<br/>current-app candidates + cross-app source"]:::context
+  S3 --> S4["Scenario Review LLM call"]:::llm
+  S4 --> S5["attack scenario candidate selection<br/>validation plan / caveat"]:::judge
+  S5 --> S6["scenario-review artifact storage"]:::done
+  classDef start fill:#422006,stroke:#fbbf24,color:#fffbeb,stroke-width:2px;
+  classDef step fill:#111827,stroke:#5eead4,color:#ccfbf1,stroke-width:1.8px;
+  classDef db fill:#0f172a,stroke:#94a3b8,color:#f8fafc,stroke-width:1.8px;
+  classDef context fill:#0f766e,stroke:#99f6e4,color:#ffffff,stroke-width:2px;
+  classDef llm fill:#1d4ed8,stroke:#bfdbfe,color:#ffffff,stroke-width:2.4px;
+  classDef judge fill:#312e81,stroke:#c4b5fd,color:#ffffff,stroke-width:2px;
+  classDef done fill:#064e3b,stroke:#5eead4,color:#ecfeff,stroke-width:2.2px;</pre>
+      </div>
     </section>
 
     <section class="slide surface accent-amber" data-part="Backup">
       <p class="meta">BACKUP</p>
       <h3>Safety</h3>
-      <h2>Skill도 공급망입니다</h2>
+      <h2>Skill Supply Chain</h2>
       <div class="steps">
-        <div class="step"><span class="step-num">Review</span><p>외부 skill 파일과 scripts를 설치 전 확인</p></div>
-        <div class="step"><span class="step-num">Least</span><p>allowed tools와 MCP 권한을 최소화</p></div>
-        <div class="step"><span class="step-num">Manual</span><p>device 실행, hook, report upload는 수동 호출</p></div>
-        <div class="step"><span class="step-num">Log</span><p>tool call과 실행 증거를 보존</p></div>
+        <div class="step"><span class="step-num">Review</span><p>external skill file and script review before install</p></div>
+        <div class="step"><span class="step-num">Least</span><p>minimal allowed tools and MCP permissions</p></div>
+        <div class="step"><span class="step-num">Manual</span><p>manual invocation for device execution, hook, report upload</p></div>
+        <div class="step"><span class="step-num">Log</span><p>tool-call and execution evidence retention</p></div>
       </div>
     </section>
   </main>
