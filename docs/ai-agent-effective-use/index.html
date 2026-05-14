@@ -7,6 +7,14 @@
   <title>AI 에이전트의 효과적인 활용</title>
   <link rel="stylesheet" href="../assets/styles/deck.css" />
   <style>
+    body[data-deck-label="AI 에이전트 활용"] .slide::before {
+      background:
+        linear-gradient(rgba(255, 255, 255, 0.036) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255, 255, 255, 0.032) 1px, transparent 1px);
+      background-size: 64px 64px;
+      opacity: 0.18;
+    }
+
     body[data-deck-label="AI 에이전트 활용"] .diagram-frame {
       max-height: 68vh;
       margin-top: 2.4vh;
@@ -57,6 +65,23 @@
 
     body[data-deck-label="AI 에이전트 활용"] .diagram-frame.role-flow .mermaid svg > g {
       transform: translateY(-1%) scale(1.45);
+    }
+
+    body[data-deck-label="AI 에이전트 활용"] .diagram-frame.diagram-dense {
+      max-height: 64vh;
+      padding: 18px 20px;
+    }
+
+    body[data-deck-label="AI 에이전트 활용"] .diagram-frame.diagram-dense .mermaid {
+      font-size: 0.88rem;
+    }
+
+    body[data-deck-label="AI 에이전트 활용"] .diagram-frame.diagram-dense .mermaid svg {
+      max-height: 58vh !important;
+    }
+
+    body[data-deck-label="AI 에이전트 활용"] .diagram-frame.diagram-dense .mermaid svg > g {
+      transform: none;
     }
 
     @media (max-width: 820px) {
@@ -175,7 +200,7 @@
         <span>03</span><span>Audit Agent</span><span>사람 업무를 Harness와 AI로 분해</span>
         <span>04</span><span>Skill</span><span>보안 체크리스트의 표준화</span>
         <span>05</span><span>Effective Instruction</span><span>역할 경계와 Harness 설계</span>
-        <span>06</span><span>AI를 이용한 모바일 앱 보안 분석기</span><span>AI 판단과 사람 후속 조치</span>
+        <span>06</span><span>APK Analyzer</span><span>재현 가능한 APK 분석 Harness</span>
       </div>
     </section>
 
@@ -814,45 +839,264 @@ Harness가 바꾸는 방식:
 5. 종료: 재현 가능 증거 또는 확인 불가 사유 보고</pre>
     </section>
 
-    <section class="slide surface accent-rose" data-part="Part 06 · AI를 이용한 모바일 앱 보안 분석기">
-      <h2>AI를 이용한<br />모바일 앱 보안 분석기</h2>
-      <p class="sub">도구가 귀찮은 facts를 만들고, AI가 취약점 여부를 판단하고, 사람은 후속 조치를 결정합니다.</p>
-      <div class="resource-grid tool-grid">
-        <div class="resource"><h3>jadx</h3><p>DEX를 Java/Kotlin 형태로 탐색</p></div>
-        <div class="resource"><h3>Frida</h3><p>런타임 hook과 동작 검증</p></div>
-        <div class="resource"><h3>Ghidra</h3><p>native library 정적 분석</p></div>
-        <div class="resource"><h3>IDA Pro</h3><p>복잡한 native 흐름 추적</p></div>
+    <section class="slide section accent-rose" data-part="Part 06 · APK Analyzer">
+      <p class="meta">PART 06</p>
+      <h1>APK Analyzer</h1>
+      <p class="sub">재현 가능한 APK 분석 파이프라인 위에 LLM 탐색 Harness를 얹습니다.</p>
+    </section>
+
+    <section class="slide surface accent-rose">
+      <h3>Architecture overview</h3>
+      <h2>전체 흐름은<br />분석 파이프라인에서 리뷰 파이프라인으로 이어집니다</h2>
+      <div class="diagram-frame wide diagram-dense">
+        <pre class="mermaid">flowchart TD
+  A["APK 업로드 / 분석 요청"]:::input --> B["job.json 생성<br/>artifacts/{jobId} workspace"]:::setup
+  B --> C["APK 로컬 분석<br/>Manifest · JADX · Semgrep · XML report"]:::local
+  C --> D["LLM Task Queue"]:::queue
+  D --> X["LLM 호출 레이어<br/>CodexCliAdapter · codex exec"]:::llm
+  X --> F["Finding별 LLM Follow-up"]:::finding
+  F --> R["Report / Scenario / Autonomous 종합 분석<br/>summary · scenario review · ASR"]:::review
+  R --> Z["최종 산출물<br/>XML report + follow-up + summary + scenario + ASR"]:::output
+  classDef input fill:#0f172a,stroke:#64748b,color:#e2e8f0,stroke-width:1.5px;
+  classDef setup fill:#111827,stroke:#94a3b8,color:#f8fafc,stroke-width:1.6px;
+  classDef local fill:#0f766e,stroke:#99f6e4,color:#ffffff,stroke-width:2.2px;
+  classDef queue fill:#422006,stroke:#fbbf24,color:#fffbeb,stroke-width:2px;
+  classDef llm fill:#1d4ed8,stroke:#bfdbfe,color:#ffffff,stroke-width:2.4px;
+  classDef finding fill:#881337,stroke:#fda4af,color:#fff1f2,stroke-width:2.2px;
+  classDef review fill:#312e81,stroke:#c4b5fd,color:#ffffff,stroke-width:2.4px;
+  classDef output fill:#064e3b,stroke:#5eead4,color:#ecfeff,stroke-width:2.2px;</pre>
+      </div>
+    </section>
+
+    <section class="slide surface accent-blue">
+      <h3>LLM call layer</h3>
+      <h2>LLM 호출은<br />공통 Adapter 레이어로 닫습니다</h2>
+      <div class="diagram-frame wide diagram-dense">
+        <pre class="mermaid">flowchart TD
+  A["LLM 작업 요청<br/>finding follow-up / report audit / scenario / ASR"]:::input --> B["LlmInvocationSpec 생성"]:::spec
+  B --> C["LLM Runtime Abstraction<br/>LlmRuntimePort"]:::port
+  C --> D{"Provider 선택<br/>APK_ANALYSIS_LLM_PROVIDER"}:::decision
+  D -->|codex| E["CodexCliAdapter"]:::codex
+  D -->|api_harness| H["HarnessRuntimeAdapter"]:::harness
+
+  subgraph CODEX["Codex 경로"]
+    E --> E1["prompt + context files 구성"]:::step
+    E1 --> E2["codex exec --json --ephemeral"]:::run
+    E2 --> E3["output.json 생성"]:::artifact
+    E2 --> E4["llm-cli-exec.txt / metrics 저장"]:::artifact
+  end
+
+  subgraph HARNESS["API Harness 경로"]
+    H --> H1["harness-request.json 생성"]:::step
+    H1 --> H2["llm_harness CLI 실행<br/>run-spec"]:::run
+    H2 --> H3["OpenAI-compatible API 호출"]:::api
+    H3 --> H4["tool loop<br/>rg / read_file / list_dir / lookup"]:::tool
+    H4 --> H5["strict JSON output 생성"]:::json
+    H5 --> H6["output.json 생성"]:::artifact
+    H5 --> H7["tool-trace.jsonl / metadata 저장"]:::artifact
+  end
+  classDef input fill:#0f172a,stroke:#64748b,color:#e2e8f0,stroke-width:1.5px;
+  classDef spec fill:#422006,stroke:#fbbf24,color:#fffbeb,stroke-width:2px;
+  classDef port fill:#312e81,stroke:#c4b5fd,color:#ffffff,stroke-width:2.2px;
+  classDef decision fill:#111827,stroke:#fca5a5,color:#fee2e2,stroke-width:2.2px;
+  classDef codex fill:#1d4ed8,stroke:#bfdbfe,color:#ffffff,stroke-width:2.4px;
+  classDef harness fill:#0f766e,stroke:#99f6e4,color:#ffffff,stroke-width:2.4px;
+  classDef step fill:#111827,stroke:#94a3b8,color:#f8fafc,stroke-width:1.6px;
+  classDef run fill:#111827,stroke:#60a5fa,color:#dbeafe,stroke-width:1.8px;
+  classDef api fill:#1e3a8a,stroke:#93c5fd,color:#eff6ff,stroke-width:2px;
+  classDef tool fill:#881337,stroke:#fda4af,color:#fff1f2,stroke-width:2px;
+  classDef json fill:#0f766e,stroke:#99f6e4,color:#ffffff,stroke-width:2px;
+  classDef artifact fill:#064e3b,stroke:#5eead4,color:#ecfeff,stroke-width:2.2px;</pre>
+      </div>
+    </section>
+
+    <section class="slide surface accent-blue">
+      <h3>Finding follow-up</h3>
+      <h2>Finding별 개별 분석은<br />같은 호출 레이어를 반복 사용합니다</h2>
+      <div class="diagram-frame wide diagram-dense">
+        <pre class="mermaid">flowchart TD
+  E["Finding별 LLM Follow-up 작업"]:::start --> F1["finding-1<br/>context.json"]:::ctx
+  E --> F2["finding-2<br/>context.json"]:::ctx
+  E --> F3["finding-N<br/>context.json"]:::ctx
+  F1 --> X["LLM 호출 레이어"]:::llm
+  F2 --> X
+  F3 --> X
+  X --> G["각 finding summary / report 저장<br/>raw/finding_follow_up/..."]:::store
+  G --> H0["Report 종합 분석 시작"]:::next
+  classDef start fill:#422006,stroke:#fbbf24,color:#fffbeb,stroke-width:2px;
+  classDef ctx fill:#111827,stroke:#60a5fa,color:#dbeafe,stroke-width:1.8px;
+  classDef llm fill:#1d4ed8,stroke:#bfdbfe,color:#ffffff,stroke-width:2.4px;
+  classDef store fill:#0f766e,stroke:#99f6e4,color:#ffffff,stroke-width:2.2px;
+  classDef next fill:#064e3b,stroke:#5eead4,color:#ecfeff,stroke-width:2.2px;</pre>
+      </div>
+    </section>
+
+    <section class="slide surface accent-teal">
+      <h3>Report analysis</h3>
+      <h2>Report 종합 분석은<br />개별 결과를 보고서 판단으로 묶습니다</h2>
+      <div class="diagram-frame wide diagram-dense">
+        <pre class="mermaid">flowchart TD
+  H0["Report 종합 분석 시작"]:::start --> H1["기존 findings + follow-up 결과 통합"]:::step
+  H1 --> H2["evidence preview / summary context 생성"]:::step
+  H2 --> H3["Report-level LLM audit 호출<br/>context.json + output schema"]:::llm
+  H3 --> H4["executive summary + priority 정리"]:::judge
+  H4 --> H5["report summary 생성 및 XML 반영"]:::done
+  classDef start fill:#422006,stroke:#fbbf24,color:#fffbeb,stroke-width:2px;
+  classDef step fill:#111827,stroke:#5eead4,color:#ccfbf1,stroke-width:1.8px;
+  classDef llm fill:#1d4ed8,stroke:#bfdbfe,color:#ffffff,stroke-width:2.4px;
+  classDef judge fill:#312e81,stroke:#c4b5fd,color:#ffffff,stroke-width:2px;
+  classDef done fill:#064e3b,stroke:#5eead4,color:#ecfeff,stroke-width:2.2px;</pre>
+      </div>
+    </section>
+
+    <section class="slide surface accent-teal">
+      <h3>Scenario review</h3>
+      <h2>Scenario Review는<br />현재 앱과 유사 후보를 연결합니다</h2>
+      <div class="diagram-frame wide diagram-dense">
+        <pre class="mermaid">flowchart TD
+  S0["Scenario Review 시작"]:::start --> S1["현재 앱 주요 findings<br/>report summary 로드"]:::step
+  S1 --> S2["자체 DB에서 다른 앱 취약점 후보 조회<br/>package · component · deeplink · WebView · permission 유사도"]:::db
+  S2 --> S3["scenario context 생성<br/>현재 앱 후보 + 다른 앱 후보 source"]:::context
+  S3 --> S4["Scenario Review LLM 호출"]:::llm
+  S4 --> S5["공격 시나리오 후보 선택<br/>validation plan / caveat 정리"]:::judge
+  S5 --> S6["scenario-review 산출물 저장"]:::done
+  classDef start fill:#422006,stroke:#fbbf24,color:#fffbeb,stroke-width:2px;
+  classDef step fill:#111827,stroke:#5eead4,color:#ccfbf1,stroke-width:1.8px;
+  classDef db fill:#0f172a,stroke:#94a3b8,color:#f8fafc,stroke-width:1.8px;
+  classDef context fill:#0f766e,stroke:#99f6e4,color:#ffffff,stroke-width:2px;
+  classDef llm fill:#1d4ed8,stroke:#bfdbfe,color:#ffffff,stroke-width:2.4px;
+  classDef judge fill:#312e81,stroke:#c4b5fd,color:#ffffff,stroke-width:2px;
+  classDef done fill:#064e3b,stroke:#5eead4,color:#ecfeff,stroke-width:2.2px;</pre>
+      </div>
+    </section>
+
+    <section class="slide surface accent-teal">
+      <h3>Autonomous review</h3>
+      <h2>Autonomous 분석은<br />후보 풀을 반복적으로 갱신합니다</h2>
+      <div class="diagram-frame wide diagram-dense">
+        <pre class="mermaid">flowchart TD
+  I["Autonomous Security Review 시작"]:::start --> I1["attack surface + candidate pool 초기화"]:::pool
+  I1 --> I2["반복 LLM 분석 수행"]:::llm
+  I2 --> I3["candidate merge / memory 갱신"]:::merge
+  I3 --> I4["최종 candidate 검증 및 filtering"]:::filter
+  I4 --> I5["autonomous-security-review 생성"]:::done
+  I5 --> Z["최종 산출물에 반영"]:::output
+  I3 -.-> I2
+  classDef start fill:#422006,stroke:#fbbf24,color:#fffbeb,stroke-width:2px;
+  classDef pool fill:#111827,stroke:#5eead4,color:#ccfbf1,stroke-width:1.8px;
+  classDef llm fill:#1d4ed8,stroke:#bfdbfe,color:#ffffff,stroke-width:2.4px;
+  classDef merge fill:#0f766e,stroke:#99f6e4,color:#ffffff,stroke-width:2px;
+  classDef filter fill:#312e81,stroke:#c4b5fd,color:#ffffff,stroke-width:2px;
+  classDef done fill:#064e3b,stroke:#5eead4,color:#ecfeff,stroke-width:2.2px;
+  classDef output fill:#064e3b,stroke:#5eead4,color:#ecfeff,stroke-width:2.2px;</pre>
       </div>
     </section>
 
     <section class="slide surface accent-rose">
-      <h3>Analyzer inputs</h3>
-      <h2>모바일 앱 보안 분석기의<br />필수요소</h2>
-      <div class="stat-grid">
-        <div class="stat"><span class="label">Harness</span><span class="value">1</span><p class="desc">수집 · 파싱 · 실행</p></div>
-        <div class="stat"><span class="label">AI</span><span class="value">2</span><p class="desc">분석 · PoC · 진단</p></div>
-        <div class="stat"><span class="label">Human</span><span class="value">3</span><p class="desc">최종 분석 · 후속 조치</p></div>
+      <h3>Tool introduction</h3>
+      <h2>프롬프트 하나가 아니라<br />분석 파이프라인입니다</h2>
+      <div class="resource-grid">
+        <div class="resource"><h3>APK intake</h3><p>업로드 / CLI 입력과 fingerprint 고정</p></div>
+        <div class="resource"><h3>Static pipeline</h3><p>decompile, manifest, network, certificate, Semgrep, SBOM</p></div>
+        <div class="resource"><h3>API Harness</h3><p>제한된 tool loop와 strict output schema</p></div>
+      </div>
+      <p class="sub">LLM은 산출물 위에서 follow-up, report exploration, scenario review를 수행합니다.</p>
+    </section>
+
+    <section class="slide surface accent-rose">
+      <h3>Deterministic first</h3>
+      <h2>재현 가능한 사실은<br />Toolchain이 만듭니다</h2>
+      <div class="compare">
+        <div class="cell"><span class="cell-title">LLM only</span><h3>파일을 읽고 바로 판단</h3><p>경로, 라인, Android 정책을 잘못 기억하면 false positive가 됩니다.</p></div>
+        <div class="cell"><span class="cell-title">APK Analyzer</span><h3>facts를 먼저 artifact로 고정</h3><p>component, permission, source hit, certificate, Semgrep 결과를 JSON/XML로 남깁니다.</p></div>
       </div>
     </section>
 
     <section class="slide surface accent-rose">
-      <h3>Analysis loop</h3>
-      <h2>모바일 앱 보안 분석 루프</h2>
+      <h3>Harness loop</h3>
+      <h2>탐색은 반복 호출로 돕니다</h2>
       <div class="diagram-frame wide role-flow">
         <pre class="mermaid">flowchart TB
-  Goal[Human audit goal]:::human --> Facts[Harness facts]:::step
-  Facts --> Analysis[AI code analysis]:::step
-  Analysis --> PoC[AI PoC attempt]:::run
-  PoC --> Diagnosis[Vulnerability diagnosis]:::evidence
-  Diagnosis --> Evidence[Evidence report]:::success
-  Evidence --> Human[Human final analysis]:::human
-  Human --> Followup[Follow-up action]:::fix
-  classDef step fill:#111827,stroke:#fca5a5,color:#fee2e2,stroke-width:1.8px;
-  classDef run fill:#1e3a8a,stroke:#93c5fd,color:#eff6ff,stroke-width:2px;
+  Task["Audit task"]:::input --> Harness["API Harness"]:::core
+  Harness --> Model["LLM<br/>plan next tool"]:::model
+  Model --> Tools["Safe tools<br/>rg · read_file · lookup"]:::tool
+  Tools --> Ledger["Evidence ledger"]:::evidence
+  Ledger --> Model
+  Model --> Final["Strict schema output"]:::final
+  Final --> Validate["Local validation<br/>path · line · evidence"]:::success
+  classDef input fill:#0f172a,stroke:#64748b,color:#e2e8f0,stroke-width:1.5px;
+  classDef core fill:#881337,stroke:#fda4af,color:#fff1f2,stroke-width:2.5px;
+  classDef model fill:#1d4ed8,stroke:#bfdbfe,color:#ffffff,stroke-width:2.2px;
+  classDef tool fill:#111827,stroke:#fca5a5,color:#fee2e2,stroke-width:1.8px;
   classDef evidence fill:#422006,stroke:#fbbf24,color:#fffbeb,stroke-width:2px;
-  classDef fix fill:#0f766e,stroke:#99f6e4,color:#ffffff,stroke-width:2px;
-  classDef human fill:#111827,stroke:#94a3b8,color:#f8fafc,stroke-width:1.8px;
+  classDef final fill:#312e81,stroke:#c4b5fd,color:#ffffff,stroke-width:2px;
   classDef success fill:#064e3b,stroke:#5eead4,color:#ecfeff,stroke-width:2px;</pre>
+      </div>
+    </section>
+
+    <section class="slide surface accent-blue">
+      <h3>Android reference</h3>
+      <h2>자사 Android reference로<br />신뢰도를 높입니다</h2>
+      <div class="steps">
+        <div class="step"><span class="step-num">Permissions</span><p>system permission protection level을 repo-local 데이터로 조회</p></div>
+        <div class="step"><span class="step-num">Broadcasts</span><p>protected broadcast 여부를 lookup으로 확인</p></div>
+        <div class="step"><span class="step-num">Triage</span><p>exported component와 receiver finding의 과탐을 줄임</p></div>
+        <div class="step"><span class="step-num">Evidence</span><p>모델 기억이 아니라 같은 reference 결과를 보고서에 남김</p></div>
+      </div>
+    </section>
+
+    <section class="slide surface accent-blue">
+      <h3>Finding workflow</h3>
+      <h2>정적 후보를 찾고<br />Skill로 검증합니다</h2>
+      <div class="diagram-frame wide">
+        <pre class="mermaid">flowchart LR
+  Static["Static scan<br/>manifest · source · semgrep"]:::scan --> Candidate["Candidate pool"]:::candidate
+  Candidate --> Skill["Finding skill<br/>WebView · component · deeplink"]:::skill
+  Skill --> Lookup["Reference lookup<br/>permission · broadcast"]:::lookup
+  Skill --> Dynamic["Validation plan<br/>ADB · Frida · WebView"]:::dynamic
+  Lookup --> Finding["Evidence-backed finding"]:::success
+  Dynamic --> Finding
+  Finding --> Reject["False positive 제거"]:::reject
+  classDef scan fill:#111827,stroke:#60a5fa,color:#dbeafe,stroke-width:1.8px;
+  classDef candidate fill:#422006,stroke:#fbbf24,color:#fffbeb,stroke-width:2px;
+  classDef skill fill:#881337,stroke:#fda4af,color:#fff1f2,stroke-width:2.4px;
+  classDef lookup fill:#0f766e,stroke:#99f6e4,color:#ffffff,stroke-width:2px;
+  classDef dynamic fill:#1e3a8a,stroke:#93c5fd,color:#eff6ff,stroke-width:2px;
+  classDef success fill:#064e3b,stroke:#5eead4,color:#ecfeff,stroke-width:2px;
+  classDef reject fill:#3f1d1d,stroke:#fca5a5,color:#fee2e2,stroke-width:1.8px;</pre>
+      </div>
+    </section>
+
+    <section class="slide surface accent-teal">
+      <h3>Dynamic validation</h3>
+      <h2>Finding type별 검증 Harness를<br />준비하고 있습니다</h2>
+      <div class="resource-grid tool-grid">
+        <div class="resource"><h3>ADB</h3><p>Activity, deeplink, broadcast, logcat evidence</p></div>
+        <div class="resource"><h3>Frida</h3><p>runtime hook, method trace, WebView 관찰성 강화</p></div>
+        <div class="resource"><h3>WebView</h3><p>DevTools, console probe, marker URL 도달성 확인</p></div>
+        <div class="resource"><h3>Ghidra</h3><p>native entrypoint와 JNI 흐름 검증 보조</p></div>
+      </div>
+      <p class="sub">사전 정의된 함수만 호출하게 만들면 동적 검증도 evidence 중심으로 자동화할 수 있습니다.</p>
+    </section>
+
+    <section class="slide surface accent-teal">
+      <h3>WebView + Frida example</h3>
+      <h2>정적 WebView 후보를<br />실행 증거로 좁힙니다</h2>
+      <pre class="terminal-card">1. Static: addJavascriptInterface + setJavaScriptEnabled + loadUrl 후보 확인
+2. ADB: 승인된 테스트 marker URL로 후보 Activity / deep link 실행
+3. Frida: WebView.setWebContentsDebuggingEnabled(true) 적용
+4. Hook: loadUrl / evaluateJavascript 호출과 URL을 로그로 저장
+5. DevTools: console에서 benign JavaScript 실행 가능 여부 확인
+6. Evidence: 외부 주소 로드, JS 활성화, bridge 도달성, logcat / screenshot 저장</pre>
+    </section>
+
+    <section class="slide surface accent-teal">
+      <h3>Report-level review</h3>
+      <h2>Finding 하나가 아니라<br />보고서 전체를 리뷰합니다</h2>
+      <div class="resource-grid">
+        <div class="resource"><h3>Report summary</h3><p>XML report와 follow-up 결과를 묶어 우선순위와 caveat 정리</p></div>
+        <div class="resource"><h3>Autonomous review</h3><p>attack surface와 candidate pool을 반복 리뷰하고 backend가 final merge</p></div>
+        <div class="resource"><h3>Scenario review</h3><p>deep link, WebView, bridge, debug exposure가 연결되는 공격 흐름 검토</p></div>
       </div>
     </section>
 

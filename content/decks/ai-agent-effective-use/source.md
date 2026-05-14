@@ -27,11 +27,11 @@
 > 3. Audit Agent
 > 4. Skill
 > 5. Effective Instruction
-> 6. AI를 이용한 모바일 앱 보안 분석기
+> 6. APK Analyzer
 
 배경지식 / 발표 멘트:
 
-오늘은 먼저 챗봇과 에이전트를 구분하고, 도구 호출과 MCP가 왜 필요한지 봅니다. 그 다음 모바일 보안 감사 에이전트의 실제 작업 방식으로 넘어가고, 반복되는 보안 점검 패턴을 Skill로 표준화하는 방법을 봅니다. 이후 적은 토큰으로 정확한 결과를 내기 위한 지시 방식과 Harness 설계를 정리하고, 마지막에는 AI를 이용한 모바일 앱 보안 분석기 사례를 다룹니다.
+오늘은 먼저 챗봇과 에이전트를 구분하고, 도구 호출과 MCP가 왜 필요한지 봅니다. 그 다음 모바일 보안 감사 에이전트의 실제 작업 방식으로 넘어가고, 반복되는 보안 점검 패턴을 Skill로 표준화하는 방법을 봅니다. 이후 적은 토큰으로 정확한 결과를 내기 위한 지시 방식과 Harness 설계를 정리하고, 마지막에는 우리가 만든 APK Analyzer 사례를 다룹니다.
 
 필요 그림: 없음. 텍스트 목차 슬라이드로 충분합니다.
 
@@ -829,65 +829,240 @@ AI에게 "알아서 해"라고 하면 모델의 일반 지식에 의존합니다
 
 필요 그림: 5단계 프로세스 라인
 
-## 29. AI를 이용한 모바일 앱 보안 분석기
+## 29. APK Analyzer
 
 화면 텍스트:
 
-> AI를 이용한 모바일 앱 보안 분석기
-> 취약점 탐색을 분석 파이프라인으로 묶습니다.
+> APK Analyzer
+> 재현 가능한 APK 분석 파이프라인 위에 LLM 탐색 Harness를 얹습니다.
 
 배경지식 / 발표 멘트:
 
-모바일 앱 보안 분석기는 APK, source, manifest, 실행 로그를 입력으로 받고, 정적 분석 도구와 동적 확인 도구를 묶어 취약점 후보를 찾습니다. AI는 공격면 식별, 코드 경로 추적, 테스트 케이스 생성, 회귀 테스트 작성에 유용하지만, 분석 대상과 권한 범위는 명확히 제한해야 합니다. OWASP는 LLM과 agentic 시스템의 보안 리스크를 별도 주제로 다룹니다. [R6]
+지금까지 바람직한 Harness가 어떤 구조여야 하는지 봤습니다. 이제 그 구조를 우리가 만든 APK Analyzer에 어떻게 적용했는지 소개합니다. 핵심은 "LLM에게 APK를 다 읽고 판단하라"가 아니라, deterministic 분석 파이프라인이 먼저 사실을 만들고, LLM은 제한된 tool loop 안에서 탐색, 우선순위화, 요약, 시나리오 리뷰를 맡는 구조입니다.
 
-필요 그림: 모바일 앱 + 분석 파이프라인 + 증거 리포트 이미지
+필요 그림: APK Analyzer 파이프라인 로고/개념 이미지
 
-## 29-1. MCP 도구는 분석 능력입니다
+## 29-1. 전체 아키텍처 요약
 
 화면 텍스트:
 
-> jadx: DEX를 Java/Kotlin 형태로 탐색
-> Frida: 런타임 hook과 동작 검증
-> Ghidra: native library 정적 분석
-> IDA Pro: 복잡한 native 흐름 추적
+> APK 업로드 / 분석 요청
+> APK 로컬 분석
+> LLM Task Queue
+> LLM 호출 레이어
+> Finding Follow-up
+> Report / Scenario / Autonomous 종합 분석
+> 최종 산출물
 
 배경지식 / 발표 멘트:
 
-AI에게 도구를 준다는 것은 단순히 명령 실행 버튼을 주는 것이 아닙니다. jadx는 DEX와 decompiled source를 탐색할 수 있게 하고, Frida는 런타임에서 실제 method 호출과 데이터를 관찰하게 합니다. Ghidra와 IDA Pro는 Java/Kotlin 바깥의 native library 흐름을 볼 때 필요합니다. 이런 도구가 있으면 모델은 추측 대신 도구 결과를 근거로 판단할 수 있습니다.
+전체 흐름은 먼저 APK 업로드나 분석 요청에서 시작하고, job workspace가 만들어진 뒤 로컬 분석 worker가 deterministic artifact를 만듭니다. 그 다음 LLM task queue가 생성되고, 공통 LLM 호출 레이어를 통해 finding별 follow-up을 수행합니다. 마지막 report 종합 분석, scenario review, autonomous 분석은 전체 요약 다이어그램에서는 하나의 review block으로 묶어 보여줍니다. 이 세 단계는 목적은 다르지만 모두 "개별 finding을 넘어서 보고서와 공격 시나리오를 다시 해석하는 단계"이기 때문입니다.
 
-필요 그림: jadx / Frida / Ghidra / IDA Pro 4개 카드
+필요 그림: 전체 흐름 요약 다이어그램. Report / Scenario / Autonomous는 하나의 review block으로 축약.
 
-## 30. 모바일 앱 보안 분석기의 필수요소
+## 29-2. LLM 호출 레이어
 
 화면 텍스트:
 
-> Target: APK, source, manifest
-> Tools: jadx, Frida, Ghidra, IDA Pro
-> Evidence: 재현 조건과 로그
+> LLM Task Queue
+> LlmInvocationSpec
+> LlmRuntimePort
+> APK_ANALYSIS_LLM_PROVIDER
+> codex / api_harness
+> output.json + trace
 
 배경지식 / 발표 멘트:
 
-첫째, 분석 대상이 명확해야 합니다. APK, source, manifest, dependency 정보가 있어야 합니다. 둘째, jadx, Frida, Ghidra, IDA Pro 같은 정적/동적/native 분석 도구가 필요합니다. 셋째, 모델의 추측이 아니라 재현 조건, 로그, 스크린샷, 검증 결과 같은 증거로 결과를 닫아야 합니다.
+LLM 호출은 각 기능이 제각각 직접 실행하지 않고 `LlmInvocationSpec`과 `LlmRuntimePort`를 거쳐 실행됩니다. provider는 `APK_ANALYSIS_LLM_PROVIDER`로 선택하고, 현재는 `codex` 경로와 `api_harness` 경로를 나눠 볼 수 있습니다. Codex 경로는 prompt와 context files를 구성한 뒤 `codex exec --json --ephemeral`을 실행하고 `output.json`, `llm-cli-exec.txt`, metrics를 남깁니다. API Harness 경로는 `harness-request.json`을 만들고 `llm_harness` CLI의 `run-spec`을 실행한 뒤 OpenAI-compatible API를 호출합니다. 이 경로에서는 `rg`, `read_file`, `list_dir`, lookup 같은 tool loop를 거쳐 strict JSON output을 만들고, `output.json`, `tool-trace.jsonl`, metadata를 저장합니다.
 
-필요 그림: Target / Tools / Evidence 삼각형
+필요 그림: LLM Runtime abstraction과 codex/api_harness provider 분기 다이어그램.
 
-## 31. 모바일 앱 보안 분석 루프
+## 29-3. Finding별 LLM Follow-up
 
 화면 텍스트:
 
-> Attack surface
-> Structured facts
-> AI hypothesis
-> ADB / Frida test
+> finding-1 context.json
+> finding-2 context.json
+> finding-N context.json
+> LLM 호출 레이어
+> raw/finding_follow_up
+> Report 종합 분석 시작
+
+배경지식 / 발표 멘트:
+
+개별 finding 분석은 finding마다 `context.json`을 만들고 같은 LLM 호출 레이어를 반복 호출합니다. 결과는 각 finding의 summary와 report로 저장되고, raw artifact 아래 follow-up 결과가 남습니다. 이 단계는 "모델이 전체 APK를 다시 읽는 것"이 아니라, 로컬 분석이 만든 finding과 관련 evidence를 좁혀서 추가 해석하는 단계입니다. 이 산출물이 다음 report 종합 분석의 입력이 됩니다.
+
+필요 그림: Finding별 follow-up 다이어그램.
+
+## 29-4. Report 종합 분석
+
+화면 텍스트:
+
+> 기존 findings + follow-up 결과 통합
+> evidence preview / summary context
+> Report-level LLM audit
+> executive summary + priority
+> report summary + XML 반영
+
+배경지식 / 발표 멘트:
+
+Report 종합 분석은 finding 하나를 더 보는 단계가 아니라 보고서 전체를 다시 보는 단계입니다. 기존 findings와 follow-up 결과를 통합하고, evidence preview와 summary context를 만든 뒤, report-level LLM audit을 호출합니다. 결과는 executive summary, 우선순위, caveat로 정리되고 report summary로 생성되어 XML report에도 반영됩니다.
+
+필요 그림: Report 종합 분석 다이어그램.
+
+## 29-5. Scenario Review
+
+화면 텍스트:
+
+> 현재 앱 주요 findings / report summary
+> 다른 앱 취약점 후보 조회
+> scenario context
+> Scenario Review LLM
+> validation plan / caveat
+> scenario-review 산출물
+
+배경지식 / 발표 멘트:
+
+Scenario Review는 현재 앱 안의 finding만 보지 않고, 자체 DB에서 다른 앱의 유사 취약점 후보를 함께 조회합니다. package, component, deeplink, WebView, permission 같은 유사도를 기준으로 관련 후보를 가져오고, 현재 앱 후보와 다른 앱 후보 source를 묶어 scenario context를 만듭니다. LLM은 이 context에서 실제 공격 시나리오 후보를 고르고 validation plan과 caveat를 정리합니다.
+
+필요 그림: Scenario Review 다이어그램.
+
+## 29-6. Autonomous 분석
+
+화면 텍스트:
+
+> attack surface + candidate pool
+> 반복 LLM 분석
+> candidate merge / memory
+> candidate 검증 및 filtering
+> autonomous-security-review
+
+배경지식 / 발표 멘트:
+
+Autonomous 분석은 단일 최종 호출이 아니라 반복 구조입니다. 먼저 attack surface와 candidate pool을 초기화하고, LLM 분석을 반복하면서 candidate merge와 memory 갱신을 수행합니다. 마지막에는 후보를 다시 검증하고 filtering해서 autonomous-security-review 산출물을 만듭니다. 핵심은 최종 결과를 모델 응답 하나에 맡기지 않고, 후보 풀과 merge/filter 과정을 backend가 관리한다는 점입니다.
+
+필요 그림: Autonomous 분석 다이어그램.
+
+## 29-7. 프롬프트 하나가 아니라 분석 파이프라인입니다
+
+화면 텍스트:
+
+> APK intake
+> Static pipeline
+> API Harness
+> Report review
+
+배경지식 / 발표 멘트:
+
+APK Analyzer는 APK 업로드나 CLI 입력을 받아 fingerprint를 고정하고, decompile, manifest analysis, network security analysis, certificate analysis, Semgrep source scan, SBOM inventory 같은 정적 분석을 수행합니다. 결과는 XML report와 JSON read model로 저장되고, backend API와 frontend UI에서 job history, findings, artifacts, graph, follow-up 결과를 볼 수 있습니다. LLM은 이 산출물 위에서 follow-up, report exploration, scenario review를 수행합니다.
+
+필요 그림: APK 입력 -> 정적 파이프라인 -> API Harness -> Report/UI 흐름
+
+## 29-8. 재현 가능한 사실은 Toolchain이 만듭니다
+
+화면 텍스트:
+
+> LLM only: 파일을 읽고 바로 판단
+> APK Analyzer: facts를 먼저 artifact로 고정
+
+배경지식 / 발표 멘트:
+
+재현성을 높이기 위해 deterministic하게 처리할 수 있는 부분은 backend toolchain이 맡습니다. manifest component inventory, exported flag, permission attribute, provider authority, deep link intent filter, network security config, signing certificate, Semgrep rule hit, source line evidence는 먼저 artifact로 남깁니다. LLM의 최종 응답이 바로 finding이 되는 것이 아니라, artifact와 validation을 통과한 evidence-backed result만 보고서에 들어가야 합니다.
+
+필요 그림: LLM-only와 APK Analyzer 비교 카드
+
+## 29-9. 탐색은 반복 호출로 돕니다
+
+화면 텍스트:
+
+> Task
+> Tool call
+> Evidence ledger
+> Strict schema
+> Local validation
+
+배경지식 / 발표 멘트:
+
+API Harness는 단일 호출이 아니라 반복 구조로 동작합니다. 사용자 task와 context가 들어오면 모델은 `rg`, `read_file`, Android reference lookup 같은 allowlist된 도구 호출을 제안합니다. Harness는 실제 도구를 실행하고 결과를 evidence ledger에 저장한 뒤 다음 모델 호출에 다시 넣습니다. 충분한 근거가 쌓이면 finalization 호출로 넘어가고, 최종 출력은 provider structured output과 local schema/evidence validation을 모두 통과해야 합니다.
+
+필요 그림: Tool loop와 evidence ledger 다이어그램
+
+## 29-10. 자사 Android reference로 신뢰도를 높입니다
+
+화면 텍스트:
+
+> Permissions
+> Protected broadcasts
+> Component triage
 > Evidence
-> Fix
-> Regression
 
 배경지식 / 발표 멘트:
 
-모바일 앱 분석 루프는 먼저 attack surface를 정하고, 도구가 structured facts를 만들고, AI가 그 facts를 기반으로 가설을 세우는 순서가 좋습니다. 그 다음 ADB나 Frida로 재현 가능성을 확인하고, evidence, fix, regression test로 닫아야 실제 보안 분석 결과가 됩니다. NIST SSDF도 취약점 위험 감소, 영향 완화, 재발 방지를 위한 secure development practices를 강조합니다. [R6]
+Android 보안 분석에서 false positive가 많이 나오는 지점은 permission과 broadcast입니다. exported receiver가 있어도 action이 Android platform protected broadcast라면 일반 서드파티 앱이 임의로 보낼 수 없습니다. 반대로 exported service가 `normal` permission으로만 보호되어 있으면 보호 장치로 보기 어렵습니다. APK Analyzer는 `system_permissions.jsonl`과 `protected-broadcast.jsonl`을 backend data로 가지고 있고, harness tool에도 `android_permission_lookup`, `protected_broadcast_lookup`을 제공합니다. 모델 기억이 아니라 같은 reference lookup 결과를 근거로 판단하기 때문에 신뢰도가 올라갑니다.
 
-필요 그림: 보안 테스트 워크플로우 다이어그램
+필요 그림: permission/protected broadcast lookup 카드
+
+## 29-11. 정적 후보를 찾고 Skill로 검증합니다
+
+화면 텍스트:
+
+> Static scan
+> Candidate pool
+> Finding skill
+> Reference lookup
+> Dynamic plan
+> False positive 제거
+
+배경지식 / 발표 멘트:
+
+기본 flow는 정적 검색으로 취약점 후보군을 찾고, 후보군별로 정의된 skill을 이용해 검증하는 방식입니다. WebView finding이면 WebView skill이 source와 sink, JavaScript 설정, bridge 노출, loadUrl 흐름을 보게 합니다. exported component, deep link, provider, path traversal도 각각 다른 checklist가 필요합니다. Skill은 임의 코드를 실행하는 플러그인이 아니라 Markdown 기반의 분석 지침입니다. 실제 tool grant는 harness policy가 결정합니다. 이 구조가 LLM의 자유 탐색을 줄이고 false positive를 걸러내는 데 중요합니다.
+
+필요 그림: 정적 후보 -> skill 검증 -> evidence-backed finding 흐름
+
+## 29-12. Finding type별 검증 Harness를 준비하고 있습니다
+
+화면 텍스트:
+
+> ADB
+> Frida
+> WebView
+> Ghidra
+
+배경지식 / 발표 멘트:
+
+정적 분석만으로 true positive와 false positive를 완전히 가르기 어렵습니다. 그래서 finding type별 dynamic validation harness를 준비하고 있습니다. ADB는 Activity, deep link, broadcast 실행과 logcat evidence에 필요합니다. Frida는 runtime hook, method trace, WebView 관찰성을 높이는 데 씁니다. WebView DevTools는 console probe, marker URL 도달성 확인에 유용합니다. Ghidra는 native entrypoint와 JNI 흐름 검증을 보조합니다. 중요한 방향은 모델이 임의 명령을 만드는 것이 아니라, 승인된 대상에서 사전 정의된 validation function을 호출하게 하는 것입니다.
+
+필요 그림: ADB / Frida / WebView / Ghidra 4개 카드
+
+## 29-13. WebView + Frida 예제
+
+화면 텍스트:
+
+> Static WebView 후보
+> ADB marker URL 실행
+> Frida debugging 활성화
+> DevTools console probe
+> Evidence 저장
+
+배경지식 / 발표 멘트:
+
+예를 들어 정적 분석에서 `addJavascriptInterface`, `setJavaScriptEnabled(true)`, 외부 입력이 `loadUrl`로 들어가는 흐름이 발견됐다고 가정합니다. 먼저 ADB로 승인된 테스트 marker URL을 후보 Activity나 deep link로 실행합니다. 그 다음 Frida로 대상 프로세스에 attach해서 `WebView.setWebContentsDebuggingEnabled(true)`를 호출하고, `loadUrl`과 `evaluateJavascript` 호출을 로깅합니다. WebView debugging이 활성화되면 DevTools console에서 benign JavaScript가 실행 가능한지 확인하고, marker page가 외부 주소 로드나 bridge 도달성을 보여주는지 봅니다. 결과는 logcat, screenshot, DevTools target list, Frida stdout으로 저장합니다. 목적은 공격 수행이 아니라 static hypothesis를 재현 가능한 evidence로 좁히는 것입니다.
+
+필요 그림: WebView dynamic validation sequence
+
+## 29-14. 보고서 전체를 리뷰합니다
+
+화면 텍스트:
+
+> Report summary
+> Autonomous review
+> Scenario review
+
+배경지식 / 발표 멘트:
+
+APK Analyzer는 개별 finding follow-up만 하는 것이 아닙니다. Report summary는 XML report와 기존 follow-up 결과, workspace evidence preview를 함께 보고 우선순위와 caveat를 정리합니다. Autonomous review는 attack surface를 deterministic하게 추출하고, candidate pool을 만들고, 반복 review를 거친 뒤 final synthesis를 candidate judge로 사용합니다. 마지막 final merge는 backend가 수행합니다. Scenario review는 여러 finding을 연결해서 실제 공격 시나리오가 성립하는지 봅니다. 예를 들어 exported deep link가 WebView로 이어지고, 그 WebView가 bridge를 갖고 있으면 단일 finding보다 위험한 chain이 될 수 있습니다.
+
+필요 그림: report summary / ASR / scenario review 3개 카드
 
 ## 32. 결론
 
