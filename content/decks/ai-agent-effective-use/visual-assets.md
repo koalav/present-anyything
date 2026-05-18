@@ -14,7 +14,7 @@ Mermaid로 바로 만들기 좋은 후보는 `index.html` 본문에 반영했고
 | 7 | Compare | Model Memory와 Live Data 대비 |
 | 8 | Metaphor | 플러그 / 어댑터 / 표준 포트 이미지 |
 | 9 | Architecture | AI Model → Host → 여러 MCP Client → 여러 MCP Server → Tools/Resources/Prompts |
-| 10 | Before/After | 앱별 rg/jadx/frida/Ghidra 커스텀 어댑터 vs MCP Client/Server 표준 연결 |
+| 10 | Image | `mcp-before-after.png`: 사용자가 도구 중간자가 되는 Before와 MCP가 AI-도구 연결을 표준화하는 After 비교 |
 | 10-1 | Architecture | Filesystem MCP Server: allowed roots 검사 후 read/list/search/parse 실행 |
 | 11 | Matrix | Client × Model × Tool 매트릭스 |
 | 12 | Stat cards | PulseMCP 기준 Servers 14,820 / Clients 571 / Use cases 20 |
@@ -27,7 +27,7 @@ Mermaid로 바로 만들기 좋은 후보는 `index.html` 본문에 반영했고
 | 16-2 | Terminal | Android 분석 명령 카드 |
 | 16-3 | Funnel | 대형 repo 컨텍스트 선택과 압축 |
 | 16-4 | Compare | 현업 성능을 가르는 진짜 도구 vs booster |
-| 16-5 | Text tree | 모바일 보안 감사 Harness 도구 트리 |
+| 16-5 | Image | `mobile-audit-harness.png`: Static / Dynamic / Native / Reference 도구를 Harness가 역할별로 관리하는 구조 |
 | 19-1 | Section | 효과적인 지시와 Harness 설계 섹션 |
 | 19-2 | Card | Goal / Android Context / Boundary / Evidence 4개 지시 요소 |
 | 19-3 | Mermaid | User request → Audit spec → Android facts → policy context → AI risk judgment |
@@ -42,7 +42,7 @@ Mermaid로 바로 만들기 좋은 후보는 `index.html` 본문에 반영했고
 | 16 | Icon set | Manifest, 검색, 터미널, 증거 체크 아이콘 |
 | 17 | Flow | 사람을 중심으로 ChatGPT와 IDE가 오가는 기존 방식 |
 | 18 | Pipeline | 목표 입력 → 대상 로드 → facts 추출 → AI 판단 → 증거 리뷰 |
-| 18-1 | Mermaid | Open components 추출 루프 |
+| 18-1 | Image | `deterministic-vs-free-search.png`: free search와 deterministic block + AI judgment 대비 |
 | 18-2 | Text card | exported components 요청 예시 터미널 카드 |
 | 18-3 | Text card | 완료 보고와 검증 증거 카드 |
 | 19 | Prompt card | 터미널 프롬프트 카드 |
@@ -62,7 +62,7 @@ Mermaid로 바로 만들기 좋은 후보는 `index.html` 본문에 반영했고
 | 26 | Architecture | Layered Architecture |
 | 27 | Context flow | AndroidManifest, Build Context, Audit Policy가 AI 컨텍스트로 들어가는 그림 |
 | 28 | Process | 대상 수집 → facts 추출 → AI 위험 판단 → 증거 리뷰 |
-| 29 | Security image | 모바일 앱 + 분석 파이프라인 + 증거 리포트 |
+| 29 | Image | `apk-analyzer-process.png`: APK 입력부터 결정적 분석, 산출물, LLM 분석, 검토, 최종 리포트/UI까지의 전체 파이프라인 |
 | 30 | Triangle | Target / Tools / Evidence 삼각형 |
 | 31 | Workflow | Attack surface → Structured facts → AI hypothesis → ADB/Frida test → Evidence |
 | 32 | Summary | Android context + Tools + Evidence + Human Review 최종 요약 |
@@ -76,7 +76,7 @@ Mermaid로 바로 만들기 좋은 후보는 `index.html` 본문에 반영했고
 | 1 | 5. 답변은 작업의 시작점 | 질의응답만으로 작업이 끝나지 않는 이유를 주변 문구로 보여줌 |
 | 2 | 8. Tool Calling | 순서가 중요한 시퀀스라 Mermaid `sequenceDiagram`이 적합 |
 | 3 | 11. MCP 구조 | Model 판단, 여러 Client 타입, 여러 Server 타입의 관계가 명확한 아키텍처 다이어그램 |
-| 4 | 12. MCP 이전과 이후 | 커스텀 와이어링 중복과 MCP 표준 연결 차이를 보여줌 |
+| 4 | 12. MCP 이전과 이후 | `mcp-before-after.png` 이미지로 대체 완료 |
 | 5 | 13. Filesystem MCP 예시 | 허용된 workspace 안에서 파일 도구를 호출하는 구조 |
 | 6 | 16. Agent Loop | Plan, Act, Observe, Revise 순환 구조 |
 | 7 | 27. Harness 작업 흐름 | 요청을 audit spec과 tool/device 정책으로 좁히는 구조 |

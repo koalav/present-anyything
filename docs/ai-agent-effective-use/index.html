@@ -358,6 +358,41 @@
       height: min(540px, 56vh);
     }
 
+    body[data-deck-label="AI Agent Use"] .source-figure.mcp-figure {
+      width: min(1280px, 100%);
+      margin-top: 1.6vh;
+      background: #ffffff;
+    }
+
+    body[data-deck-label="AI Agent Use"] .source-figure.mcp-figure img {
+      height: min(620px, 64vh);
+      object-fit: contain;
+    }
+
+    body[data-deck-label="AI Agent Use"] .source-figure.full-figure {
+      width: min(1320px, 100%);
+      margin-top: 1.6vh;
+      background: #ffffff;
+    }
+
+    body[data-deck-label="AI Agent Use"] .source-figure.full-figure img {
+      height: min(620px, 64vh);
+      object-fit: contain;
+    }
+
+    body[data-deck-label="AI Agent Use"] .slide.surface.image-slide h3 {
+      margin-bottom: 1.4vh;
+    }
+
+    body[data-deck-label="AI Agent Use"] .slide.surface.image-slide h2 {
+      font-size: clamp(2.8rem, 4.8vw, 3.7rem);
+      line-height: 1.04;
+    }
+
+    body[data-deck-label="AI Agent Use"] .slide.surface.image-slide .source-figure {
+      margin-top: 1.8vh;
+    }
+
     body[data-deck-label="AI Agent Use"] .risk-grid {
       display: grid;
       grid-template-columns: repeat(4, minmax(0, 1fr));
@@ -511,6 +546,14 @@
       body[data-deck-label="AI Agent Use"] .source-figure.tight img {
         height: min(360px, 42vh);
       }
+
+      body[data-deck-label="AI Agent Use"] .source-figure.mcp-figure img {
+        height: min(360px, 42vh);
+      }
+
+      body[data-deck-label="AI Agent Use"] .source-figure.full-figure img {
+        height: min(360px, 42vh);
+      }
     }
 
     @media (max-height: 760px) {
@@ -566,69 +609,57 @@
     <section class="slide surface accent-blue" data-part="Opening">
       <h2>Agenda</h2>
       <div class="agenda">
-        <span>01</span><span class="active">Basic LLM Use</span><span>Tool Calling Introduction</span>
-        <span>02</span><span>MCP</span><span>Standard tool connector</span>
-        <span>03</span><span>Skills</span><span>Reusable prompt packaging</span>
-        <span>04</span><span>Agent Workflow</span><span>MCP tools + Skill procedures</span>
-        <span>05</span><span>Harness Design</span><span>Control and verification boundaries</span>
-        <span>06</span><span>APK Analyzer</span><span>Reproducible APK analysis harness</span>
+        <span>01</span><span class="active">Chat-Only AI Use</span><span>Human operates tools, AI answers questions</span>
+        <span>02</span><span>Tool Calling</span><span>AI proposes tool use, host executes</span>
+        <span>03</span><span>MCP</span><span>Standard tool connector</span>
+        <span>04</span><span>Skills</span><span>Reusable tool-use routines</span>
+        <span>05</span><span>Agent Workflow</span><span>Execution loop over tools and skills</span>
+        <span>06</span><span>Audit Harness / APK Analyzer</span><span>Reproducible security analysis</span>
       </div>
     </section>
 
-    <section class="slide section accent-blue" data-part="Part 01 · Basic LLM Use">
+    <section class="slide section accent-blue" data-part="Part 01 · Basic Concepts">
       <p class="meta">PART 01</p>
-      <h1>Basic LLM<br />Use</h1>
-      <p class="sub">Tool Calling Introduction</p>
+      <h1>Basic<br />Concepts</h1>
+      <p class="sub">Chat → Tool Calling → MCP → Skills</p>
     </section>
 
     <section class="slide surface accent-blue">
       <h3>Chat-style workflow</h3>
-      <h2>Copy-Paste to<br />Tool Calls</h2>
-      <p class="sub">From manual orchestration to controlled tool-call evidence</p>
-      <div class="workflow-shift">
-        <figure class="workflow-panel">
-          <h3>Before · Manual Orchestration</h3>
-          <img src="../assets/images/ai-agent-effective-use/before-manual-orchestration.png" alt="Manual orchestration across analysis tools and reports" />
-        </figure>
-        <div class="workflow-arrow" aria-hidden="true">→</div>
-        <figure class="workflow-panel">
-          <h3>After · Tool-Call Loop</h3>
-          <img src="../assets/images/ai-agent-effective-use/chat-ai-tools.png" alt="AI-driven workflow with multiple tool calls" />
-        </figure>
-      </div>
-    </section>
-
-    <section class="slide surface accent-blue">
-      <h3>Starting point</h3>
-      <h2>Answer Is Not Completion</h2>
+      <h2>Chat-Only<br />AI Use</h2>
+      <p class="sub">AI answers. Human operates tools.</p>
       <div class="resource-grid">
-        <div class="resource"><h3>Files Unchanged</h3><p>No APK, source, or report artifact changes.</p></div>
-        <div class="resource"><h3>No Execution Evidence</h3><p>No command, test, ADB, or Frida evidence.</p></div>
-        <div class="resource"><h3>No Target State</h3><p>Manifest, build variant, and device state as external inputs.</p></div>
+        <div class="resource"><h3>AI as Advisor</h3><p>Ask. Explain. Suggest.</p></div>
+        <div class="resource"><h3>Human Runs Tools</h3><p>IDE · shell · JADX · ADB · Frida</p></div>
+        <div class="resource"><h3>Manual Context Transfer</h3><p>Paste logs back.</p></div>
       </div>
     </section>
 
-    <section class="slide accent-amber">
-      <h3>Why tools matter</h3>
-      <h2>External State<br />Inputs</h2>
-      <p class="sub">Manifest, decompiled code, device state, and logs come from outside the model.</p>
+    <section class="slide surface accent-amber">
+      <h3>Direction change</h3>
+      <h2>Tool Calling<br />Changes the Direction</h2>
+      <div class="resource-grid">
+        <div class="resource"><h3>Human</h3><p>Goal. Target. Boundary.</p></div>
+        <div class="resource"><h3>AI</h3><p>Tool call + args.</p></div>
+        <div class="resource"><h3>Host</h3><p>Policy check. Execute. Return.</p></div>
+      </div>
     </section>
 
     <section class="slide surface accent-blue">
       <h3>Tool calling</h3>
-      <h2>Model Tool Selection</h2>
+      <h2>Model Selects Tool<br />Host Executes</h2>
       <div class="diagram-frame wide">
         <pre class="mermaid">sequenceDiagram
   autonumber
   participant U as User
   participant A as App
   participant M as Model
-  participant T as Android Tool / MCP
-  U-&gt;&gt;A: Prompt
+  participant T as Allowed Tool
+  U-&gt;&gt;A: Goal + boundary
   A-&gt;&gt;M: Prompt + tool schemas
-  M--&gt;&gt;A: Tool call(name, args)
-  A-&gt;&gt;T: Execute jadx / adb / parser
-  T--&gt;&gt;A: Structured result
+  M--&gt;&gt;A: tool_call(name, args)
+  A-&gt;&gt;T: Execute after policy check
+  T--&gt;&gt;A: Structured result / log
   A-&gt;&gt;M: Tool result
   Note over A,M: App executes. Model interprets.
   M--&gt;&gt;A: Final answer
@@ -636,95 +667,39 @@
       </div>
     </section>
 
-    <section class="slide surface accent-blue">
-      <h3>Variant 01</h3>
-      <h2>Manual vs<br />Tool-Calling Work</h2>
-      <p class="sub">Same security question, different execution path</p>
-      <div class="tool-contrast">
-        <div class="tool-column negative">
-          <h3 class="tool-column-title">Without Tool Calling</h3>
-          <p class="tool-column-sub">Answer-only AI response, followed by human-led code review.</p>
-          <ul class="tool-step-list">
-            <li><span class="step-dot">1</span><span>Generic vulnerability list from the model</span></li>
-            <li><span class="step-dot">2</span><span>Manual search across source, manifest, and dependencies</span></li>
-            <li><span class="step-dot">3</span><span>Higher effort, slower review, missing-evidence risk</span></li>
-          </ul>
-        </div>
-        <div class="tool-column positive">
-          <h3 class="tool-column-title">With Tool Calling</h3>
-          <p class="tool-column-sub">Target artifact plus request, then controlled tool execution.</p>
-          <ul class="tool-step-list">
-            <li><span class="step-dot">1</span><span>APK or repository as concrete target input</span></li>
-            <li><span class="step-dot">2</span><span>File analysis, code search, web search, dependency analysis</span></li>
-            <li><span class="step-dot">3</span><span>Evidence-backed summary with impact, reproduction, and caveats</span></li>
-          </ul>
-        </div>
-      </div>
-    </section>
-
     <section class="slide surface accent-amber">
-      <h3>Variant 02</h3>
-      <h2>Manual Process<br />Decomposition</h2>
-      <p class="sub">What the user has to do when the model only answers</p>
-      <div class="tool-flow-rail">
-        <div class="tool-flow-card"><h3>Ask</h3><p>Security question without application state.</p></div>
-        <div class="tool-flow-card"><h3>Answer</h3><p>General checklist such as OWASP Top 10.</p></div>
-        <div class="tool-flow-card"><h3>Search</h3><p>Manual navigation across codebase and manifests.</p></div>
-        <div class="tool-flow-card"><h3>Interpret</h3><p>User-side vulnerability pattern matching.</p></div>
-        <div class="tool-flow-card"><h3>Summarize</h3><p>Human-written evidence and result cleanup.</p></div>
+      <h3>Security audit example</h3>
+      <h2>Mobile Audit<br />Tool Calls</h2>
+      <div class="resource-grid tool-grid">
+        <div class="resource"><h3>manifest_extract</h3><p>components · permissions · links</p></div>
+        <div class="resource"><h3>jadx_search</h3><p>source hits · methods</p></div>
+        <div class="resource"><h3>adb_shell</h3><p>launch · logcat</p></div>
+        <div class="resource"><h3>frida_trace</h3><p>runtime traces · bridge calls</p></div>
       </div>
     </section>
 
     <section class="slide surface accent-teal">
-      <h3>Variant 03</h3>
-      <h2>Automated Tool-Calling Flow</h2>
-      <p class="sub">Target input, tool execution, and comprehensive response</p>
+      <h3>Result handling</h3>
+      <h2>Tool Result<br />as Context</h2>
+      <p class="sub">Structured result. No pasted logs.</p>
       <div class="diagram-frame wide">
         <pre class="mermaid">flowchart LR
-  Target["Target + request<br/>app.apk + security task"]:::input --> AI["AI<br/>tool-call planning"]:::ai
-  AI --> Tools["Controlled tools<br/>file · code · web · dependency"]:::tool
-  Tools --> Evidence["Evidence bundle<br/>paths · versions · findings · links"]:::evidence
-  Evidence --> Response["Comprehensive response<br/>summary · impact · repro · remediation"]:::success
+  Request["Task<br/>APK + audit goal"]:::input --> Model["Model<br/>selects tool"]:::ai
+  Model --> Tool["Tool call<br/>manifest_extract / jadx_search"]:::tool
+  Tool --> Result["Structured result<br/>JSON · log · source"]:::evidence
+  Result --> Context["Context for next turn"]:::step
+  Context --> Response["Evidence-backed response"]:::success
   classDef input fill:#0f172a,stroke:#64748b,color:#e2e8f0,stroke-width:1.6px;
   classDef ai fill:#1d4ed8,stroke:#bfdbfe,color:#ffffff,stroke-width:2.4px;
   classDef tool fill:#0f766e,stroke:#99f6e4,color:#ffffff,stroke-width:2.2px;
   classDef evidence fill:#422006,stroke:#fbbf24,color:#fffbeb,stroke-width:2px;
+  classDef step fill:#111827,stroke:#60a5fa,color:#dbeafe,stroke-width:1.8px;
   classDef success fill:#064e3b,stroke:#5eead4,color:#ecfeff,stroke-width:2.2px;</pre>
       </div>
     </section>
 
-    <section class="slide surface accent-teal">
-      <h3>Variant 04</h3>
-      <h2>Multi-Tool<br />Evidence Fan-Out</h2>
-      <p class="sub">Tool calls convert one request into parallel evidence sources</p>
-      <div class="tool-fanout">
-        <div class="tool-fan-card"><h3>File Analysis</h3><p>APK structure, manifest parsing, resource extraction.</p></div>
-        <div class="tool-fan-card"><h3>Code Search</h3><p>Sensitive function search, pattern detection, flow tracing.</p></div>
-        <div class="tool-fan-card"><h3>Web Search</h3><p>CVE references, security advisories, recent exploit context.</p></div>
-        <div class="tool-fan-card"><h3>Dependency Analysis</h3><p>Library inventory, version checks, known vulnerability lookup.</p></div>
-        <div class="tool-fan-card"><h3>Other Tools</h3><p>Device checks, dynamic probes, custom harness functions.</p></div>
-      </div>
-    </section>
-
-    <section class="slide surface accent-blue">
-      <h3>Variant 05</h3>
-      <h2>Outcome Delta</h2>
-      <p class="sub">The value is not a longer answer, but a verifiable analysis path</p>
-      <div class="outcome-matrix">
-        <div class="outcome-stack">
-          <div class="outcome-chip"><strong>Manual Mode</strong><span>AI answer as checklist, user as orchestrator.</span></div>
-          <div class="outcome-chip"><strong>Tool-Calling Mode</strong><span>AI as planner, harness as executor, tools as evidence sources.</span></div>
-          <div class="outcome-chip"><strong>Review Mode</strong><span>User reviews evidence and decides the final disposition.</span></div>
-        </div>
-        <div class="outcome-band">
-          <strong>Faster, more accurate vulnerability analysis</strong>
-          <span>Concrete target input, automatic tool use, reproducible evidence, and complete response structure.</span>
-        </div>
-      </div>
-    </section>
-
-    <section class="slide section accent-teal" data-part="Part 02 · MCP">
-      <p class="meta">PART 02</p>
+    <section class="slide section accent-teal" data-part="Part 01 · Basic Concepts">
+      <p class="meta">BASIC CONCEPTS</p>
       <h1>MCP</h1>
       <p class="sub">Standard connector for AI tools</p>
     </section>
@@ -754,105 +729,30 @@
       </div>
     </section>
 
-    <section class="slide surface accent-teal">
+    <section class="slide surface accent-teal image-slide">
       <h3>Before and after</h3>
       <h2>MCP Before / After</h2>
-      <div class="diagram-frame wide">
-        <pre class="mermaid">flowchart TB
-  subgraph ABefore["Before: custom wiring"]
-    BA["IDE Agent"]:::app --> B1["rg wrapper"]:::wire --> BT1["AndroidManifest.xml"]:::external
-    BA --> B2["jadx script"]:::wire --> BT2["Decompiled code"]:::external
-    BB["Audit UI"]:::app --> B3["frida script"]:::wire --> BT3["Device runtime"]:::external
-    BB --> B4["Ghidra bridge"]:::wire --> BT4["Native libs"]:::external
-  end
-  subgraph BAfter["After: MCP standard"]
-    HA["IDE Agent"]:::client --> HC1["MCP Client"]:::bridge
-    HB["Audit Harness"]:::client --> HC2["MCP Client"]:::bridge
-    HC1 --> HS1[["Manifest / Source Server"]]:::server
-    HC1 --> HS2[["JADX Server"]]:::server
-    HC2 --> HS1
-    HC2 --> HS3[["Frida / ADB Server"]]:::server
-    HC2 --> HS4[["Ghidra / IDA Server"]]:::server
-    HS1 --> HT1["APK / source"]:::external
-    HS2 --> HT2["DEX view"]:::external
-    HS3 --> HT3["Device evidence"]:::external
-    HS4 --> HT4["Native analysis"]:::external
-  end
-  classDef app fill:#111827,stroke:#fca5a5,color:#fee2e2,stroke-width:1.8px;
-  classDef wire fill:#3f1d1d,stroke:#fb7185,color:#ffe4e6,stroke-width:2px;
-  classDef client fill:#0f172a,stroke:#60a5fa,color:#dbeafe,stroke-width:1.8px;
-  classDef bridge fill:#164e63,stroke:#67e8f9,color:#ecfeff,stroke-width:2px;
-  classDef server fill:#0f766e,stroke:#99f6e4,color:#ffffff,stroke-width:2.4px;
-  classDef external fill:#1f2937,stroke:#94a3b8,color:#f8fafc,stroke-width:1.5px;</pre>
-      </div>
-    </section>
-
-    <section class="slide surface accent-teal">
-      <h3>Filesystem MCP</h3>
-      <h2>File Access via<br />Tool Calls</h2>
-      <p class="sub">read · list · search · parse within allowed roots</p>
-      <div class="diagram-frame compact">
-        <pre class="mermaid">flowchart TB
-  Request["Request: exported components"]:::input --> Host["Host / MCP Client<br/>model selects tool"]:::host
-  Host --> Server[["Filesystem MCP Server"]]:::server
-  Server --> Verify["allowed roots check<br/>read / list / search / parse<br/>manifest / source / JSON<br/>evidence review"]:::success
-  classDef input fill:#111827,stroke:#94a3b8,color:#f8fafc,stroke-width:1.5px;
-  classDef host fill:#0f172a,stroke:#60a5fa,color:#dbeafe,stroke-width:2px;
-  classDef model fill:#1d4ed8,stroke:#bfdbfe,color:#ffffff,stroke-width:2.5px;
-  classDef client fill:#164e63,stroke:#67e8f9,color:#ecfeff,stroke-width:2px;
-  classDef server fill:#0f766e,stroke:#99f6e4,color:#ffffff,stroke-width:2.4px;
-  classDef guard fill:#422006,stroke:#fbbf24,color:#fffbeb,stroke-width:2px;
-  classDef deny fill:#3f1d1d,stroke:#fca5a5,color:#fee2e2,stroke-width:2px;
-  classDef tool fill:#052e2b,stroke:#5eead4,color:#ecfeff,stroke-width:2px;
-  classDef success fill:#064e3b,stroke:#5eead4,color:#ecfeff,stroke-width:2px;</pre>
-      </div>
-    </section>
-
-    <section class="slide accent-amber">
-      <h3>Important distinction</h3>
-      <h2>MCP ≠ Agent</h2>
-      <p class="sub">Connection layer, not execution loop.</p>
-    </section>
-
-    <section class="slide surface accent-teal">
-      <h3>MCP in daily work</h3>
-      <h2>Daily Work via MCP</h2>
-      <div class="diagram-frame wide">
-        <pre class="mermaid">flowchart LR
-  Ask["Find exported<br/>Activities in this repo"]:::ask --> Model["AI"]:::model
-  Model --> Tools["MCP tools"]:::tool
-  Tools --> T1["list files"]:::step
-  Tools --> T2["read manifest"]:::step
-  Tools --> T3["rg source"]:::step
-  Tools --> T4["parse XML"]:::step
-  T1 --> Evidence["evidence summary"]:::success
-  T2 --> Evidence
-  T3 --> Evidence
-  T4 --> Evidence
-  classDef ask fill:#0f172a,stroke:#67e8f9,color:#ecfeff,stroke-width:2px;
-  classDef model fill:#1d4ed8,stroke:#bfdbfe,color:#ffffff,stroke-width:2.4px;
-  classDef tool fill:#0f766e,stroke:#99f6e4,color:#ffffff,stroke-width:2.3px;
-  classDef step fill:#111827,stroke:#60a5fa,color:#dbeafe,stroke-width:1.8px;
-  classDef success fill:#064e3b,stroke:#5eead4,color:#ecfeff,stroke-width:2px;</pre>
-      </div>
+      <figure class="source-figure mcp-figure">
+        <img src="../assets/images/ai-agent-effective-use/mcp-before-after.png" alt="Before MCP user acts as an intermediary; after MCP connects AI chat with internet, VS Code, and documents through a standardized tool connection" />
+      </figure>
     </section>
 
     <section class="slide surface accent-teal">
       <h3>From prompt to skill</h3>
-      <h2>Reusable Prompt<br />Patterns</h2>
+      <h2>From Repeated<br />Prompt to Skill</h2>
       <div class="resource-grid">
-        <div class="resource"><h3>Cautions</h3><p>protected files, device permissions, false-positive criteria</p></div>
-        <div class="resource"><h3>Procedure</h3><p>manifest → source hit → permission → evidence → report</p></div>
-        <div class="resource"><h3>Tool Set</h3><p>read_file, rg, manifest parser, jadx, adb, Frida</p></div>
-        <div class="resource"><h3>Output Schema</h3><p>component, risk, evidence, caveat, validation command</p></div>
+        <div class="resource"><h3>Procedure</h3><p>manifest → source → risk</p></div>
+        <div class="resource"><h3>Tool Set</h3><p>parser · jadx · adb · Frida</p></div>
+        <div class="resource"><h3>Rules</h3><p>package · device · FP criteria</p></div>
+        <div class="resource"><h3>Output Schema</h3><p>risk · evidence · command</p></div>
       </div>
-      <p class="meta">Packaged prompt patterns as managed Skills</p>
+      <p class="meta">Prompt → Skill</p>
     </section>
 
-    <section class="slide section accent-teal" data-part="Part 03 · Skills">
-      <p class="meta">PART 03</p>
+    <section class="slide section accent-teal" data-part="Part 01 · Basic Concepts">
+      <p class="meta">BASIC CONCEPTS</p>
       <h1>Skills</h1>
-      <p class="sub">Reusable audit procedure packaging</p>
+      <p class="sub">Reusable routine over tools</p>
     </section>
 
     <section class="slide surface accent-teal">
@@ -869,9 +769,9 @@
       <h3>Tool · MCP · Skill</h3>
       <h2>Capability vs<br />Procedure</h2>
       <div class="resource-grid">
-        <div class="resource"><h3>Tool</h3><p>Executable capability: read, jadx, adb, frida</p></div>
-        <div class="resource"><h3>MCP</h3><p>Standard protocol for external tools and data</p></div>
-        <div class="resource"><h3>Skill</h3><p>Reusable workflow for tool order and judgment criteria</p></div>
+        <div class="resource"><h3>Tool</h3><p>Action primitive</p></div>
+        <div class="resource"><h3>MCP</h3><p>Standard connector</p></div>
+        <div class="resource"><h3>Skill</h3><p>Routine package</p></div>
       </div>
     </section>
 
@@ -899,16 +799,6 @@
     </section>
 
     <section class="slide surface accent-blue">
-      <h3>Good candidates</h3>
-      <h2>Skill Candidate Workflows</h2>
-      <div class="resource-grid">
-        <div class="resource"><h3>android-audit</h3><p>manifest, storage, network, crypto, logs</p></div>
-        <div class="resource"><h3>webview-audit</h3><p>bridge, file access, mixed content, allowlist</p></div>
-        <div class="resource"><h3>open-components</h3><p>exported, permission, intent-filter, deep link</p></div>
-      </div>
-    </section>
-
-    <section class="slide surface accent-blue">
       <h3>Skill template</h3>
       <h2>Skill Runbook Template</h2>
       <pre class="terminal-card">---
@@ -925,16 +815,27 @@ Procedure:
 Output: component table, evidence, risk, validation command.</pre>
     </section>
 
-    <section class="slide section accent-blue" data-part="Part 04 · Agent Workflow">
-      <p class="meta">PART 04</p>
+    <section class="slide accent-amber">
+      <h3>Basic concepts recap</h3>
+      <h2>MCP ≠ Agent</h2>
+      <div class="resource-grid">
+        <div class="resource"><h3>Tool</h3><p>Executable capability</p></div>
+        <div class="resource"><h3>MCP</h3><p>Standard connection</p></div>
+        <div class="resource"><h3>Skill</h3><p>Reusable routine</p></div>
+        <div class="resource"><h3>Agent</h3><p>Execution loop</p></div>
+      </div>
+    </section>
+
+    <section class="slide section accent-blue" data-part="Part 02 · Agent Workflow">
+      <p class="meta">PART 02</p>
       <h1>Agent Workflow</h1>
-      <p class="sub">Execution loop over MCP tools and Skill procedures</p>
+      <p class="sub">From reusable tools to execution loops</p>
       <div class="diagram-frame wide">
         <pre class="mermaid">flowchart TB
-  Task["User task"]:::input --> Skill["Skill<br/>procedure · cautions · output schema"]:::skill
+  Task["User task"]:::input --> Skill["Skill<br/>procedure · schema"]:::skill
   Skill --> Plan((Plan)):::core
   Plan --> Act((Act)):::core
-  Tools[["MCP tools<br/>read · rg · parser · adb · frida"]]:::tool --> Act
+  Tools[["MCP tools<br/>read · rg · adb · frida"]]:::tool --> Act
   Act --> Evidence["Tool result / evidence"]:::evidence
   Evidence --> Observe((Observe)):::core
   Observe -->|failed| Revise((Revise)):::warn
@@ -972,37 +873,19 @@ Output: component table, evidence, risk, validation command.</pre>
     </section>
 
     <section class="slide surface accent-blue">
-      <h3>Common anatomy</h3>
-      <h2>Common Agent Anatomy</h2>
-      <div class="diagram-frame wide">
-        <pre class="mermaid">flowchart TB
-  LLM[LLM]:::core --> Tools[Tool layer]:::tool
-  Tools --> Loop[Planning / Action / Observe / Retry]:::loop
-  Loop --> Context[Context management]:::context
-  Context --> Verify[Execution and verification]:::success
-  Verify --> Loop
-  classDef core fill:#1d4ed8,stroke:#bfdbfe,color:#ffffff,stroke-width:2.5px;
-  classDef tool fill:#111827,stroke:#60a5fa,color:#dbeafe,stroke-width:1.8px;
-  classDef loop fill:#0f766e,stroke:#99f6e4,color:#ffffff,stroke-width:2.3px;
-  classDef context fill:#422006,stroke:#fbbf24,color:#fffbeb,stroke-width:2px;
-  classDef success fill:#064e3b,stroke:#5eead4,color:#ecfeff,stroke-width:2px;</pre>
-      </div>
-    </section>
-
-    <section class="slide surface accent-blue">
       <h3>Runtime shape</h3>
       <h2>From Program DAG<br />to Agent Loop</h2>
-      <p class="sub">LLM next-step selection replaces a fixed procedural graph</p>
+      <p class="sub">LLM chooses the next call.</p>
       <div class="compare">
-        <div class="cell"><span class="cell-title">Traditional program</span><h3>Predefined DAG</h3><p>Control flow, tool order, retry path, and stop point encoded ahead of time.</p></div>
-        <div class="cell"><span class="cell-title">Agent runtime</span><h3>LLM Dispatcher</h3><p>The model reads event, context, and tool result, then chooses the next call.</p></div>
+        <div class="cell"><span class="cell-title">Traditional program</span><h3>Predefined DAG</h3><p>Pre-coded flow.</p></div>
+        <div class="cell"><span class="cell-title">Agent runtime</span><h3>LLM Dispatcher</h3><p>Runtime choice.</p></div>
       </div>
     </section>
 
     <section class="slide surface accent-blue">
       <h3>LLM-controlled loop</h3>
       <h2>DAG-Free<br />Agent Loop</h2>
-      <p class="sub">The model becomes the runtime decision point</p>
+      <p class="sub">Model controls runtime decisions.</p>
       <figure class="source-figure">
         <img src="../assets/images/ai-agent-effective-use/agent-loop-animation.gif" alt="Agent loop animation with determine next step and API result cycle" />
       </figure>
@@ -1012,19 +895,19 @@ Output: component table, evidence, risk, validation command.</pre>
     <section class="slide surface accent-amber">
       <h3>Scaling risk</h3>
       <h2>Agent Loop<br />Drift Risk</h2>
-      <p class="sub">More tools, longer turns, and larger context increase path instability</p>
+      <p class="sub">Tool sprawl. Context overload. Goal drift.</p>
       <div class="risk-grid">
-        <div class="risk-card"><h3>Tool Sprawl</h3><p>Many similar tools create ambiguous next-call choices.</p></div>
-        <div class="risk-card"><h3>Multi-Turn Length</h3><p>Longer loops increase accumulated interpretation error.</p></div>
-        <div class="risk-card"><h3>Context Overload</h3><p>Relevant constraints compete with stale or unrelated facts.</p></div>
-        <div class="risk-card"><h3>Goal Drift</h3><p>The loop may optimize a local step while missing the original objective.</p></div>
+        <div class="risk-card"><h3>Tool Sprawl</h3><p>Ambiguous next call.</p></div>
+        <div class="risk-card"><h3>Multi-Turn Length</h3><p>Accumulated error.</p></div>
+        <div class="risk-card"><h3>Context Overload</h3><p>Constraints compete.</p></div>
+        <div class="risk-card"><h3>Goal Drift</h3><p>Local step beats goal.</p></div>
       </div>
     </section>
 
     <section class="slide surface accent-teal">
       <h3>Coordination pattern</h3>
       <h2>Micro-Agent DAG</h2>
-      <p class="sub">Keep LLM judgment local, keep orchestration explicit</p>
+      <p class="sub">Local judgment. Explicit orchestration.</p>
       <figure class="source-figure tight">
         <img src="../assets/images/ai-agent-effective-use/micro-agent-dag.png" alt="Micro-agent DAG diagram with bounded agents inside a larger pipeline" />
       </figure>
@@ -1034,92 +917,30 @@ Output: component table, evidence, risk, validation command.</pre>
     <section class="slide surface accent-teal">
       <h3>Micro-agent boundary</h3>
       <h2>Small Loop<br />Explicit Contract</h2>
-      <p class="sub">Each agent owns one bounded judgment inside the larger workflow</p>
+      <p class="sub">One bounded judgment per agent.</p>
       <div class="contract-grid">
-        <div class="contract-card"><h3>Small Goal</h3><p>One classification, extraction, validation, or summary target.</p></div>
-        <div class="contract-card"><h3>Small Tool Set</h3><p>Only the tools needed for that local decision.</p></div>
-        <div class="contract-card"><h3>Small Context</h3><p>Focused facts instead of the full conversation history.</p></div>
-        <div class="contract-card"><h3>Typed Output</h3><p>Structured result for the next node in the DAG.</p></div>
-        <div class="contract-card"><h3>Stop Rule</h3><p>Clear completion, retry, escalation, or failure criteria.</p></div>
+        <div class="contract-card"><h3>Small Goal</h3><p>One target.</p></div>
+        <div class="contract-card"><h3>Small Tool Set</h3><p>Only local tools.</p></div>
+        <div class="contract-card"><h3>Small Context</h3><p>Focused facts.</p></div>
+        <div class="contract-card"><h3>Typed Output</h3><p>Schema result.</p></div>
+        <div class="contract-card"><h3>Stop Rule</h3><p>Done / retry / stop.</p></div>
       </div>
     </section>
 
-    <section class="slide surface accent-blue">
-      <h3>Default tools</h3>
-      <h2>Read · Search · Parse · ADB · Frida · MCP</h2>
-    </section>
-
-    <section class="slide surface accent-blue">
-      <h3>File and code tools</h3>
-      <h2>Manifest and Code Discovery</h2>
-      <div class="resource-grid">
-        <div class="resource"><h3>Manifest</h3><p>exported, permission, intent-filter</p></div>
-        <div class="resource"><h3>Search</h3><p>rg, fd, grep, jadx output</p></div>
-        <div class="resource"><h3>Parse</h3><p>merged manifest, XML, call graph</p></div>
-      </div>
-    </section>
-
-    <section class="slide surface accent-blue">
-      <h3>Execution tools</h3>
-      <h2>Evidence-Based<br />Diagnosis</h2>
-      <pre class="terminal-card">./gradlew test
-adb shell pm dump
-aapt dump xmltree app.apk AndroidManifest.xml
-jadx --show-bad-code app.apk
-frida -U -f com.example.app
-semgrep --config android-audit.yml</pre>
-    </section>
-
-    <section class="slide surface accent-blue">
-      <h3>Context management</h3>
-      <h2>Context Budgeting</h2>
-      <ul class="list">
-        <li>Relevant file selection</li>
-        <li>Important function extraction</li>
-        <li>Recent-change priority</li>
-        <li>Dependency graph + summary memory</li>
-      </ul>
-    </section>
-
-    <section class="slide surface accent-rose">
+    <section class="slide surface accent-rose image-slide">
       <h3>Security extension</h3>
-      <h2>Mobile Security Tool Harness</h2>
-      <pre class="terminal-card">LLM
- ├─ manifest parser / rg / structured extractor
- ├─ jadx / apktool / aapt: APK and DEX static analysis
- ├─ adb / Frida / objection: device and runtime checks
- ├─ Semgrep / androguard: rule-based code audit
- └─ Ghidra / IDA Pro: native library analysis</pre>
+      <h2>Mobile Audit Harness</h2>
+      <figure class="source-figure full-figure">
+        <img src="../assets/images/ai-agent-effective-use/mobile-audit-harness.png" alt="Mobile Audit Harness coordinating static, dynamic, native, and reference tools into structured facts, runtime evidence, and candidate findings" />
+      </figure>
     </section>
 
-    <section class="slide surface accent-blue">
-      <h3>Real routine</h3>
-      <h2>Open Component Discovery Loop</h2>
-      <div class="diagram-frame wide">
-        <pre class="mermaid">flowchart TB
-  Ask["Find open components"]:::run --> Find[find AndroidManifest]:::step
-  Find --> Grep[rg exported / intent-filter]:::step
-  Grep --> Guess[AI interprets candidates]:::warn
-  Guess --> Miss{missing risk?}:::decision
-  Miss -->|possible| Extract[structured manifest JSON]:::step
-  Extract --> Judge[AI judges risk]:::run
-  Judge --> Report[Report evidence]:::success
-  classDef run fill:#1e3a8a,stroke:#93c5fd,color:#eff6ff,stroke-width:2px;
-  classDef warn fill:#7f1d1d,stroke:#fca5a5,color:#fee2e2,stroke-width:2px;
-  classDef step fill:#111827,stroke:#60a5fa,color:#dbeafe,stroke-width:1.8px;
-  classDef decision fill:#422006,stroke:#fbbf24,color:#fffbeb,stroke-width:2px;
-  classDef success fill:#064e3b,stroke:#5eead4,color:#ecfeff,stroke-width:2px;</pre>
-      </div>
-    </section>
-
-    <section class="slide surface accent-blue">
-      <h3>Example prompt</h3>
-      <h2>Structured Audit Request</h2>
-      <pre class="terminal-card">Goal: exported Android component risk review
-Scope: app module merged manifest + decompiled code
-Constraint: analysis report only, no source edits
-Verification: manifest extractor JSON vs aapt output
-Report: component, export reason, permission, evidence, risk</pre>
+    <section class="slide surface accent-blue image-slide">
+      <h3>Agent drift example</h3>
+      <h2>Free Search vs Deterministic + AI</h2>
+      <figure class="source-figure full-figure">
+        <img src="../assets/images/ai-agent-effective-use/deterministic-vs-free-search.png" alt="Free search chooses keywords and paths unstably, while deterministic block creates manifest, aapt, and jadx evidence before AI risk judgment" />
+      </figure>
     </section>
 
     <section class="slide surface accent-teal">
@@ -1139,50 +960,19 @@ Residual risk:
 - dynamic validation on device is still required</pre>
     </section>
 
-    <section class="slide section accent-teal" data-part="Part 05 · Harness Design">
-      <p class="meta">PART 05</p>
+    <section class="slide section accent-teal" data-part="Part 03 · Harness Design">
+      <p class="meta">PART 03</p>
       <h1>Instruction and<br />Harness Design</h1>
-      <p class="sub">High-accuracy mobile security audits with smaller token budgets</p>
+      <p class="sub">Higher accuracy. Smaller token budget.</p>
     </section>
 
     <section class="slide surface accent-amber">
       <h3>Guardrail boundary</h3>
       <h2>Runtime Guardrails</h2>
-      <p class="sub">Probabilistic prompt guard vs deterministic runtime hook</p>
+      <p class="sub">Prompt guard vs runtime block.</p>
       <div class="compare">
-        <div class="cell"><span class="cell-title">Prompt guard</span><h3>Prompt-Level Denial</h3><p>Risk reduction through instruction, without tool-call elimination.</p></div>
-        <div class="cell"><span class="cell-title">Runtime hook</span><h3>Runtime Policy Block</h3><p>Harness interception with allowlist, permission, path, target app, log, and stop-condition checks.</p></div>
-      </div>
-    </section>
-
-    <section class="slide surface accent-teal">
-      <h3>Instruction quality</h3>
-      <h2>Task Boundary<br />Definition</h2>
-      <div class="steps">
-        <div class="step"><span class="step-num">Goal</span><p>Completion target</p></div>
-        <div class="step"><span class="step-num">Android App Context</span><p>manifest, API level, policy</p></div>
-        <div class="step"><span class="step-num">Boundary</span><p>Allowed change scope</p></div>
-        <div class="step"><span class="step-num">Evidence</span><p>Judgment proof</p></div>
-      </div>
-    </section>
-
-    <section class="slide surface accent-teal">
-      <h3>Accuracy and token budget</h3>
-      <h2>Context Selection<br />for Accuracy</h2>
-      <div class="diagram-frame wide">
-        <pre class="mermaid">flowchart TB
-  Request["User request"]:::input --> Spec["Audit spec"]:::core
-  Spec --> Facts["structured Android facts"]:::step
-  Spec --> Context["selected policy context"]:::step
-  Facts --> Judge["AI risk judgment<br/>+ evidence-backed finding"]:::success
-  Context --> Judge
-  Facts -.-> Noise["less source text"]:::benefit
-  Context -.-> Accuracy["fewer wrong assumptions"]:::benefit
-  classDef input fill:#0f172a,stroke:#64748b,color:#e2e8f0,stroke-width:1.5px;
-  classDef core fill:#0f766e,stroke:#99f6e4,color:#ffffff,stroke-width:2.5px;
-  classDef step fill:#111827,stroke:#60a5fa,color:#dbeafe,stroke-width:1.8px;
-  classDef success fill:#064e3b,stroke:#5eead4,color:#ecfeff,stroke-width:2px;
-  classDef benefit fill:#422006,stroke:#fbbf24,color:#fffbeb,stroke-width:1.8px;</pre>
+        <div class="cell"><span class="cell-title">Prompt guard</span><h3>Prompt-Level Denial</h3><p>Instruction reduces risk.</p></div>
+        <div class="cell"><span class="cell-title">Runtime hook</span><h3>Runtime Policy Block</h3><p>Allowlist. Scope. Log. Stop.</p></div>
       </div>
     </section>
 
@@ -1212,19 +1002,8 @@ Residual risk:
       <h3>Deterministic output</h3>
       <h2>Deterministic<br />Harness Output</h2>
       <div class="compare">
-        <div class="cell"><span class="cell-title">Code agent only</span><h3>find AndroidManifest + rg</h3><p>Text-based repetition with miss risk, latency, and extra cost.</p></div>
-        <div class="cell"><span class="cell-title">Structured extractor</span><h3>merged manifest → JSON</h3><p>Harness-generated facts, AI-focused vulnerability judgment.</p></div>
-      </div>
-    </section>
-
-    <section class="slide surface accent-blue">
-      <h3>Reproducibility</h3>
-      <h2>Tool Evidence Reproducibility</h2>
-      <div class="steps">
-        <div class="step"><span class="step-num">Input</span><p>Fixed APK / source</p></div>
-        <div class="step"><span class="step-num">Tool</span><p>Same parser and commands</p></div>
-        <div class="step"><span class="step-num">Env</span><p>API level and device state</p></div>
-        <div class="step"><span class="step-num">Log</span><p>Execution evidence and JSON</p></div>
+        <div class="cell"><span class="cell-title">Code agent only</span><h3>find AndroidManifest + rg</h3><p>Miss risk. Latency. Cost.</p></div>
+        <div class="cell"><span class="cell-title">Structured extractor</span><h3>merged manifest → JSON</h3><p>Facts first. Judgment second.</p></div>
       </div>
     </section>
 
@@ -1251,19 +1030,8 @@ Residual risk:
       <h3>Ambiguous input</h3>
       <h2>Ambiguity Gate</h2>
       <div class="compare">
-        <div class="cell"><span class="cell-title">Bad</span><h3>Find mobile app vulnerabilities</h3><p>No target APK, build variant, permission baseline, or validation method.</p></div>
-        <div class="cell"><span class="cell-title">Better</span><h3>Scoped Audit Output</h3><p>Early audit category selection: open components, WebView, storage, crypto.</p></div>
-      </div>
-    </section>
-
-    <section class="slide surface accent-rose">
-      <h3>WebView example</h3>
-      <h2>WebView Audit Request Structure</h2>
-      <div class="steps">
-        <div class="step"><span class="step-num">01</span><p>Candidate finding inventory</p></div>
-        <div class="step"><span class="step-num">02</span><p>manifest / jadx scan</p></div>
-        <div class="step"><span class="step-num">03</span><p>allowlist / bridge checks</p></div>
-        <div class="step"><span class="step-num">04</span><p>ADB / Frida evidence report</p></div>
+        <div class="cell"><span class="cell-title">Bad</span><h3>Find mobile app vulnerabilities</h3><p>No target. No scope. No validation.</p></div>
+        <div class="cell"><span class="cell-title">Better</span><h3>Scoped Audit Output</h3><p>Pick audit category early.</p></div>
       </div>
     </section>
 
@@ -1272,163 +1040,33 @@ Residual risk:
       <h2>Tool-Backed Validation</h2>
       <pre class="terminal-card">Request: WebView vulnerability review
 
-Harness transformation:
-1. Candidates: JS bridge exposure, file access, mixed content, allowlist bypass
-2. Static checks: AndroidManifest, WebView settings, addJavascriptInterface hits
-3. Dynamic checks: ADB Activity launch, Frida bridge-call observation
-4. Tools: jadx / adb / Frida MCP for code, device, runtime evidence
-5. Exit: reproducible evidence or unverifiable-state rationale</pre>
+Harness plan:
+1. Candidates: JS bridge / file access / mixed content / allowlist
+2. Static: Manifest + WebView settings + bridge hits
+3. Dynamic: ADB launch + Frida trace
+4. Tools: jadx / adb / Frida
+5. Exit: evidence or caveat</pre>
     </section>
 
-    <section class="slide section accent-rose" data-part="Part 06 · APK Analyzer">
-      <p class="meta">PART 06</p>
+    <section class="slide section accent-rose" data-part="Part 04 · APK Analyzer">
+      <p class="meta">PART 04</p>
       <h1>APK Analyzer</h1>
-      <p class="sub">LLM exploration over reproducible APK analysis artifacts</p>
+      <p class="sub">Reproducible APK artifacts.</p>
     </section>
 
-    <section class="slide surface accent-rose">
-      <h3>Architecture overview</h3>
-      <h2>Architecture Overview</h2>
-      <div class="diagram-frame wide diagram-dense">
-        <pre class="mermaid">flowchart TD
-  A["APK upload / analysis request"]:::input --> B["job.json creation<br/>artifacts/{jobId} workspace"]:::setup
-  B --> C["Local APK analysis<br/>Manifest · JADX · Semgrep · XML report"]:::local
-  C --> D["LLM Task Queue"]:::queue
-  D --> X["LLM invocation layer<br/>CodexCliAdapter · codex exec"]:::llm
-  X --> F["Per-finding LLM follow-up"]:::finding
-  F --> R["Report / Scenario / Autonomous review<br/>summary · scenario review · ASR"]:::review
-  R --> Z["Final artifacts<br/>XML report + follow-up + summary + scenario + ASR"]:::output
-  classDef input fill:#0f172a,stroke:#64748b,color:#e2e8f0,stroke-width:1.5px;
-  classDef setup fill:#111827,stroke:#94a3b8,color:#f8fafc,stroke-width:1.6px;
-  classDef local fill:#0f766e,stroke:#99f6e4,color:#ffffff,stroke-width:2.2px;
-  classDef queue fill:#422006,stroke:#fbbf24,color:#fffbeb,stroke-width:2px;
-  classDef llm fill:#1d4ed8,stroke:#bfdbfe,color:#ffffff,stroke-width:2.4px;
-  classDef finding fill:#881337,stroke:#fda4af,color:#fff1f2,stroke-width:2.2px;
-  classDef review fill:#312e81,stroke:#c4b5fd,color:#ffffff,stroke-width:2.4px;
-  classDef output fill:#064e3b,stroke:#5eead4,color:#ecfeff,stroke-width:2.2px;</pre>
-      </div>
-    </section>
-
-    <section class="slide surface accent-blue">
-      <h3>LLM call layer</h3>
-      <h2>LLM Invocation Layer</h2>
-      <div class="diagram-frame wide diagram-dense">
-        <pre class="mermaid">flowchart TD
-  A["LLM task request<br/>finding follow-up / report audit / scenario / ASR"]:::input --> B["LlmInvocationSpec creation"]:::spec
-  B --> C["LLM Runtime Abstraction<br/>LlmRuntimePort"]:::port
-  C --> D{"Provider selection<br/>APK_ANALYSIS_LLM_PROVIDER"}:::decision
-  D -->|codex| E["CodexCliAdapter"]:::codex
-  D -->|api_harness| H["HarnessRuntimeAdapter"]:::harness
-
-  subgraph CODEX["Codex path"]
-    E --> E1["prompt + context files"]:::step
-    E1 --> E2["codex exec --json --ephemeral"]:::run
-    E2 --> E3["output.json creation"]:::artifact
-    E2 --> E4["llm-cli-exec.txt / metrics storage"]:::artifact
-  end
-
-  subgraph HARNESS["API Harness path"]
-    H --> H1["harness-request.json creation"]:::step
-    H1 --> H2["llm_harness CLI execution<br/>run-spec"]:::run
-    H2 --> H3["OpenAI-compatible API call"]:::api
-    H3 --> H4["tool loop<br/>rg / read_file / list_dir / lookup"]:::tool
-    H4 --> H5["strict JSON output"]:::json
-    H5 --> H6["output.json creation"]:::artifact
-    H5 --> H7["tool-trace.jsonl / metadata storage"]:::artifact
-  end
-  classDef input fill:#0f172a,stroke:#64748b,color:#e2e8f0,stroke-width:1.5px;
-  classDef spec fill:#422006,stroke:#fbbf24,color:#fffbeb,stroke-width:2px;
-  classDef port fill:#312e81,stroke:#c4b5fd,color:#ffffff,stroke-width:2.2px;
-  classDef decision fill:#111827,stroke:#fca5a5,color:#fee2e2,stroke-width:2.2px;
-  classDef codex fill:#1d4ed8,stroke:#bfdbfe,color:#ffffff,stroke-width:2.4px;
-  classDef harness fill:#0f766e,stroke:#99f6e4,color:#ffffff,stroke-width:2.4px;
-  classDef step fill:#111827,stroke:#94a3b8,color:#f8fafc,stroke-width:1.6px;
-  classDef run fill:#111827,stroke:#60a5fa,color:#dbeafe,stroke-width:1.8px;
-  classDef api fill:#1e3a8a,stroke:#93c5fd,color:#eff6ff,stroke-width:2px;
-  classDef tool fill:#881337,stroke:#fda4af,color:#fff1f2,stroke-width:2px;
-  classDef json fill:#0f766e,stroke:#99f6e4,color:#ffffff,stroke-width:2px;
-  classDef artifact fill:#064e3b,stroke:#5eead4,color:#ecfeff,stroke-width:2.2px;</pre>
-      </div>
-    </section>
-
-    <section class="slide surface accent-blue">
-      <h3>Finding follow-up</h3>
-      <h2>Finding Follow-up</h2>
-      <div class="diagram-frame wide diagram-dense">
-        <pre class="mermaid">flowchart TD
-  E["Per-finding LLM follow-up task"]:::start --> F1["finding-1<br/>context.json"]:::ctx
-  E --> F2["finding-2<br/>context.json"]:::ctx
-  E --> F3["finding-N<br/>context.json"]:::ctx
-  F1 --> X["LLM invocation layer"]:::llm
-  F2 --> X
-  F3 --> X
-  X --> G["Per-finding summary / report storage<br/>raw/finding_follow_up/..."]:::store
-  G --> H0["Report-Level Analysis start"]:::next
-  classDef start fill:#422006,stroke:#fbbf24,color:#fffbeb,stroke-width:2px;
-  classDef ctx fill:#111827,stroke:#60a5fa,color:#dbeafe,stroke-width:1.8px;
-  classDef llm fill:#1d4ed8,stroke:#bfdbfe,color:#ffffff,stroke-width:2.4px;
-  classDef store fill:#0f766e,stroke:#99f6e4,color:#ffffff,stroke-width:2.2px;
-  classDef next fill:#064e3b,stroke:#5eead4,color:#ecfeff,stroke-width:2.2px;</pre>
-      </div>
-    </section>
-
-    <section class="slide surface accent-teal">
-      <h3>Report analysis</h3>
-      <h2>Report-Level Analysis</h2>
-      <div class="diagram-frame wide diagram-dense">
-        <pre class="mermaid">flowchart TD
-  H0["Report-Level Analysis start"]:::start --> H1["findings + follow-up integration"]:::step
-  H1 --> H2["evidence preview / summary context"]:::step
-  H2 --> H3["Report-level LLM audit call<br/>context.json + output schema"]:::llm
-  H3 --> H4["executive summary + priority"]:::judge
-  H4 --> H5["report summary + XML update"]:::done
-  classDef start fill:#422006,stroke:#fbbf24,color:#fffbeb,stroke-width:2px;
-  classDef step fill:#111827,stroke:#5eead4,color:#ccfbf1,stroke-width:1.8px;
-  classDef llm fill:#1d4ed8,stroke:#bfdbfe,color:#ffffff,stroke-width:2.4px;
-  classDef judge fill:#312e81,stroke:#c4b5fd,color:#ffffff,stroke-width:2px;
-  classDef done fill:#064e3b,stroke:#5eead4,color:#ecfeff,stroke-width:2.2px;</pre>
-      </div>
-    </section>
-
-    <section class="slide surface accent-teal">
-      <h3>Autonomous review</h3>
-      <h2>Autonomous Review</h2>
-      <div class="diagram-frame wide diagram-dense">
-        <pre class="mermaid">flowchart TD
-  I["Autonomous Security Review start"]:::start --> I1["attack surface + candidate pool initialization"]:::pool
-  I1 --> I2["iterative LLM analysis"]:::llm
-  I2 --> I3["candidate merge / memory update"]:::merge
-  I3 --> I4["final candidate validation + filtering"]:::filter
-  I4 --> I5["autonomous-security-review generation"]:::done
-  I5 --> Z["Final artifact update"]:::output
-  I3 -.-> I2
-  classDef start fill:#422006,stroke:#fbbf24,color:#fffbeb,stroke-width:2px;
-  classDef pool fill:#111827,stroke:#5eead4,color:#ccfbf1,stroke-width:1.8px;
-  classDef llm fill:#1d4ed8,stroke:#bfdbfe,color:#ffffff,stroke-width:2.4px;
-  classDef merge fill:#0f766e,stroke:#99f6e4,color:#ffffff,stroke-width:2px;
-  classDef filter fill:#312e81,stroke:#c4b5fd,color:#ffffff,stroke-width:2px;
-  classDef done fill:#064e3b,stroke:#5eead4,color:#ecfeff,stroke-width:2.2px;
-  classDef output fill:#064e3b,stroke:#5eead4,color:#ecfeff,stroke-width:2.2px;</pre>
-      </div>
-    </section>
-
-    <section class="slide surface accent-rose">
-      <h3>Tool introduction</h3>
+    <section class="slide surface accent-rose image-slide">
       <h2>APK Analyzer Pipeline</h2>
-      <div class="resource-grid">
-        <div class="resource"><h3>APK intake</h3><p>upload / CLI input + fingerprint pinning</p></div>
-        <div class="resource"><h3>Static pipeline</h3><p>decompile, manifest, network, certificate, Semgrep, SBOM</p></div>
-        <div class="resource"><h3>API Harness</h3><p>bounded tool loop + strict output schema</p></div>
-      </div>
-      <p class="sub">LLM follow-up, report exploration, and scenario review over artifacts</p>
+      <figure class="source-figure full-figure">
+        <img src="../assets/images/ai-agent-effective-use/apk-analyzer-process.png" alt="APK Analyzer process from APK input through workspace fingerprint, deterministic analysis, artifacts, LLM analysis, review, and final report UI" />
+      </figure>
     </section>
 
     <section class="slide surface accent-rose">
       <h3>Deterministic first</h3>
       <h2>Deterministic Facts</h2>
       <div class="compare">
-        <div class="cell"><span class="cell-title">LLM only</span><h3>Direct File Reading</h3><p>False-positive risk from path, line, or Android policy memory errors.</p></div>
-        <div class="cell"><span class="cell-title">APK Analyzer</span><h3>Artifact-Backed Facts</h3><p>component, permission, source hit, certificate, Semgrep results as JSON/XML.</p></div>
+        <div class="cell"><span class="cell-title">LLM only</span><h3>Direct File Reading</h3><p>Path / policy memory errors.</p></div>
+        <div class="cell"><span class="cell-title">APK Analyzer</span><h3>Artifact-Backed Facts</h3><p>JSON/XML facts.</p></div>
       </div>
     </section>
 
@@ -1454,60 +1092,16 @@ Harness transformation:
       </div>
     </section>
 
-    <section class="slide surface accent-blue">
-      <h3>Android reference</h3>
-      <h2>Android Reference</h2>
-      <div class="steps">
-        <div class="step"><span class="step-num">Permissions</span><p>repo-local system permission protection level lookup</p></div>
-        <div class="step"><span class="step-num">Broadcasts</span><p>protected broadcast lookup</p></div>
-        <div class="step"><span class="step-num">Triage</span><p>exported component and receiver false-positive reduction</p></div>
-        <div class="step"><span class="step-num">Evidence</span><p>reference-backed report evidence, not model memory</p></div>
-      </div>
-    </section>
-
-    <section class="slide surface accent-blue">
-      <h3>Finding workflow</h3>
-      <h2>Static Candidate + Skill Validation</h2>
-      <div class="diagram-frame wide">
-        <pre class="mermaid">flowchart LR
-  Static["Static scan<br/>manifest · source · semgrep"]:::scan --> Candidate["Candidate pool"]:::candidate
-  Candidate --> Skill["Finding skill<br/>WebView · component · deeplink"]:::skill
-  Skill --> Lookup["Reference lookup<br/>permission · broadcast"]:::lookup
-  Skill --> Dynamic["Validation plan<br/>ADB · Frida · WebView"]:::dynamic
-  Lookup --> Finding["Evidence-backed finding"]:::success
-  Dynamic --> Finding
-  Finding --> Reject["False positive filtering"]:::reject
-  classDef scan fill:#111827,stroke:#60a5fa,color:#dbeafe,stroke-width:1.8px;
-  classDef candidate fill:#422006,stroke:#fbbf24,color:#fffbeb,stroke-width:2px;
-  classDef skill fill:#881337,stroke:#fda4af,color:#fff1f2,stroke-width:2.4px;
-  classDef lookup fill:#0f766e,stroke:#99f6e4,color:#ffffff,stroke-width:2px;
-  classDef dynamic fill:#1e3a8a,stroke:#93c5fd,color:#eff6ff,stroke-width:2px;
-  classDef success fill:#064e3b,stroke:#5eead4,color:#ecfeff,stroke-width:2px;
-  classDef reject fill:#3f1d1d,stroke:#fca5a5,color:#fee2e2,stroke-width:1.8px;</pre>
-      </div>
-    </section>
-
     <section class="slide surface accent-teal">
       <h3>Dynamic validation</h3>
       <h2>Finding-Type<br />Validation Harnesses</h2>
       <div class="resource-grid tool-grid">
-        <div class="resource"><h3>ADB</h3><p>Activity, deeplink, broadcast, logcat evidence</p></div>
-        <div class="resource"><h3>Frida</h3><p>runtime hook, method trace, WebView observability</p></div>
-        <div class="resource"><h3>WebView</h3><p>DevTools, console probe, marker URL reachability</p></div>
-        <div class="resource"><h3>Ghidra</h3><p>native entrypoint and JNI flow validation</p></div>
+        <div class="resource"><h3>ADB</h3><p>launch · deeplink · logcat</p></div>
+        <div class="resource"><h3>Frida</h3><p>hook · trace · observe</p></div>
+        <div class="resource"><h3>WebView</h3><p>console · marker URL</p></div>
+        <div class="resource"><h3>Ghidra</h3><p>entrypoint · JNI flow</p></div>
       </div>
-      <p class="sub">Evidence-first dynamic validation with predefined functions</p>
-    </section>
-
-    <section class="slide surface accent-teal">
-      <h3>WebView + Frida example</h3>
-      <h2>WebView Runtime<br />Evidence</h2>
-      <pre class="terminal-card">1. Static: addJavascriptInterface + setJavaScriptEnabled + loadUrl candidates
-2. ADB: approved test marker URL via candidate Activity / deep link
-3. Frida: WebView.setWebContentsDebuggingEnabled(true)
-4. Hook: loadUrl / evaluateJavascript call and URL logging
-5. DevTools: benign JavaScript execution check in console
-6. Evidence: external URL load, JS enablement, bridge reachability, logcat / screenshot</pre>
+      <p class="sub">Predefined validation functions.</p>
     </section>
 
     <section class="slide surface accent-teal">
@@ -1520,7 +1114,7 @@ Harness transformation:
 
     <section class="slide cover accent-blue" data-part="Closing">
       <h1>Harnessed Work<br />AI Judgment<br />Human Decision</h1>
-      <p class="sub">Tool automation · AI triage · Human follow-up</p>
+      <p class="sub">Automation · Triage · Decision</p>
     </section>
 
     <section class="slide accent-teal" data-part="Backup">
@@ -1583,7 +1177,7 @@ Harness transformation:
       <p class="meta">BACKUP</p>
       <h3>Reusable audit procedure</h3>
       <h2>Reusable Audit<br />Procedure</h2>
-      <p class="sub">Reusable team audit workflow instead of repeated instruction paste.</p>
+      <p class="sub">Reusable workflow. No repeated paste.</p>
     </section>
 
     <section class="slide surface accent-blue" data-part="Backup">
@@ -1602,8 +1196,8 @@ Harness transformation:
       <h3>What matters</h3>
       <h2>Production-Grade Audit Tools</h2>
       <div class="compare">
-        <div class="cell"><span class="cell-title">Very important</span><h3>manifest parser · jadx · aapt · adb · frida · evidence log</h3></div>
-        <div class="cell"><span class="cell-title">Boosters</span><h3>Ghidra · IDA Pro · call graph · taint rules · structured extractor</h3></div>
+        <div class="cell"><span class="cell-title">Very important</span><h3>parser · jadx · aapt · adb · frida · logs</h3></div>
+        <div class="cell"><span class="cell-title">Boosters</span><h3>Ghidra · IDA · call graph · taint rules</h3></div>
       </div>
     </section>
 
@@ -1635,8 +1229,8 @@ Harness transformation:
         <div class="resource"><h3>Android App Context</h3><p>Manifest, Gradle, API policy inputs</p></div>
       </div>
       <div class="resource-grid">
-        <div class="resource"><h3>AI Judgment Boundary</h3><p>code analysis, PoC attempt, vulnerability diagnosis</p></div>
-        <div class="resource"><h3>Stop Conditions</h3><p>success, failure, question, budget exceeded</p></div>
+        <div class="resource"><h3>AI Judgment Boundary</h3><p>analysis · PoC · diagnosis</p></div>
+        <div class="resource"><h3>Stop Conditions</h3><p>success · failure · ask · stop</p></div>
         <div class="resource"><h3>Human Follow-up</h3><p>final analysis, action, ticket, patch</p></div>
       </div>
     </section>
@@ -1648,10 +1242,10 @@ Harness transformation:
       <div class="diagram-frame wide diagram-dense">
         <pre class="mermaid">flowchart TD
   S0["Scenario Review start"]:::start --> S1["current-app findings<br/>report summary load"]:::step
-  S1 --> S2["cross-app candidate lookup<br/>package · component · deeplink · WebView · permission similarity"]:::db
-  S2 --> S3["scenario context creation<br/>current-app candidates + cross-app source"]:::context
+  S1 --> S2["cross-app lookup<br/>pkg · component · deeplink"]:::db
+  S2 --> S3["scenario context<br/>current + related source"]:::context
   S3 --> S4["Scenario Review LLM call"]:::llm
-  S4 --> S5["attack scenario candidate selection<br/>validation plan / caveat"]:::judge
+  S4 --> S5["attack scenario<br/>validation plan / caveat"]:::judge
   S5 --> S6["scenario-review artifact storage"]:::done
   classDef start fill:#422006,stroke:#fbbf24,color:#fffbeb,stroke-width:2px;
   classDef step fill:#111827,stroke:#5eead4,color:#ccfbf1,stroke-width:1.8px;
@@ -1668,10 +1262,10 @@ Harness transformation:
       <h3>Safety</h3>
       <h2>Skill Supply Chain</h2>
       <div class="steps">
-        <div class="step"><span class="step-num">Review</span><p>external skill file and script review before install</p></div>
-        <div class="step"><span class="step-num">Least</span><p>minimal allowed tools and MCP permissions</p></div>
-        <div class="step"><span class="step-num">Manual</span><p>manual invocation for device execution, hook, report upload</p></div>
-        <div class="step"><span class="step-num">Log</span><p>tool-call and execution evidence retention</p></div>
+        <div class="step"><span class="step-num">Review</span><p>review files and scripts</p></div>
+        <div class="step"><span class="step-num">Least</span><p>minimal tools and MCP permissions</p></div>
+        <div class="step"><span class="step-num">Manual</span><p>manual device / hook / report actions</p></div>
+        <div class="step"><span class="step-num">Log</span><p>retain execution evidence</p></div>
       </div>
     </section>
   </main>
