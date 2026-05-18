@@ -21,7 +21,7 @@
 화면 텍스트:
 
 > Agenda
-> 1. Chat Interface Limits
+> 1. Basic LLM Use
 > 2. MCP
 > 3. Skills
 > 4. Agent Workflow
@@ -30,19 +30,19 @@
 
 배경지식 / 발표 멘트:
 
-오늘은 먼저 채팅형 AI로 일할 때의 질문, 답변, 복사, 실행 흐름을 봅니다. 그 다음 이 방식이 왜 재현 가능한 감사 결과로 바로 이어지지 않는지 보고, 도구 호출과 MCP가 왜 필요한지로 넘어갑니다. 이후 MCP로 일상 작업을 실행하는 예시를 보고, 반복되는 프롬프트를 Skill로 패키징하는 방식을 정리합니다. 그 다음 Agent Workflow와 Harness 설계를 설명하고, 마지막에는 우리가 만든 APK Analyzer 사례를 다룹니다.
+오늘은 먼저 기본적인 LLM 사용 방식, 즉 질문하고 답변을 받은 뒤 사람이 다른 도구로 옮겨 실행하는 흐름을 봅니다. 그 다음 tool calling이 왜 필요한지, 그리고 이 방식이 어떻게 재현 가능한 작업 루프로 이어지는지로 넘어갑니다. 이후 MCP로 일상 작업을 실행하는 예시를 보고, 반복되는 프롬프트를 Skill로 패키징하는 방식을 정리합니다. 그 다음 Agent Workflow와 Harness 설계를 설명하고, 마지막에는 우리가 만든 APK Analyzer 사례를 다룹니다.
 
 필요 그림: 없음. 텍스트 목차 슬라이드로 충분합니다.
-## 1-2. Part 01: Chat Interface Limits
+## 1-2. Part 01: Basic LLM Use
 
 화면 텍스트:
 
-> Chat Interface Limits
-> Limits of answer-only workflows
+> Basic LLM Use
+> Tool Calling Introduction
 
 배경지식 / 발표 멘트:
 
-첫 파트는 Agent나 Harness의 결론에서 시작하지 않고, 일반 채팅형 AI 사용 방식의 한계를 먼저 확인합니다. 답변을 받고, 사람이 복사해서 다른 도구에 붙이고, 실행 결과를 다시 가져오는 방식이 왜 보안 감사처럼 상태와 증거가 중요한 작업에서는 부족한지 보는 파트입니다.
+첫 파트는 Agent나 Harness의 결론에서 시작하지 않고, 기본적인 LLM 사용 방식에서 출발합니다. 먼저 답변만 받는 사용 방식과 사람이 다른 도구에 복사해 실행하는 흐름을 보고, 그 다음 tool calling이 이 흐름을 어떻게 실행 가능한 작업 루프로 바꾸는지 소개합니다.
 
 필요 그림: 없음. 섹션 구분 슬라이드.
 ## 2. Copy-Paste to Tool Calls
@@ -360,7 +360,7 @@ Output: component table, evidence, risk, validation command.
 좋은 에이전트는 한 번 답하고 끝나지 않습니다. MCP로 연결된 도구를 사용하고, Skill에 정의된 절차와 주의사항을 따르며, 실행 결과를 관찰한 뒤 실패하면 수정합니다. 코딩, 디버깅, 취약점 탐색 모두 이 루프가 중요합니다. Gemini CLI 문서도 ReAct 루프와 도구, MCP 서버를 이용해 버그 수정, 기능 개발, 테스트 커버리지 개선을 수행한다고 설명합니다. [R5]
 
 필요 그림: User task → Skill 절차 → Plan/Act/Observe/Revise 루프, Act 단계에 MCP tools가 연결되고 evidence report로 닫히는 다이어그램. Mermaid로 반영 완료.
-## 17-0. Agent 정의
+## 17-1. Agent Definition
 
 화면 텍스트:
 
@@ -371,7 +371,7 @@ Output: component table, evidence, risk, validation command.
 여기서 Agent 정의가 나옵니다. 에이전트는 단순 챗봇이 아니라 모델, 작업 대상 컨텍스트, MCP로 연결된 외부 도구, Skill로 정의한 절차, 검증 증거가 결합된 실행 루프입니다. 모바일 보안 감사에서는 Android 앱 컨텍스트, 파일과 shell, ADB와 Frida 같은 도구, 그리고 결과를 확인하는 evidence가 필요합니다. OpenAI의 도구 문서도 모델이 도구 호출을 제안하고 애플리케이션이 실행 결과를 다시 모델에 전달하는 흐름을 설명합니다. [R2][R7]
 
 필요 그림: Model + Context + Tools + Skill + Verification이 Agent loop로 합쳐지는 다이어그램. Mermaid로 반영 완료.
-## 17-2. 코딩 에이전트의 공통 구조
+## 17-2. Common Agent Anatomy
 
 화면 텍스트:
 
@@ -386,6 +386,71 @@ Output: component table, evidence, risk, validation command.
 Claude Code, OpenAI Codex CLI, Gemini CLI, Cursor 같은 계열은 세부 UX는 달라도 구조적으로 비슷합니다. LLM 자체, 도구 호출 레이어, 작업 루프, 컨텍스트 관리, 검증/실행 환경의 조합입니다. 결국 본질은 `LLM + Tool Harness + Execution Loop`입니다.
 
 필요 그림: Mermaid로 반영 완료. 코딩 에이전트 공통 구조.
+## 17-2a. From Program DAG to Agent Loop
+
+화면 텍스트:
+
+> From Program DAG to Agent Loop
+> LLM next-step selection replaces a fixed procedural graph
+> Traditional program: Predefined DAG
+> Agent runtime: LLM Dispatcher
+
+배경지식 / 발표 멘트:
+
+전통적인 프로그램은 control flow가 코드나 DAG 안에 미리 정의되어 있습니다. 어떤 도구를 언제 호출할지, 실패하면 어디로 돌아갈지, 언제 멈출지가 정해져 있습니다. Agent runtime에서는 이 결정 지점이 LLM으로 이동합니다. LLM이 event, context, tool result를 읽고 다음 호출을 고릅니다. 유연성은 커지지만, 흐름 제어가 확률적 판단에 더 많이 의존하게 됩니다.
+
+필요 그림: Traditional program과 Agent runtime 2열 비교 카드.
+## 17-2b. DAG-Free Agent Loop
+
+화면 텍스트:
+
+> DAG-Free Agent Loop
+> The model becomes the runtime decision point
+
+배경지식 / 발표 멘트:
+
+이 그림은 agent loop의 본질을 잘 보여줍니다. event와 이전 result, context가 들어오면 LLM이 다음 단계를 결정하고, API를 호출하거나 다른 작업을 kick off합니다. 결과는 다시 loop로 돌아옵니다. 작은 작업에서는 이 구조가 매우 강력하지만, 전체 workflow를 LLM 하나의 next-step 판단에 계속 맡기면 흐름이 길어질수록 불안정해질 수 있습니다.
+
+필요 그림: `agent-loop-animation.gif` 삽입 완료. 출처: humanlayer/12-factor-agents.
+## 17-2c. Agent Loop Drift Risk
+
+화면 텍스트:
+
+> Agent Loop Drift Risk
+> More tools, longer turns, and larger context increase path instability
+> Tool Sprawl / Multi-Turn Length / Context Overload / Goal Drift
+
+배경지식 / 발표 멘트:
+
+문제는 도구 수가 늘고, multi-turn이 길어지고, context가 커질 때 나타납니다. 비슷한 도구가 많으면 다음 호출 선택이 흔들리고, 루프가 길어질수록 작은 해석 오류가 누적됩니다. context가 커지면 중요한 제약과 오래된 정보가 섞이고, LLM은 원래 목표보다 눈앞의 local step을 최적화할 수 있습니다. 그래서 agent loop 자체를 부정하는 것이 아니라, loop의 범위를 작게 관리해야 합니다.
+
+필요 그림: Tool Sprawl / Multi-Turn Length / Context Overload / Goal Drift 4개 risk 카드.
+## 17-2d. Micro-Agent DAG
+
+화면 텍스트:
+
+> Micro-Agent DAG
+> Keep LLM judgment local, keep orchestration explicit
+
+배경지식 / 발표 멘트:
+
+Micro-agent 방식은 큰 agent loop 하나에 모든 판단을 맡기지 않습니다. 전체 흐름은 사람이 설계한 DAG나 harness가 잡고, 각 노드 안에서만 작은 LLM loop를 허용합니다. 예를 들어 summarize, classify, validate 같은 bounded task를 각각 micro-agent로 만들고, 각 micro-agent는 제한된 context와 도구, typed output을 갖습니다. 이렇게 하면 LLM의 판단은 살리면서 전체 orchestration은 명시적으로 유지할 수 있습니다.
+
+필요 그림: `micro-agent-dag.png` 삽입 완료. 출처: humanlayer/12-factor-agents.
+## 17-2e. Small Loop Explicit Contract
+
+화면 텍스트:
+
+> Small Loop Explicit Contract
+> Each agent owns one bounded judgment inside the larger workflow
+> Small Goal / Small Tool Set / Small Context / Typed Output / Stop Rule
+
+배경지식 / 발표 멘트:
+
+Micro-agent를 쓰려면 각 agent의 계약이 작고 분명해야 합니다. 하나의 agent는 하나의 판단만 담당하고, 필요한 도구만 받으며, 전체 대화가 아니라 집중된 facts만 봅니다. 출력은 다음 DAG 노드가 읽을 수 있는 structured result여야 하고, 완료, 재시도, escalation, failure 기준이 있어야 합니다. 이 구조가 길고 자유로운 agent loop가 엉뚱한 방향으로 가는 문제를 줄여줍니다.
+
+필요 그림: 5개 contract 카드.
+
 ## 17-3. 기본 제공 도구
 
 화면 텍스트:
