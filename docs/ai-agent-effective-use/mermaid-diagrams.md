@@ -49,42 +49,20 @@ sequenceDiagram
   participant U as User
   participant A as App
   participant M as Model
-  participant T as Android Tool / MCP
+  participant T as Tool / MCP
 
-  U->>A: Prompt
-  A->>M: Prompt + tool schemas
-  M-->>A: Tool call(name, args)
-  A->>T: Execute jadx / adb / parser
-  T-->>A: Structured result
-  A->>M: Tool result
-  Note over A,M: App executes. Model interprets.
-  M-->>A: Final answer
-  A-->>U: Response
-```
-
-## 4. Slide 11 - MCP 구조
-
-목적: AI model이 tool call을 판단하고, Host가 여러 타입의 MCP client를 통해 여러 타입의 MCP server로 연결한다는 구조를 보여줍니다.
-
-```mermaid
-flowchart TB
-  Model(["AI Model: tool call 판단"]):::model --> Host["Host App: context + policy"]:::host
-  Host --> C1["IDE / Coding Client"]:::client
-  Host --> C2["Mobile Audit Harness"]:::client
-  Host --> C3["Reverse Engineering UI"]:::client
-  C1 --> S1[["Repo / Manifest Server"]]:::server
-  C2 --> S2[["JADX / APK Server"]]:::server
-  C2 --> S3[["Frida / Device Server"]]:::server
-  C3 --> S4[["Ghidra / IDA Server"]]:::server
-  S1 --> Cap["Tools / Resources / Findings"]:::cap
-  S2 --> Cap
-  S3 --> Cap
-  S4 --> Cap
-  classDef model fill:#1d4ed8,stroke:#bfdbfe,color:#ffffff,stroke-width:2.6px;
-  classDef host fill:#0f172a,stroke:#60a5fa,color:#dbeafe,stroke-width:2px;
-  classDef client fill:#164e63,stroke:#67e8f9,color:#ecfeff,stroke-width:2px;
-  classDef server fill:#0f766e,stroke:#99f6e4,color:#ffffff,stroke-width:2.4px;
-  classDef cap fill:#052e2b,stroke:#5eead4,color:#ecfeff,stroke-width:2px;
+  U->>A: 사용자 프롬프트
+  A->>M: 사용자 프롬프트 + tool schema
+  M-->>A: tool_call schema(name, args)
+  alt 응답이 tool_call schema
+    A->>T: tool 실행(name, args)
+    T-->>A: tool_result(JSON)
+    A->>M: tool_result + 원래 요청 context
+    M-->>A: 최종 답변
+  else 일반 답변
+    M-->>A: 최종 답변
+  end
+  A-->>U: 응답
 ```
 
 ## 5. Slide 12 - MCP 이전과 이후
@@ -126,9 +104,9 @@ flowchart TB
 
 ```mermaid
 flowchart TB
-  Request["요청: exported components 찾기"]:::input --> Host["Host / MCP Client<br/>model selects tool"]:::host
+  Request["요청: exported components 찾기"]:::input --> Host["Host / MCP Client<br/>모델이 도구 선택"]:::host
   Host --> Server[["Filesystem MCP Server"]]:::server
-  Server --> Verify["allowed roots check<br/>read / list / search / parse<br/>manifest / source / JSON<br/>evidence review"]:::success
+  Server --> Verify["허용 root 확인<br/>read / list / search / parse<br/>manifest / source / JSON<br/>증거 검토"]:::success
   classDef input fill:#111827,stroke:#94a3b8,color:#f8fafc,stroke-width:1.5px;
   classDef host fill:#0f172a,stroke:#60a5fa,color:#dbeafe,stroke-width:2px;
   classDef model fill:#1d4ed8,stroke:#bfdbfe,color:#ffffff,stroke-width:2.5px;
@@ -180,12 +158,12 @@ flowchart TB
 
 ```mermaid
 flowchart TB
-  Work["Human audit task"]:::input --> Spec["Audit spec"]:::core
-  Spec --> Harness["Harness<br/>deterministic collection"]:::tool
-  Harness --> AI["AI judgment<br/>analysis · PoC · diagnosis"]:::loop
-  AI --> Evidence["Evidence report"]:::success
-  Evidence --> Human["Human follow-up"]:::human
-  Spec --> Guard[Tool and device policy]:::guard
+  Work["사람 감사 작업"]:::input --> Spec["감사 명세"]:::core
+  Spec --> Harness["Harness<br/>결정적 수집"]:::tool
+  Harness --> AI["AI 판단<br/>분석 · PoC · 진단"]:::loop
+  AI --> Evidence["증거 보고"]:::success
+  Evidence --> Human["사람 후속 조치"]:::human
+  Spec --> Guard[도구와 디바이스 정책]:::guard
   Guard --> Harness
   classDef input fill:#0f172a,stroke:#64748b,color:#e2e8f0,stroke-width:1.5px;
   classDef core fill:#0f766e,stroke:#99f6e4,color:#ffffff,stroke-width:2.5px;
@@ -196,35 +174,16 @@ flowchart TB
   classDef success fill:#064e3b,stroke:#5eead4,color:#ecfeff,stroke-width:2px;
 ```
 
-## 9. Slide 37 - 종료 조건
-
-목적: 성공, 알려진 실패, 불명확성, 예산 초과를 다르게 처리하는 종료 정책을 보여줍니다.
-
-```mermaid
-flowchart TB
-  Verify{Verification result}:::decision
-  Verify -->|pass| Done[Done: report evidence]:::success
-  Verify -->|known failure| Revise[Revise within scope]:::step
-  Verify -->|unclear| Ask[Ask user to choose]:::ask
-  Verify -->|budget exceeded| Stop[Stop with findings]:::stop
-  Revise --> Verify
-  classDef decision fill:#422006,stroke:#fbbf24,color:#fffbeb,stroke-width:2.2px;
-  classDef step fill:#111827,stroke:#60a5fa,color:#dbeafe,stroke-width:1.8px;
-  classDef ask fill:#164e63,stroke:#67e8f9,color:#ecfeff,stroke-width:2px;
-  classDef stop fill:#3f1d1d,stroke:#fca5a5,color:#fee2e2,stroke-width:2px;
-  classDef success fill:#064e3b,stroke:#5eead4,color:#ecfeff,stroke-width:2px;
-```
-
 ## 10. Slide 27 - 에이전트 작업 방식
 
 목적: 사람이 하던 작업이 Tool/Harness, AI 판단, 사람 후속 조치로 재배치되는 흐름을 보여줍니다.
 
 ```mermaid
 flowchart TB
-  Work["Human work"]:::start --> Harness["Tool / Harness<br/>collect · parse · run"]:::tool
-  Harness --> AI["AI judgment<br/>analysis · PoC<br/>diagnosis"]:::step
-  AI --> Evidence["Evidence report"]:::evidence
-  Evidence --> Human["Human<br/>final analysis · follow-up"]:::success
+  Work["사람 작업"]:::start --> Harness["Tool / Harness<br/>수집 · 파싱 · 실행"]:::tool
+  Harness --> AI["AI 판단<br/>분석 · PoC<br/>진단"]:::step
+  AI --> Evidence["증거 보고"]:::evidence
+  Evidence --> Human["사람<br/>최종 분석 · 후속 조치"]:::success
   classDef start fill:#1d4ed8,stroke:#bfdbfe,color:#ffffff,stroke-width:2.5px;
   classDef tool fill:#0f766e,stroke:#99f6e4,color:#ffffff,stroke-width:2.2px;
   classDef step fill:#111827,stroke:#60a5fa,color:#dbeafe,stroke-width:1.8px;
@@ -241,7 +200,7 @@ flowchart TB
   Ask["open components 찾아줘"]:::run --> Find[find AndroidManifest]:::step
   Find --> Grep[rg exported / intent-filter]:::step
   Grep --> Guess[AI interprets candidates]:::warn
-  Guess --> Miss{missing risk?}:::decision
+  Guess --> Miss{누락 위험?}:::decision
   Miss -->|possible| Extract[structured manifest JSON]:::step
   Extract --> Judge[AI judges risk]:::run
   Judge --> Report[Report evidence]:::success
@@ -274,14 +233,14 @@ flowchart TB
 
 ```mermaid
 flowchart TB
-  Catalog["name + description"]:::catalog --> Match{"task matches?"}:::decision
-  Match -->|no| Skip["do not load"]:::muted
-  Match -->|yes| Skill["read SKILL.md"]:::skill
+  Catalog["이름 + 설명"]:::catalog --> Match{"작업과 맞나?"}:::decision
+  Match -->|아니오| Skip["로드하지 않음"]:::muted
+  Match -->|예| Skill["SKILL.md 읽기"]:::skill
   Skill --> Refs["references/"]:::file
   Skill --> Scripts["scripts/"]:::file
   Skill --> Assets["assets/"]:::file
-  Skill --> Tools["use tools / MCP / shell"]:::tool
-  Tools --> Evidence["evidence report"]:::success
+  Skill --> Tools["도구 / MCP / 셸 사용"]:::tool
+  Tools --> Evidence["증거 보고"]:::success
   classDef catalog fill:#0f172a,stroke:#67e8f9,color:#ecfeff,stroke-width:2px;
   classDef decision fill:#422006,stroke:#fbbf24,color:#fffbeb,stroke-width:2px;
   classDef muted fill:#1f2937,stroke:#64748b,color:#cbd5e1,stroke-width:1.5px;
@@ -297,13 +256,13 @@ flowchart TB
 
 ```mermaid
 flowchart TB
-  Request["User request"]:::input --> Spec["Audit spec"]:::core
-  Spec --> Facts["structured Android facts"]:::step
-  Spec --> Context["selected policy context"]:::step
-  Facts --> Judge["AI risk judgment<br/>+ evidence-backed finding"]:::success
+  Request["사용자 요청"]:::input --> Spec["감사 명세"]:::core
+  Spec --> Facts["구조화된 Android facts"]:::step
+  Spec --> Context["선별된 정책 컨텍스트"]:::step
+  Facts --> Judge["AI 위험 판단<br/>+ 근거 기반 finding"]:::success
   Context --> Judge
-  Facts -.-> Noise["less source text"]:::benefit
-  Context -.-> Accuracy["fewer wrong assumptions"]:::benefit
+  Facts -.-> Noise["더 적은 source text"]:::benefit
+  Context -.-> Accuracy["더 적은 잘못된 가정"]:::benefit
   classDef input fill:#0f172a,stroke:#64748b,color:#e2e8f0,stroke-width:1.5px;
   classDef core fill:#0f766e,stroke:#99f6e4,color:#ffffff,stroke-width:2.5px;
   classDef step fill:#111827,stroke:#60a5fa,color:#dbeafe,stroke-width:1.8px;

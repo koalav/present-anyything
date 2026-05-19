@@ -5,6 +5,11 @@ const progressEl = document.getElementById('progress');
 const partLabelEl = document.getElementById('partLabel');
 const prevBtn = document.querySelector('[data-action="prev"]');
 const nextBtn = document.querySelector('[data-action="next"]');
+const themeParam = new URLSearchParams(window.location.search).get('theme');
+
+if (themeParam && /^[a-z0-9-]+$/i.test(themeParam)) {
+  document.body.dataset.theme = themeParam.toLowerCase();
+}
 
 let current = 0;
 let touchStartX = 0;

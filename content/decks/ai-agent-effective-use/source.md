@@ -9,8 +9,8 @@
 화면 텍스트:
 
 > Effective AI Agent Use
-> From Chat Q&A to Executable Analysis Loops
-> Agent workflow seminar
+> 채팅 Q&A에서 실행 가능한 분석 루프로
+> 에이전트 워크플로 세미나
 
 배경지식 / 발표 멘트:
 
@@ -39,7 +39,7 @@
 화면 텍스트:
 
 > Basic Concepts
-> Chat → Tool Calling → MCP → Skills
+> 채팅 → 도구 호출 → MCP → Skill
 > PART 01
 
 배경지식 / 발표 멘트:
@@ -51,109 +51,61 @@
 
 화면 텍스트:
 
-> Chat-style workflow
-> Chat-Only AI Use
-> AI answers. Human operates tools.
-> AI as Advisor: ask, explain, suggest.
-> Human Runs Tools: IDE · shell · JADX
-> ADB · Frida
-> Manual Context Transfer: paste logs back.
+> `chat-style-workflow.png` 그림 전체 표시
 
 배경지식 / 발표 멘트:
 
 Chat AI만 쓰던 시기에는 AI가 조언자 역할을 했고, 실제 도구 사용은 사람이 했습니다. 예를 들어 AI가 "jadx로 `addJavascriptInterface`를 검색하세요", "`adb logcat`으로 실행 로그를 보세요", "Frida로 이 method를 hook해 보세요"라고 답하면, 사람은 그 명령을 터미널이나 리버싱 도구에서 직접 실행하고 결과를 다시 AI에게 붙여넣었습니다. 이 방식은 유용하지만, AI가 직접 대상 상태를 보거나 도구 실행 결과를 안정적으로 관리하지는 못합니다.
 
-시각 자료: `before-manual-orchestration.png`와 `chat-ai-tools.png`를 before/after 비교로 묶어 삽입 완료.
+시각 자료: `chat-style-workflow.png` 삽입 완료. 기존 카드형 설명 대신 그림 전체를 사용.
 ## 3. Tool Calling Changes the Direction
 
 화면 텍스트:
 
 > Direction change
 > Tool Calling Changes the Direction
-> Human: goal, target, boundary.
-> AI: tool call + args.
-> Host: policy check, execute, return.
+> 모델 지식만으로는 현재 대상을 볼 수 없고, 컨텍스트가 루프에 들어와야 합니다.
+> 텍스트 질문 → LLM 내재 지식 → 텍스트 답변
+> 외부 컨텍스트: 파일 · 로그 · 도구 · 런타임
+> Host: 정책 + 실행
 
 배경지식 / 발표 멘트:
 
-Tool calling이 들어오면 방향이 바뀝니다. AI가 사람에게 "이 명령을 실행해 보세요"라고 말하는 대신, 모델이 필요한 도구 호출을 제안하고 Host나 Harness가 실제 실행을 담당합니다. 사람은 목표, 대상, 권한, 금지 조건을 정하고, AI는 허용된 도구 결과를 읽어 다음 판단을 합니다. 중요한 점은 AI가 마음대로 모든 것을 실행하는 것이 아니라, 애플리케이션이 제공한 도구 목록과 정책 안에서 실행된다는 것입니다.
+LLM은 기본적으로 text를 받아 text를 만드는 언어 모델입니다. 이 구조만으로도 설명과 요약은 잘하지만, 모델 내부의 parametric knowledge만으로는 지금 보고 있는 저장소, 디바이스 상태, 최신 로그, 실행 결과를 알 수 없습니다. 그래서 다음 단계는 "더 똑똑한 답변"이 아니라, 현재 작업에 필요한 외부 context를 모델 루프 안으로 안전하게 넣는 것입니다. Tool calling은 이 context를 사람이 복사해 붙여넣는 방식에서 Host가 정책을 검사하고 실행 결과를 돌려주는 방식으로 바꿉니다.
 
-시각 자료: Model 밖에서 Web / Files / Shell / Test 결과가 들어오는 그림
+시각 자료: 텍스트 질문 → LLM 내재 지식 → 텍스트 답변 흐름에 외부 컨텍스트와 Host 실행이 붙는 다이어그램.
 ## 4. Tool Calling
 
 화면 텍스트:
 
 > Tool calling
-> Model Selects Tool Host Executes
-> Model Selects Tool
-> Host Executes
-> Prompt → tool call → result → interpretation
+> Prompt + Tool Schema Tool Result Loop
+> Host → Model: 사용자 프롬프트 + tool schema
+> Model → Host: tool_call schema(name, args)
+> Host → Tool: tool 실행
+> Host → Model: tool_result(JSON)
 
 배경지식 / 발표 멘트:
 
-Tool calling은 모델과 애플리케이션 사이의 실행 계약입니다. 애플리케이션은 `manifest_extract`, `jadx_search`, `adb_shell`, `frida_trace` 같은 도구를 모델에게 노출합니다. 모델은 작업 중 필요한 도구 호출을 제안하고, Host는 권한과 입력을 검사한 뒤 실제 도구를 실행합니다. 실행 결과는 다시 모델의 context로 들어가고, 모델은 그 결과를 해석해 다음 응답이나 다음 tool call을 만듭니다. [R2]
+Tool calling을 가장 단순하게 보면, Host가 사용자 프롬프트와 사용할 수 있는 tool schema를 함께 모델에 전달하는 구조입니다. 모델은 자연어 답변이 아니라 `tool_call` schema, 예를 들어 `manifest_extract({apk_path:"app.apk", include:["components","links"]})` 같은 구조화된 호출 요청을 반환할 수 있습니다. Host는 모델 응답이 tool schema인지 검사하고, 맞으면 실제 `manifest_extract` 도구를 실행한 뒤 `tool_result`를 다시 모델에 전달합니다. 모델은 이 실행 결과를 context로 받아 근거 기반 최종 답변을 만듭니다. [R2]
 
-시각 자료: Prompt → Tool Call → Android Tool/MCP → Structured Result → Answer 시퀀스
-## 5. Mobile Audit Tool Calls
-
-화면 텍스트:
-
-> Security audit example
-> Mobile Audit Tool Calls
-> manifest_extract: components · permissions
-> jadx_search: source hits · methods
-> adb_shell: launch · logcat
-> frida_trace: runtime traces · bridge calls
-
-배경지식 / 발표 멘트:
-
-예시는 모바일 보안 감사로 들 수 있습니다. `manifest_extract(app.apk)`는 exported component와 permission을 구조화하고, `jadx_search(query)`는 decompiled source에서 source evidence를 찾습니다. `adb_shell(command)`은 승인된 디바이스 범위에서 앱 실행이나 logcat 수집을 하고, `frida_trace(package, method_list)`는 runtime 호출을 관찰합니다. 사용자는 이제 "이 도구들을 써서 확인해"라고 지시할 수 있고, 시스템은 도구 실행 결과를 다시 AI에게 제공합니다.
-
-시각 자료: 5단계 rail 레이아웃. 본문에 도구 호출 rail 레이아웃으로 반영.
-## 6. Tool Result as Context
-
-화면 텍스트:
-
-> Result handling
-> Tool Result as Context
-> Structured result. No pasted logs.
-
-배경지식 / 발표 멘트:
-
-Tool calling의 실질적인 변화는 실행 결과가 대화의 공식 context가 된다는 점입니다. 사람이 긴 터미널 로그를 복사해서 붙여넣는 대신, 도구가 JSON, 로그 파일, source location, command metadata를 구조화해서 반환합니다. 모델은 이 결과를 읽고 다음 질문, 다음 도구 호출, 또는 evidence-backed summary를 만듭니다. 이 구조가 다음에 설명할 MCP와 Skill의 출발점입니다.
-
-시각 자료: Mermaid flowchart. 본문에 Mermaid 흐름도로 반영.
-## 7. MCP
+시각 자료: User → Host/App → Model → Tool/MCP sequence diagram. Host가 사용자 프롬프트와 tool schema를 함께 보내고, 모델 응답이 tool_call schema이면 도구를 실행해 결과를 다시 모델에 전달하는 루프를 표시.
+## 6. MCP
 
 화면 텍스트:
 
 > MCP
-> Standard connector for AI tools
+> AI 도구를 위한 표준 연결
 
 배경지식 / 발표 멘트:
 
 MCP는 AI 애플리케이션과 외부 시스템을 연결하기 위한 오픈 표준입니다. 공식 문서는 MCP를 AI 애플리케이션이 파일, 데이터베이스, 검색 엔진, 계산기, 워크플로에 연결되는 표준 방식으로 설명합니다. 핵심은 "각 도구를 매번 커스텀 연동하지 말고, 표준 방식으로 연결하자"입니다. [R1]
 
 시각 자료: 플러그 / 어댑터 / 표준 포트 이미지
-## 8. MCP Architecture
-
-화면 텍스트:
-
-> MCP structure
-> Model Decision Client Connection
-> Model Decision
-> Client Connection
-
-배경지식 / 발표 멘트:
-
-MCP 호출은 서버가 먼저 시작하는 구조가 아닙니다. Host 안의 AI model이 작업 중 필요한 도구를 판단하고 tool call을 제안하면, Host가 해당 요청을 MCP client를 통해 적절한 MCP server로 보냅니다. 모바일 보안 감사에서는 IDE, audit harness, reverse engineering UI가 각각 Manifest/Source server, JADX/APK server, Frida/Device server, Ghidra/IDA server로 연결될 수 있습니다. MCP 서버는 Tools, Resources, Prompts를 노출할 수 있고, Host는 컨텍스트와 권한 경계를 관리합니다. [R1][R2]
-
-시각 자료: AI Model → Host → 여러 MCP Client → 여러 MCP Server → Tools/Resources/Prompts 구조도
 ## 9. MCP Before / After
 
 화면 텍스트:
 
-> Before and after
 > MCP Before / After
 > Before: Without MCP
 > User acts as an intermediary
@@ -166,29 +118,29 @@ MCP 호출은 서버가 먼저 시작하는 구조가 아닙니다. Host 안의 
 그림의 위쪽은 MCP가 없을 때의 흐름입니다. AI Chat은 답변을 주지만 Internet, IDE, Document 같은 실제 도구를 쓰는 중간 역할은 사람이 합니다. 사람이 검색하고, 코드를 작성·수정·실행하고, 문서를 읽고 편집한 뒤 결과를 다시 AI에게 넘깁니다. 아래쪽은 MCP가 붙은 흐름입니다. AI Chat과 도구 사이에 표준 연결 지점이 생기고, AI는 Host가 허용한 MCP tool을 통해 Internet, VS Code, Document 같은 외부 도구와 연결됩니다. 사용자는 모든 결과를 직접 복사해 오가는 대신, AI가 도구 결과를 context로 받아 작업하도록 지시할 수 있습니다. [R1]
 
 시각 자료: `mcp-before-after.png` 삽입 완료. Before는 user-mediated tool use, After는 MCP connection 구조.
-## 10. From Repeated Prompt to Skill
+## 10. Mobile Security MCP Tools
 
 화면 텍스트:
 
-> From prompt to skill
-> From Repeated Prompt to Skill
-> Procedure: manifest → source → risk
-> Tool Set: parser · jadx · adb · Frida
-> Rules: package · device · FP criteria
-> Output Schema: risk · evidence · command
-> Prompt → Skill
+> MCP directory
+> Mobile Security MCP Tools
+> 보안 감사에서 AI가 호출할 수 있는 도구 서버
+> Static: APK · DEX · Manifest 분석: jadx · apktool · aapt · Semgrep
+> Dynamic: 기기 실행 · 로그 · 후킹: adb · logcat · Frida · objection
+> Native: `.so` 분석 · 호출 흐름: Ghidra · IDA Pro · radare2
+> Host 권한 안에서 실행하고 AI가 결과를 해석합니다.
 
 배경지식 / 발표 멘트:
 
-Tool calling과 MCP가 있어도 매번 긴 지시를 손으로 쓰는 것은 불편합니다. exported component 감사라면 "merged manifest에서 시작할 것", "jadx source evidence를 component별로 연결할 것", "`adb` 검증은 승인된 package에만 할 것", "component, risk, evidence, caveat 형식으로 보고할 것" 같은 규칙이 반복됩니다. 이 반복 절차를 파일로 패키징하고 필요할 때 자동으로 꺼내 쓰는 형태가 Skill입니다.
+모바일 보안 감사에서 MCP는 모델이 직접 도구를 흉내 내게 하는 장치가 아니라, 분석 도구를 표준 인터페이스로 묶는 실행 경계입니다. Static 도구는 APK, DEX, Manifest, source evidence를 만듭니다. Dynamic 도구는 실제 기기 실행, 로그, 후킹 관찰을 담당합니다. Native 도구는 `.so` 파일과 native 호출 경로를 분석합니다. 핵심은 도구 실행은 Host 권한 안에서 통제하고, AI는 그 결과를 해석해 finding 후보와 caveat를 정리한다는 점입니다.
 
-시각 자료: 반복 요청 → 주의사항/순서/툴/출력 형식 → Skill 패키지.
+시각 자료: Static / Dynamic / Native 3분할 MCP 도구 리스트 카드.
 ## 11. Skills
 
 화면 텍스트:
 
 > Skills
-> Reusable routine over tools
+> 도구 위의 재사용 절차
 
 배경지식 / 발표 멘트:
 
@@ -214,26 +166,6 @@ my-skill/
 Agent Skills 표준에서 skill은 최소한 `SKILL.md`를 포함하는 폴더입니다. `SKILL.md`에는 `name`, `description`, 에이전트가 따라야 할 지시문이 들어가고, 필요하면 `scripts/`, `references/`, `assets/` 같은 보조 파일을 둘 수 있습니다. Codex와 Claude 문서도 같은 구조를 사용합니다. [R10]
 
 시각 자료: Skill folder tree. 현재 본문에 텍스트 카드로 반영.
-## 11-2. Tool / MCP / Skill
-
-화면 텍스트:
-
-> Tool · MCP · Skill
-> Capability vs Procedure
-> Tool
-> Action primitive
->
-> MCP
-> Standard connector
->
-> Skill
-> Routine package
-
-배경지식 / 발표 멘트:
-
-가장 중요한 구분은 실행 능력, 연결 방식, 업무 절차의 차이입니다. `bash`, `read_file`, `jadx`, `adb`, `frida`는 실행 가능한 도구입니다. MCP는 이런 도구와 외부 데이터를 표준 방식으로 연결하는 프로토콜입니다. Skill은 그 도구들을 어떤 순서로 사용하고, 어떤 입력과 출력 형식을 지킬지 정한 reusable routine입니다. 짧게 말하면 Tool은 action primitive, MCP는 connector, Skill은 routine package입니다. [R1][R2][R10]
-
-시각 자료: Tool / MCP / Skill 3분할 비교.
 ## 11-3. Skill Progressive Disclosure
 
 화면 텍스트:
@@ -258,16 +190,16 @@ Skill의 핵심은 progressive disclosure입니다. 시작 시점에는 skill의
 ```markdown
 ---
 name: android-open-components
-description: Use when auditing exported Android components, deep links, and missing permissions.
+description: exported Android component, deep link, missing permission 감사에 사용.
 ---
 
-Goal: Find externally reachable Android components.
-Inputs: merged-manifest.json, jadx source map, references/android-component-policy.md
-Procedure:
-1. Parse manifest into structured component records.
-2. Join each component with source and permission context.
-3. Ask the model to judge risk, not to rediscover facts.
-Output: component table, evidence, risk, validation command.
+목표: 외부에서 접근 가능한 Android component 찾기.
+입력: merged-manifest.json, jadx source map, references/android-component-policy.md
+절차:
+1. manifest를 구조화된 component record로 파싱.
+2. 각 component에 source와 permission context 연결.
+3. 모델에는 사실 재탐색이 아니라 위험 판단만 맡김.
+출력: component table, evidence, risk, validation command.
 ```
 
 배경지식 / 발표 멘트:
@@ -275,269 +207,105 @@ Output: component table, evidence, risk, validation command.
 좋은 Skill은 설명문이 아니라 작업 지시서에 가깝습니다. 하나의 skill은 하나의 일에 집중시키고, `description`에는 언제 자동으로 쓰면 되는지 구체적으로 적습니다. 본문에는 입력, 절차, 검증 명령, 출력 형식을 명령형으로 둡니다. 긴 정책은 `references/`로 분리하고, grep이나 schema validation처럼 결정적인 반복 처리는 `scripts/`에 둡니다. [R10]
 
 시각 자료: Skill template 카드. 현재 본문에 텍스트 카드로 반영.
-## 11-5. MCP ≠ Agent
-
-화면 텍스트:
-
-> Basic concepts recap
-> MCP ≠ Agent
-> Tool: executable capability
-> MCP: standard connection
-> Skill: reusable routine
-> Agent: execution loop
-
-배경지식 / 발표 멘트:
-
-여기까지는 Agent를 만들기 위한 기본 재료입니다. Tool은 실행 능력이고, MCP는 그 실행 능력을 표준 방식으로 연결하는 프로토콜이며, Skill은 반복되는 tool-use 절차를 루틴화한 패키지입니다. 하지만 이것만으로 Agent가 되는 것은 아닙니다. Agent가 되려면 목표를 이해하고, 계획하고, 도구를 호출하고, 결과를 관찰하고, 필요하면 수정해서 다시 실행하는 loop가 필요합니다. 다음 파트부터는 이 Agent 관련 내용을 한 덩어리로 봅니다.
-
-시각 자료: Tool / MCP / Skill이 Agent Loop로 들어가는 전환 다이어그램.
 ## 12. Agent Workflow
 
 화면 텍스트:
 
 > Part 02
 > Agent Workflow
-> From reusable tools to execution loops
 
 배경지식 / 발표 멘트:
 
 여기서부터 Agent 관련 내용을 한 덩어리로 봅니다. 앞에서 본 Tool, MCP, Skill은 각각 실행 능력, 연결 표준, 반복 절차입니다. Agent는 이 재료들을 사용해 목표를 세우고, 도구를 호출하고, 결과를 관찰하고, 필요하면 다시 시도하는 실행 루프입니다. 코딩, 디버깅, 모바일 보안 감사 모두 이 루프가 작업 품질을 좌우합니다. [R5]
 
-시각 자료: User task → Skill 절차 → Plan/Act/Observe/Revise 루프, Act 단계에 MCP tools가 연결되고 evidence report로 닫히는 다이어그램. Mermaid로 반영 완료.
-## 12-1. Agent Definition
+시각 자료: 파트 도입부. 제목만 표시.
+## 12-1. Tool / MCP / Skill / Agent Stack
 
 화면 텍스트:
 
-> Agent definition
-> Agent = Model + Context + Tools + Verification
+> Agent basic stack
+> Tool → MCP → Skill → Agent
+> Tool: 실행 능력
+> MCP: 표준 연결
+> Skill: 반복 절차
+> Agent: 실행 루프
 
 배경지식 / 발표 멘트:
 
-여기서 Agent 정의가 나옵니다. 에이전트는 단순 챗봇이 아니라 모델, 작업 대상 컨텍스트, MCP로 연결된 외부 도구, Skill로 정의한 절차, 검증 증거가 결합된 실행 루프입니다. 모바일 보안 감사에서는 Android 앱 컨텍스트, 파일과 shell, ADB와 Frida 같은 도구, 그리고 결과를 확인하는 evidence가 필요합니다. OpenAI의 도구 문서도 모델이 도구 호출을 제안하고 애플리케이션이 실행 결과를 다시 모델에 전달하는 흐름을 설명합니다. [R2][R7]
+Agent를 이해하기 전에 네 층을 분리해서 보면 쉽습니다. Tool은 `jadx`, `adb`, `frida`, `read_file`처럼 실제 작업을 수행하는 기능입니다. MCP는 AI client와 tool server를 표준 방식으로 연결하는 프로토콜입니다. Skill은 특정 목표를 위해 어떤 도구를 어떤 순서로 쓰고 어떤 형식으로 보고할지 정한 반복 절차입니다. Agent는 이 재료들을 사용해 계획하고, 실행하고, 관찰하고, 수정하는 루프를 스스로 반복하는 실행 구조입니다.
 
-시각 자료: Model + Context + Tools + Skill + Verification이 Agent loop로 합쳐지는 다이어그램. Mermaid로 반영 완료.
+시각 자료: Tool / MCP / Skill / Agent 4단 stack 다이어그램.
 ## 12-2. From Program DAG to Agent Loop
 
 화면 텍스트:
 
-> Runtime shape
 > From Program DAG to Agent Loop
-> LLM chooses the next call.
-> Traditional program: Predefined DAG
-> Agent runtime: LLM Dispatcher
 
 배경지식 / 발표 멘트:
 
-전통적인 프로그램은 control flow가 코드나 DAG 안에 미리 정의되어 있습니다. 어떤 도구를 언제 호출할지, 실패하면 어디로 돌아갈지, 언제 멈출지가 정해져 있습니다. Agent runtime에서는 이 결정 지점이 LLM으로 이동합니다. LLM이 event, context, tool result를 읽고 다음 호출을 고릅니다. 유연성은 커지지만, 흐름 제어가 확률적 판단에 더 많이 의존하게 됩니다.
+전통적인 프로그램은 control flow가 코드나 DAG 안에 미리 정의되어 있습니다. 어떤 도구를 언제 호출할지, 실패하면 어디로 돌아갈지, 언제 멈출지가 정해져 있습니다. Agent runtime에서는 이 결정 지점이 LLM으로 이동합니다. LLM이 event, context, tool result를 읽고 다음 action을 고르고, 실행 결과가 다시 루프의 입력으로 돌아옵니다. 유연성은 커지지만, 흐름 제어가 확률적 판단에 더 많이 의존하게 됩니다.
 
-시각 자료: Traditional program과 Agent runtime 2열 비교 카드.
-## 12-3. DAG-Free Agent Loop
-
-화면 텍스트:
-
-> LLM-controlled loop
-> DAG-Free Agent Loop
-> Model controls runtime decisions.
-
-배경지식 / 발표 멘트:
-
-이 그림은 agent loop의 본질을 잘 보여줍니다. event와 이전 result, context가 들어오면 LLM이 다음 단계를 결정하고, API를 호출하거나 다른 작업을 kick off합니다. 결과는 다시 loop로 돌아옵니다. 작은 작업에서는 이 구조가 매우 강력하지만, 전체 workflow를 LLM 하나의 next-step 판단에 계속 맡기면 흐름이 길어질수록 불안정해질 수 있습니다.
-
-시각 자료: `agent-loop-animation.gif` 삽입 완료. 출처: humanlayer/12-factor-agents.
-## 12-4. Agent Loop Drift Risk
+시각 자료: `agent-loop-animation.gif` 루프 애니메이션. 주변 설명 텍스트 없이 그림을 화면 안에 맞춰 표시.
+## 12-3. Agent Loop Drift Risk
 
 화면 텍스트:
 
 > Scaling risk
 > Agent Loop Drift Risk
-> Tool sprawl.
-> Context overload.
-> Goal drift.
+> 도구 확산.
+> 컨텍스트 과부하.
+> 목표 이탈.
 
 배경지식 / 발표 멘트:
 
 문제는 도구 수가 늘고, multi-turn이 길어지고, context가 커질 때 나타납니다. 비슷한 도구가 많으면 다음 호출 선택이 흔들리고, 루프가 길어질수록 작은 해석 오류가 누적됩니다. context가 커지면 중요한 제약과 오래된 정보가 섞이고, LLM은 원래 목표보다 눈앞의 local step을 최적화할 수 있습니다. 그래서 agent loop 자체를 부정하는 것이 아니라, loop의 범위를 작게 관리해야 합니다.
 
 시각 자료: Tool Sprawl / Multi-Turn Length / Context Overload / Goal Drift 4개 risk 카드.
-## 12-5. Micro-Agent DAG
+## 12-4. Micro-Agent DAG
 
 화면 텍스트:
 
-> Coordination pattern
 > Micro-Agent DAG
-> Local judgment.
-> Explicit orchestration.
 
 배경지식 / 발표 멘트:
 
-Micro-agent 방식은 큰 agent loop 하나에 모든 판단을 맡기지 않습니다. 전체 흐름은 사람이 설계한 DAG나 harness가 잡고, 각 노드 안에서만 작은 LLM loop를 허용합니다. 예를 들어 summarize, classify, validate 같은 bounded task를 각각 micro-agent로 만들고, 각 micro-agent는 제한된 context와 도구, typed output을 갖습니다. 이렇게 하면 LLM의 판단은 살리면서 전체 orchestration은 명시적으로 유지할 수 있습니다.
+Micro-agent 방식은 큰 agent loop 하나에 모든 판단을 맡기지 않습니다. 전체 흐름은 사람이 설계한 DAG나 harness가 잡고, 각 노드 안에서만 작은 LLM loop를 허용합니다. 각 micro-agent는 작은 목표, 제한된 도구, 집중된 컨텍스트, 형식화된 출력, 명확한 완료 규칙을 가져야 합니다. 이렇게 하면 LLM의 판단은 살리면서 전체 조율은 명시적으로 유지할 수 있습니다.
 
-시각 자료: `micro-agent-dag.png` 삽입 완료. 출처: humanlayer/12-factor-agents.
-## 12-6. Small Loop Explicit Contract
+시각 자료: `micro-agent-dag.png` 삽입 완료. 주변 설명 텍스트 없이 그림을 크게 표시.
+
+## 13-1. Tool Loop
 
 화면 텍스트:
 
-> Micro-agent boundary
-> Small Loop Explicit Contract
-> One bounded judgment per agent.
-> Small Goal / Small Tool Set
-> Small Context / Typed Output / Stop Rule
+> Harness loop
+> Tool Loop
+> 감사 작업 → API Harness → LLM 다음 도구 계획
+> 허용된 도구: rg · read_file · lookup
+> 증거 원장 → 스키마 출력
+> 로컬 검증
 
 배경지식 / 발표 멘트:
 
-Micro-agent를 쓰려면 각 agent의 계약이 작고 분명해야 합니다. 하나의 agent는 하나의 판단만 담당하고, 필요한 도구만 받으며, 전체 대화가 아니라 집중된 facts만 봅니다. 출력은 다음 DAG 노드가 읽을 수 있는 structured result여야 하고, 완료, 재시도, escalation, failure 기준이 있어야 합니다. 이 구조가 길고 자유로운 agent loop가 엉뚱한 방향으로 가는 문제를 줄여줍니다.
+API Harness는 단일 호출이 아니라 반복 구조로 동작합니다. 사용자 task와 context가 들어오면 모델은 `rg`, `read_file`, Android reference lookup 같은 allowlist된 도구 호출을 제안합니다. Harness는 실제 도구를 실행하고 결과를 evidence ledger에 저장한 뒤 다음 모델 호출에 다시 넣습니다. 충분한 근거가 쌓이면 finalization 호출로 넘어가고, 최종 출력은 provider structured output과 local schema/evidence validation을 모두 통과해야 합니다.
 
-시각 자료: 5개 contract 카드.
-
-## 12-7. Mobile Audit Harness Extension
+시각 자료: Tool loop와 evidence ledger 다이어그램.
+## 13-2. Deterministic Facts and Scope Gate
 
 화면 텍스트:
 
-> Security extension
-> Mobile Audit Harness
-> Static / Dynamic / Native / Reference
+> Harness boundary
+> Deterministic Facts
+> Scope Gate
+> 먼저 사실을 고정하고, 애매한 요청은 실행 전에 좁힙니다.
+> Deterministic facts: merged manifest → JSON
+> Scope gate: Find vulnerabilities → audit category
 
 배경지식 / 발표 멘트:
 
-모바일 보안 감사에서는 일반 코딩 도구에 Android와 분석 도구가 더 붙습니다. 그림처럼 Static 영역에는 jadx, apktool, aapt, Semgrep이 있고, Dynamic 영역에는 adb, Frida, objection, logcat이 있습니다. Native 분석은 Ghidra와 IDA Pro가 맡고, Reference 영역은 Android permissions, protected broadcasts, internal policy 같은 판단 기준을 제공합니다. 중요한 점은 도구를 많이 붙이는 것이 아니라, 도구를 역할에 맞게 제한하고 Harness가 실행 관리, 결과 분석, 정책 기반 판단을 일관되게 묶는 것입니다.
+사용자의 요청을 그대로 모델에 던지면 결과가 흔들립니다. Harness는 먼저 코드로 확정할 수 있는 사실을 구조화된 artifact로 만들고, AI에게는 위험 판단과 설명을 맡깁니다. 동시에 요청이 불명확하면 open components, WebView, storage, crypto처럼 가능한 감사 항목을 몇 개로 좁힌 뒤 루프를 시작해야 합니다. 이렇게 해야 누락 위험, 토큰 비용, 목표 이탈을 함께 줄일 수 있습니다.
 
-시각 자료: `mobile-audit-harness.png` 삽입 완료.
-## 12-8. Free Search vs Deterministic + AI
-
-화면 텍스트:
-
-> Agent drift example
-> Free Search vs Deterministic + AI
-
-배경지식 / 발표 멘트:
-
-Agent에게 "정적 분석해서 문제 탐색해줘"라고만 요청하면 그림 왼쪽처럼 매번 다른 경로로 갈 수 있습니다. AI가 임의로 keyword를 고르고, `rg`, `jadx`, `AndroidManifest.xml` 탐색 사이를 오가며, 초기에 잘못된 단서가 선택되면 불필요한 파일 탐색으로 토큰을 많이 씁니다. 반대로 오른쪽 구조는 먼저 deterministic block을 둡니다. `manifest_extract`, `aapt cross-check`, `jadx evidence index`가 component-facts.json과 source-evidence.json을 만들고, AI는 그 구조화된 증거를 바탕으로 위험도와 근거를 판단합니다. 이 방식이 결과 일관성과 재현성을 높입니다.
-
-시각 자료: `deterministic-vs-free-search.png` 삽입 완료.
-## 12-9. Evidence-Based Completion
-
-화면 텍스트:
-
-> Done report
-> Evidence-Based Completion
-
-```text
-Finding: LoginDeepLinkActivity is exported by intent-filter.
-
-Evidence:
-- merged-manifest.json: exported=true
-- AndroidManifest.xml: intent-filter VIEW/BROWSABLE
-- source: reads token from deep link parameter
-
-Risk:
-- external app can trigger login flow
-
-Residual risk:
-- dynamic validation on device is still required
-```
-
-배경지식 / 발표 멘트:
-
-에이전트의 완료 보고는 "찾았습니다"가 아니라 검증 증거여야 합니다. component 이름, exported 이유, permission, source evidence, 실행한 명령, 남은 리스크가 있어야 사람이 빠르게 리뷰할 수 있습니다. 이 구조가 있어야 에이전트 작업을 팀 보안 감사 프로세스 안으로 넣을 수 있습니다.
-
-시각 자료: 터미널 실행 결과 카드. 현재 본문에 텍스트 카드로 반영.
-## 13. Instruction and Harness Design
-
-화면 텍스트:
-
-> Instruction and
-> Harness Design
->
-> Higher accuracy. Smaller token budget.
-
-배경지식 / 발표 멘트:
-
-AI에게 효과적으로 지시한다는 것은 말을 길게 쓰는 것이 아닙니다. 모델이 해야 할 일을 좁히고, 필요한 컨텍스트만 제공하고, 정해진 도구와 루프 안에서 실행하게 만드는 것입니다. 좋은 Harness일수록 불필요한 토큰을 줄이고, 잘못된 파일이나 도구를 보는 확률을 낮추고, 여러 번 돌려도 비슷한 결과를 만듭니다.
-
-시각 자료: 없음. 섹션 구분 슬라이드.
-## 13-1. Instruction vs Runtime Hook
-
-화면 텍스트:
-
-> Guardrail boundary
-> Runtime Guardrails
-> Prompt guard vs runtime block.
-> Prompt-Level Denial
-> Runtime Policy Block
-
-배경지식 / 발표 멘트:
-
-도구를 붙이면 새로운 문제가 생깁니다. "위험한 명령은 실행하지 마", "승인되지 않은 앱은 건드리지 마" 같은 프롬프트 지시는 모델이 따르도록 유도하는 확률적 가드입니다. 보통은 잘 따르지만, 컨텍스트가 길어지거나 목표가 충돌하거나 tool call이 복잡해지면 실패할 수 있습니다. 반대로 Hook이나 runtime policy는 실행 직전에 tool call을 가로채고 allowlist, 권한, 경로, package, device scope, 로그, 종료 조건을 검사합니다. 금지된 명령은 모델이 어떻게 요청했든 실행되지 않습니다. 그래서 안전과 재현성은 "하지 마"라는 말보다 Harness의 결정적 차단 지점에서 나옵니다.
-
-시각 자료: Prompt guard와 Runtime hook 비교 카드.
-## 13-2. Harnessed Audit Workflow
-
-화면 텍스트:
-
-> Harness job
-> Harnessed Audit Workflow
-> User request
-> → Audit spec
-> → Extract / Judge / Verify loop
-> → Evidence report
-
-배경지식 / 발표 멘트:
-
-사용자의 요청을 그대로 모델에 던지면 결과가 흔들립니다. Harness는 먼저 요청을 구조화된 audit spec으로 바꿉니다. 그 다음 사용할 도구와 device 권한을 제한하고, facts 추출, AI 판단, 검증 루프 안에서 작업하게 합니다. 마지막은 자연어 요약이 아니라 증거 보고로 끝나야 합니다.
-
-시각 자료: Mermaid로 반영 완료. Harness 작업 흐름.
-## 13-3. Deterministic Harness Output
-
-화면 텍스트:
-
-> Deterministic output
-> Deterministic Harness Output
-> Code agent only: find AndroidManifest + rg
-> Miss risk. Latency. Cost.
-> Structured extractor: merged manifest → JSON
-> Facts first. Judgment second.
-
-배경지식 / 발표 멘트:
-
-예를 들어 open components는 결정적인 output을 만들 수 있는 사안입니다. Code agent에게만 맡기면 `find AndroidManifest`와 `rg`로 대체로 맞는 결과를 만들 수 있지만, merged manifest, alias, library manifest를 놓칠 수 있고 시간과 AI 호출 비용이 듭니다. 이런 경우에는 코드로 manifest를 parse해 structured JSON을 만들고, AI에게는 위험 판단과 설명만 맡기는 것이 옳습니다.
-
-시각 자료: 정보 funnel 다이어그램.
-## 13-4. Harness Stop Conditions
-
-화면 텍스트:
-
-> Stop conditions
-> Harness Stop Conditions
-> pass → Done: report evidence
-> known failure → Revise within scope
-> unclear → Ask user to choose
-> budget exceeded → Stop with findings
-
-배경지식 / 발표 멘트:
-
-에이전트가 끝없이 반복하는 것을 막으려면 종료 조건이 필요합니다. 검증 명령과 evidence check가 통과하면 증거를 보고하고 끝냅니다. 원인이 분명한 실패면 정해진 범위 안에서 다시 확인합니다. 불명확하면 사용자에게 선택지를 제시합니다. 반복 횟수나 시간, 토큰 예산을 넘으면 현재까지의 발견을 보고하고 멈춰야 합니다.
-
-시각 자료: Mermaid로 반영 완료. 종료 조건 분기.
-## 13-5. Ambiguity Gate
-
-화면 텍스트:
-
-> Ambiguous input
-> Ambiguity Gate
-> Bad
-> Find mobile app vulnerabilities
-> No target. No scope. No validation.
->
-> Better
-> Scoped Audit Output
-> Pick audit category early.
-
-배경지식 / 발표 멘트:
-
-사용자 입력이 불명확하면 바로 실행하지 않는 것이 좋습니다. Harness는 내부적으로 요청을 분해하고, open components, WebView, storage, crypto처럼 가능한 감사 항목을 몇 개로 좁힌 뒤 사용자에게 선택지를 줍니다. 모델의 긴 추론 과정을 그대로 보여줄 필요는 없지만, 결과적으로 "이 APK의 어떤 범위를 볼까요"처럼 사용자가 스스로 구체화할 수 있게 해야 합니다.
-
-시각 자료: Bad request vs Better request 비교.
-## 13-6. Tool-Backed Validation
+시각 자료: Deterministic facts / Scope gate 2열 비교 카드.
+## 13-3. Tool-Backed Validation
 
 화면 텍스트:
 
@@ -545,14 +313,14 @@ AI에게 효과적으로 지시한다는 것은 말을 길게 쓰는 것이 아�
 > Tool-Backed Validation
 
 ```text
-Request: WebView vulnerability review
+요청: WebView 취약점 검토
 
-Harness plan:
-1. Candidates: JS bridge / file access / mixed content / allowlist
-2. Static: Manifest + WebView settings + bridge hits
-3. Dynamic: ADB launch + Frida trace
-4. Tools: jadx / adb / Frida
-5. Exit: evidence or caveat
+Harness 계획:
+1. 후보: JS bridge / file access / mixed content / allowlist
+2. 정적: Manifest + WebView settings + bridge hits
+3. 동적: ADB launch + Frida trace
+4. 도구: jadx / adb / Frida
+5. 종료: 증거 또는 주의점
 ```
 
 배경지식 / 발표 멘트:
@@ -565,14 +333,39 @@ Harness plan:
 화면 텍스트:
 
 > APK Analyzer
-> Reproducible APK artifacts.
+> 재현 가능한 APK 산출물.
 
 배경지식 / 발표 멘트:
 
 지금까지 바람직한 Harness가 어떤 구조여야 하는지 봤습니다. 이제 그 구조를 우리가 만든 APK Analyzer에 어떻게 적용했는지 소개합니다. 핵심은 "LLM에게 APK를 다 읽고 판단하라"가 아니라, deterministic 분석 파이프라인이 먼저 사실을 만들고, LLM은 제한된 tool loop 안에서 탐색, 우선순위화, 요약, 시나리오 리뷰를 맡는 구조입니다.
 
 시각 자료: APK Analyzer 파이프라인 로고/개념 이미지
-## 14-1. APK Analyzer Pipeline
+## 14-1. Free Search vs Deterministic + AI
+
+화면 텍스트:
+
+> Agent drift example
+> Free Search vs Deterministic + AI
+
+배경지식 / 발표 멘트:
+
+Agent에게 "정적 분석해서 문제 탐색해줘"라고만 요청하면 그림 왼쪽처럼 매번 다른 경로로 갈 수 있습니다. AI가 임의로 keyword를 고르고, `rg`, `jadx`, `AndroidManifest.xml` 탐색 사이를 오가며, 초기에 잘못된 단서가 선택되면 불필요한 파일 탐색으로 토큰을 많이 씁니다. 반대로 오른쪽 구조는 먼저 deterministic block을 둡니다. `manifest_extract`, `aapt cross-check`, `jadx evidence index`가 component-facts.json과 source-evidence.json을 만들고, AI는 그 구조화된 증거를 바탕으로 위험도와 근거를 판단합니다. 이 방식이 결과 일관성과 재현성을 높입니다.
+
+시각 자료: `deterministic-vs-free-search.png` 삽입 완료.
+## 14-2. Mobile Audit Harness Extension
+
+화면 텍스트:
+
+> Security extension
+> Mobile Audit Harness
+> Static / Dynamic / Native / Reference
+
+배경지식 / 발표 멘트:
+
+모바일 보안 감사에서는 일반 코딩 도구에 Android와 분석 도구가 더 붙습니다. 그림처럼 Static 영역에는 jadx, apktool, aapt, Semgrep이 있고, Dynamic 영역에는 adb, Frida, objection, logcat이 있습니다. Native 분석은 Ghidra와 IDA Pro가 맡고, Reference 영역은 Android permissions, protected broadcasts, internal policy 같은 판단 기준을 제공합니다. 중요한 점은 도구를 많이 붙이는 것이 아니라, 도구를 역할에 맞게 제한하고 Harness가 실행 관리, 결과 분석, 정책 기반 판단을 일관되게 묶는 것입니다.
+
+시각 자료: `mobile-audit-harness.png` 삽입 완료.
+## 14-3. APK Analyzer Pipeline
 
 화면 텍스트:
 
@@ -583,85 +376,17 @@ Harness plan:
 APK Analyzer는 APK 업로드나 CLI 입력을 받아 workspace를 만들고 fingerprint를 고정합니다. 그 다음 decompile, manifest analysis, network security analysis, certificate analysis, Semgrep source scan, SBOM inventory 같은 결정적 분석을 먼저 수행합니다. 결과는 XML report, JSON model, source evidence, 저장소 artifact로 남고, LLM은 이 산출물 위에서 요약, 위험도 평가, 권고 사항, 근거 인용을 수행합니다. 핵심 메시지는 LLM이 APK를 처음부터 다 읽는 것이 아니라, 분석 파이프라인이 만든 artifact 위에서 판단한다는 점입니다.
 
 시각 자료: `apk-analyzer-process.png` 삽입 완료.
-## 14-2. Deterministic Facts
-
-화면 텍스트:
-
-> Deterministic first
-> Deterministic Facts
-> LLM only: Direct File Reading
-> Path / policy memory errors.
-> APK Analyzer: Artifact-Backed Facts
-> JSON/XML facts.
-
-배경지식 / 발표 멘트:
-
-재현성을 높이기 위해 deterministic하게 처리할 수 있는 부분은 backend toolchain이 맡습니다. manifest component inventory, exported flag, permission attribute, provider authority, deep link intent filter, network security config, signing certificate, Semgrep rule hit, source line evidence는 먼저 artifact로 남깁니다. LLM의 최종 응답이 바로 finding이 되는 것이 아니라, artifact와 validation을 통과한 evidence-backed result만 보고서에 들어가야 합니다.
-
-시각 자료: LLM-only와 APK Analyzer 비교 카드
-## 14-3. Tool Loop
-
-화면 텍스트:
-
-> Harness loop
-> Tool Loop
-> Audit task → API Harness → LLM plan next tool
-> Safe tools: rg · read_file · lookup
-> Evidence ledger → schema output
-> Local validation
-
-배경지식 / 발표 멘트:
-
-API Harness는 단일 호출이 아니라 반복 구조로 동작합니다. 사용자 task와 context가 들어오면 모델은 `rg`, `read_file`, Android reference lookup 같은 allowlist된 도구 호출을 제안합니다. Harness는 실제 도구를 실행하고 결과를 evidence ledger에 저장한 뒤 다음 모델 호출에 다시 넣습니다. 충분한 근거가 쌓이면 finalization 호출로 넘어가고, 최종 출력은 provider structured output과 local schema/evidence validation을 모두 통과해야 합니다.
-
-시각 자료: Tool loop와 evidence ledger 다이어그램
-## 14-4. Finding-Type Validation Harnesses
-
-화면 텍스트:
-
-> Dynamic validation
-> Finding-Type Validation Harnesses
-> ADB: launch · deeplink · logcat
-> Frida: hook · trace · observe
-> WebView: console · marker URL
-> Ghidra: entrypoint · JNI flow
-> Predefined validation functions.
-
-배경지식 / 발표 멘트:
-
-정적 분석만으로 true positive와 false positive를 완전히 가르기 어렵습니다. 그래서 finding type별 dynamic validation harness를 준비하고 있습니다. ADB는 Activity, deep link, broadcast 실행과 logcat evidence에 필요합니다. Frida는 runtime hook, method trace, WebView 관찰성을 높이는 데 씁니다. WebView DevTools는 console probe, marker URL 도달성 확인에 유용합니다. Ghidra는 native entrypoint와 JNI 흐름 검증을 보조합니다. 중요한 방향은 모델이 임의 명령을 만드는 것이 아니라, 승인된 대상에서 사전 정의된 validation function을 호출하게 하는 것입니다.
-
-시각 자료: ADB / Frida / WebView / Ghidra 4개 카드
-## 14-5. Report-Level Review
-
-화면 텍스트:
-
-> Report-level review
-> Report-Level Review
-
-배경지식 / 발표 멘트:
-
-APK Analyzer는 개별 finding follow-up만 하는 것이 아닙니다. Report summary는 XML report와 기존 follow-up 결과, workspace evidence preview를 함께 보고 우선순위와 caveat를 정리합니다. Autonomous review는 attack surface를 deterministic하게 추출하고, candidate pool을 만들고, 반복 review를 거친 뒤 final synthesis를 candidate judge로 사용합니다. 마지막 final merge는 backend가 수행합니다. Scenario review는 여러 finding을 연결해서 실제 공격 시나리오가 성립하는지 봅니다. 예를 들어 exported deep link가 WebView로 이어지고, 그 WebView가 bridge를 갖고 있으면 단일 finding보다 위험한 chain이 될 수 있습니다.
-
-시각 자료: `report-delivery.png` 삽입 완료.
 ## 15. Conclusion
 
 화면 텍스트:
 
-> Harnessed Work AI Judgment Human Decision
-> Harnessed Work
-> AI Judgment
-> Human Decision
->
-> Automation
-> Triage
-> Decision
+> THE END
 
 배경지식 / 발표 멘트:
 
-AI 에이전트 활용의 핵심은 사람을 무조건 빼는 것이 아니라, 사람의 일을 올바른 위치로 옮기는 것입니다. 귀찮고 결정적인 반복 작업은 Tool, MCP, Skill, Harness로 루틴화하고, AI는 제한된 context와 evidence 위에서 분석과 triage를 맡습니다. 사람은 재현 가능한 evidence를 기반으로 최종 판단과 후속 조치를 결정합니다.
+마지막 장은 발표 종료를 알리는 단순한 closing slide입니다.
 
-시각 자료: Harness + AI judgment + Human follow-up 최종 요약 이미지
+시각 자료: 없음. 단순 closing 문구.
 ## Backup. 표준화의 효과
 
 화면 텍스트:
@@ -675,38 +400,20 @@ AI 에이전트 활용의 핵심은 사람을 무조건 빼는 것이 아니라,
 AI 생태계에서 중요한 변화는 "모델만 바꾸는 것"이 아니라 "도구를 연결하는 방식이 재사용 가능해지는 것"입니다. MCP가 USB-C 비유로 설명되는 이유도 이 표준 포트 역할 때문입니다. [R1]
 
 시각 자료: Client × Model × Tool 매트릭스
-## Backup. Mobile Security MCP
-
-화면 텍스트:
-
-> MCP directory
-> Mobile Security MCP
-> AI-callable servers for analysis tools
-> Static: jadx · apktool · aapt
-> Dynamic: adb · Frida · objection
-> Native: Ghidra · IDA Pro
-> Tools execute, AI interprets results.
-
-배경지식 / 발표 멘트:
-
-모바일 보안 감사에서 제공할 MCP 도구는 세 부류로 나눌 수 있습니다. Static 도구는 jadx, apktool, aapt처럼 APK와 DEX, Manifest를 해석합니다. Dynamic 도구는 adb, Frida, objection처럼 기기에서 실제 동작을 확인합니다. Native 도구는 Ghidra, IDA Pro처럼 `.so` 파일과 native 호출 경로를 분석합니다. 중요한 점은 AI가 도구 자체를 흉내 내는 것이 아니라, 도구가 만든 결과를 해석하게 하는 것입니다.
-
-시각 자료: Static / Dynamic / Native 3분할 카드
-
 ## Backup. APK 분석 예제
 
 화면 텍스트:
 
 > APK analysis example
 > APK Analysis Routing
-> APK attachment + "Find issues in this app"
+> APK 첨부 + "이 앱의 이슈 찾기"
 > AI Host / MCP Client
-> Static tools / Dynamic tools
-> Evidence bundle → AI triage
+> Static 도구 / Dynamic 도구
+> 증거 묶음 → AI triage
 
 배경지식 / 발표 멘트:
 
-Mobile Security MCP를 붙이면 사용자는 APK를 첨부하고 "이 앱의 이슈 찾아봐"처럼 요청할 수 있습니다. Host는 이 요청을 정적 분석 경로와 동적 분석 경로로 나눕니다. 정적 경로에서는 JADX/apktool decompile, manifest/source/config read, Semgrep/rule/parser 기반 정적 테스트, Ghidra native 분석을 호출합니다. 동적 경로에서는 adb install, adb shell/logcat, intent/deeplink/WebView 동적 테스트를 호출합니다. 각 도구는 evidence bundle을 만들고, AI는 그 결과를 triage해서 후보 finding과 caveat를 정리합니다.
+Mobile Security MCP를 붙이면 사용자는 APK를 첨부하고 "이 앱의 이슈 찾아봐"처럼 요청할 수 있습니다. Host는 이 요청을 정적 분석 경로와 동적 분석 경로로 나눕니다. 정적 경로에서는 JADX/apktool 디컴파일, manifest/source/config 읽기, Semgrep/rule/parser 기반 정적 테스트, Ghidra native 분석을 호출합니다. 동적 경로에서는 adb install, adb shell/logcat, intent/deeplink/WebView 동적 테스트를 호출합니다. 각 도구는 증거 묶음을 만들고, AI는 그 결과를 triage해서 후보 finding과 주의점을 정리합니다.
 
 시각 자료: APK 요청 → AI Host/MCP Client → Static MCP tools / Dynamic MCP tools → evidence bundle → AI triage 다이어그램. Mermaid로 반영 완료.
 
@@ -718,7 +425,7 @@ Mobile Security MCP를 붙이면 사용자는 APK를 첨부하고 "이 앱의 �
 > Reusable Audit Procedure
 > Reusable Audit
 > Procedure
-> Reusable workflow. No repeated paste.
+> 재사용 워크플로 · 반복 붙여넣기 없음
 
 배경지식 / 발표 멘트:
 
@@ -732,11 +439,11 @@ Skill은 모델을 새로 학습시키는 fine-tuning이 아닙니다. 매번 �
 > Coding harness
 > Mobile Security Audit Agents
 > Codex
-> repo · manifest exploration
+> 저장소 · 매니페스트 탐색
 > Claude Code
-> plan · script · report
+> 계획 · 스크립트 · 보고
 > Gemini CLI
-> ReAct + MCP analysis
+> ReAct · MCP 분석
 
 배경지식 / 발표 멘트:
 
@@ -749,10 +456,10 @@ Mobile Security Audit Agents는 단순 모델이 아닙니다. 모델을 Android
 
 > What matters
 > Production-Grade Audit Tools
-> Very important
+> 핵심
 > parser · jadx · aapt · adb · frida · logs
 >
-> Boosters
+> 보강
 > Ghidra · IDA · call graph · taint rules
 
 배경지식 / 발표 멘트:
@@ -766,10 +473,10 @@ Mobile Security Audit Agents는 단순 모델이 아닙니다. 모델을 Android
 
 > Agent workflow
 > Human Work Augmentation
-> Human work → Tool / Harness
-> collect · parse · run
-> AI judgment: analysis · PoC · diagnosis
-> Evidence report → Human decision
+> 사람 작업 → Tool / Harness
+> 수집 · 파싱 · 실행
+> AI 판단: 분석 · PoC · 진단
+> 증거 보고 → 사람 결정
 
 배경지식 / 발표 멘트:
 
@@ -783,34 +490,32 @@ Mobile Security Audit Agents는 단순 모델이 아닙니다. 모델을 Android
 > Required parts
 > Harness Components
 > Human Workflow Map
-> security audit task decomposition
+> 보안 감사 작업 분해
 > Tool / Harness
-> deterministic routine automation
+> 결정적 반복 작업 자동화
 > Android App Context
-> Manifest, Gradle, API policy inputs
+> Manifest · Gradle · API 정책 입력
 > AI Judgment Boundary
-> analysis · PoC · diagnosis
-> Stop Conditions
-> success · failure · ask · stop
+> 분석 · PoC · 진단
 > Human Follow-up
-> final analysis, action, ticket, patch
+> 최종 분석 · 조치 · 티켓 · 패치
 
 배경지식 / 발표 멘트:
 
-필수 요소는 여섯 가지입니다. 첫째, 사람의 보안 감사 업무를 분해하는 Human Workflow Map. 둘째, 반복 실행을 결정적으로 처리하는 Tool / Harness. 셋째, Manifest, Gradle, API 정책 같은 Android App Context. 넷째, AI가 어디까지 판단할지 정하는 AI Judgment Boundary. 다섯째, 성공, 실패, 질문, 예산 초과를 다루는 Stop Conditions. 여섯째, 사람이 최종 분석과 조치로 이어갈 Human Follow-up입니다.
+필수 요소는 다섯 가지입니다. 첫째, 사람의 보안 감사 업무를 분해하는 Human Workflow Map. 둘째, 반복 실행을 결정적으로 처리하는 Tool / Harness. 셋째, Manifest, Gradle, API 정책 같은 Android App Context. 넷째, AI가 어디까지 판단할지 정하는 AI Judgment Boundary. 다섯째, 사람이 최종 분석과 조치로 이어갈 Human Follow-up입니다.
 
-시각 자료: 6개 블록 체크리스트.
+시각 자료: 5개 블록 체크리스트.
 ## Backup. Scenario Review
 
 화면 텍스트:
 
 > Scenario review
-> current-app findings / report summary
-> cross-app vulnerability candidate lookup
-> scenario context
-> Scenario Review LLM
-> validation plan / caveat
-> scenario-review artifact
+> 현재 앱 finding / 보고서 요약
+> 앱 간 취약점 후보 조회
+> 시나리오 컨텍스트
+> Scenario Review LLM 호출
+> 검증 계획 / 주의점
+> scenario-review 산출물
 
 배경지식 / 발표 멘트:
 
@@ -823,10 +528,10 @@ Scenario Review는 현재 앱 안의 finding만 보지 않고, 자체 DB에서 �
 
 > Safety
 > Skill Supply Chain
-> Review: review files and scripts
-> Least: minimal tools and MCP permissions
-> Manual: manual device / hook / report actions
-> Log: retain execution evidence
+> 검토: 파일과 스크립트 검토
+> 최소: 최소 도구와 MCP 권한
+> 수동: 기기 · 후킹 · 보고 작업은 수동
+> 로그: 실행 증거 보관
 
 배경지식 / 발표 멘트:
 

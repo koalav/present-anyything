@@ -373,7 +373,7 @@ repo/
 | 위치 | 역할 | 예시 |
 |---|---|---|
 | `docs/checklists/` | 기준서 | Windows 앱 감사 항목 |
-| `docs/plans/active/` | 현재 실행 계획 | phase, owner, gate, stop condition |
+| `docs/plans/active/` | 현재 실행 계획 | phase, owner, gate |
 | `docs/evidence/<run-id>/raw/` | 원본 증거 | tool output, logs, screenshots |
 | `docs/evidence/<run-id>/normalized/` | 요약/정규화 | csv, json, summary |
 | `docs/findings/` | 기술 finding | `F-001-dll-search-path.md` |
