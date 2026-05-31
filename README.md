@@ -112,7 +112,8 @@ python3 -m http.server 8080
 키보드 방향키, PageUp/PageDown, Space, Home/End로 이동할 수 있고 `F`로 전체화면을 전환합니다.
 
 각 발표 페이지 우측 상단의 `PPTX` 버튼을 누르면 현재 덱을 16:9 PowerPoint 파일로 내보냅니다.
-브라우저에서 각 슬라이드를 1920x1080 이미지로 캡처해 PPTX에 삽입하는 방식이므로 PowerPoint에서 텍스트와 도형을 개별 편집할 수는 없습니다.
+덱에 `window.createEditablePptxDeck` 정의가 있으면 PowerPoint에서 편집 가능한 텍스트, 도형, 표 중심으로 생성하고, 정의가 없는 덱은 브라우저에서 각 슬라이드를 1920x1080 이미지로 캡처하는 fallback 방식을 사용합니다.
+신규 보고서형 덱은 루트의 `agent.md` 규칙에 맞춰 native PPTX export 정의를 우선 작성합니다.
 로컬에서는 `python3 -m http.server` 같은 HTTP 서버로 열어야 이미지와 CDN 라이브러리가 안정적으로 로드됩니다.
 
 ## 작성 시작

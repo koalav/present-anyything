@@ -78,9 +78,13 @@
     return promise;
   }
 
+  async function loadPptxDependency() {
+    await loadScript(PPTXGEN_SRC, () => Boolean(window.pptxgen || window.pptxgenjs || window.PptxGenJS));
+  }
+
   async function loadDependencies() {
     await loadScript(HTML2CANVAS_SRC, () => typeof window.html2canvas === 'function');
-    await loadScript(PPTXGEN_SRC, () => Boolean(window.pptxgen || window.pptxgenjs || window.PptxGenJS));
+    await loadPptxDependency();
   }
 
   function getPptxConstructor() {
@@ -239,6 +243,32 @@
       if (!slides.length) throw new Error('No slides found.');
 
       setStatus('PPTX 라이브러리 로딩 중');
+      if (typeof window.createEditablePptxDeck === 'function') {
+        await loadPptxDependency();
+        const PptxGen = getPptxConstructor();
+        const pptx = new PptxGen();
+        pptx.defineLayout({ name: 'EXPORT_16_9', width: SLIDE_WIDTH_IN, height: SLIDE_HEIGHT_IN });
+        pptx.layout = 'EXPORT_16_9';
+        pptx.author = 'present-anyything';
+        pptx.subject = deckTitle();
+        pptx.title = deckTitle();
+
+        setStatus('편집 가능한 PPTX 구성 중');
+        const result = await window.createEditablePptxDeck({
+          pptx,
+          width: SLIDE_WIDTH_IN,
+          height: SLIDE_HEIGHT_IN,
+          deckTitle: deckTitle(),
+          fileName: fileName(),
+          setStatus,
+        });
+
+        setStatus('PPTX 파일 저장 중');
+        await pptx.writeFile({ fileName: result?.fileName || fileName() });
+        setStatus('PPTX export 완료', { timeout: 2600 });
+        return;
+      }
+
       await loadDependencies();
 
       setStatus('16:9 캡처 프레임 준비 중');
