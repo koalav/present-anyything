@@ -93,7 +93,27 @@ python3 -m http.server 8080
 </section>
 ```
 
+제목 아래에 4~5개 핵심 항목과 선택형 부연 설명을 넣을 때는 다음 형태를 사용합니다.
+
+```html
+<section class="slide surface key-list-slide accent-teal" data-part="핵심 정리">
+  <h2>제목은 상단에 둡니다</h2>
+  <ul class="key-list">
+    <li>
+      <span class="key-list-title">첫 번째 큰 항목</span>
+      <small>필요할 때만 짧은 부연 설명을 붙입니다.</small>
+    </li>
+    <li><span class="key-list-title">두 번째 큰 항목</span></li>
+    <li><span class="key-list-title">세 번째 큰 항목</span></li>
+  </ul>
+</section>
+```
+
 키보드 방향키, PageUp/PageDown, Space, Home/End로 이동할 수 있고 `F`로 전체화면을 전환합니다.
+
+각 발표 페이지 우측 상단의 `PPTX` 버튼을 누르면 현재 덱을 16:9 PowerPoint 파일로 내보냅니다.
+브라우저에서 각 슬라이드를 1920x1080 이미지로 캡처해 PPTX에 삽입하는 방식이므로 PowerPoint에서 텍스트와 도형을 개별 편집할 수는 없습니다.
+로컬에서는 `python3 -m http.server` 같은 HTTP 서버로 열어야 이미지와 CDN 라이브러리가 안정적으로 로드됩니다.
 
 ## 작성 시작
 

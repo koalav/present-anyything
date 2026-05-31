@@ -124,6 +124,16 @@ if (Number.isFinite(initialSlide) && initialSlide >= 0) {
   updateUi();
 }
 
+function loadPptxExportScript() {
+  const currentScript = document.currentScript;
+  const script = document.createElement('script');
+  script.src = currentScript?.src ? new URL('pptx-export.js', currentScript.src).href : '../assets/scripts/pptx-export.js';
+  script.defer = true;
+  document.body.appendChild(script);
+}
+
+loadPptxExportScript();
+
 window.goTo = goTo;
 window.next = next;
 window.prev = prev;

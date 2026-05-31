@@ -579,6 +579,59 @@ strong {
   font-size: clamp(1.75rem, 4vw, 3.1rem);
 }
 
+.key-list-slide {
+  justify-content: flex-start;
+  overflow-y: auto;
+}
+
+.key-list-slide h3 {
+  margin-bottom: 1.8vh;
+}
+
+.key-list-slide h2 {
+  font-size: clamp(2.35rem, 4.6vw, 3.7rem);
+}
+
+.key-list {
+  width: min(980px, 100%);
+  margin: clamp(28px, 4vh, 48px) auto 0;
+  padding: 0;
+  list-style: none;
+}
+
+.deck-body .key-list {
+  margin-top: 0;
+}
+
+.key-list li {
+  margin: 0;
+  padding: clamp(12px, 1.5vh, 20px) 0;
+  border-bottom: 1px solid var(--line);
+  text-align: left;
+}
+
+.key-list li:first-child {
+  border-top: 1px solid var(--line);
+}
+
+.key-list-title {
+  display: block;
+  color: var(--fg);
+  font-size: clamp(1.72rem, 3.1vw, 2.45rem);
+  font-weight: 900;
+  line-height: 1.18;
+  letter-spacing: 0;
+}
+
+.key-list small {
+  display: block;
+  margin-top: 0.55vh;
+  color: var(--muted);
+  font-size: clamp(0.96rem, 1.35vw, 1.12rem);
+  font-weight: 300;
+  line-height: 1.52;
+}
+
 .deck-body {
   width: min(1120px, 100%);
   margin-top: 3vh;
@@ -829,7 +882,8 @@ strong {
 .page-num,
 .progress,
 .nav,
-.deck-links {
+.deck-links,
+.pptx-export-status {
   position: fixed;
   z-index: 10;
 }
@@ -860,22 +914,66 @@ strong {
   gap: 10px;
 }
 
-.deck-links a {
+.deck-links a,
+.deck-links button {
   padding: 7px 10px;
   border: 1px solid var(--line);
   border-radius: 4px;
   background: var(--panel);
   color: rgba(255, 255, 255, 0.7);
+  cursor: pointer;
+  font-family: inherit;
   font-size: 0.78rem;
   font-weight: 700;
   text-decoration: none;
 }
 
 .deck-links a:hover,
-.deck-links a:focus-visible {
+.deck-links a:focus-visible,
+.deck-links button:hover,
+.deck-links button:focus-visible {
   background: var(--control-hover-bg);
   color: var(--fg);
   outline: none;
+}
+
+.deck-links button:disabled {
+  cursor: wait;
+  opacity: 0.52;
+}
+
+.pptx-export-status {
+  right: 44px;
+  bottom: 70px;
+  max-width: min(360px, calc(100vw - 88px));
+  padding: 10px 12px;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  background: rgba(15, 23, 42, 0.92);
+  color: rgba(255, 255, 255, 0.82);
+  font-size: 0.78rem;
+  font-weight: 700;
+  line-height: 1.45;
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(6px);
+  transition: opacity 120ms ease, transform 120ms ease;
+}
+
+.pptx-export-status.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.pptx-export-frame {
+  position: fixed;
+  left: -10000px;
+  top: 0;
+  width: 1920px;
+  height: 1080px;
+  border: 0;
+  opacity: 0;
+  pointer-events: none;
 }
 
 .progress {
@@ -976,6 +1074,22 @@ strong {
     font-size: 1.1rem;
   }
 
+  .key-list {
+    margin-top: 3vh;
+  }
+
+  .key-list li {
+    padding: 1.45vh 0;
+  }
+
+  .key-list-title {
+    font-size: 1.48rem;
+  }
+
+  .key-list small {
+    font-size: 0.94rem;
+  }
+
   .quote {
     font-size: 1.65rem;
   }
@@ -1060,6 +1174,17 @@ strong {
     padding: 6px 8px;
     font-size: 0.72rem;
   }
+
+  .deck-links button {
+    padding: 6px 8px;
+    font-size: 0.72rem;
+  }
+
+  .pptx-export-status {
+    right: 20px;
+    bottom: 72px;
+    max-width: calc(100vw - 40px);
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -1095,7 +1220,9 @@ strong {
   .page-num,
   .progress,
   .nav,
-  .deck-links {
+  .deck-links,
+  .pptx-export-status,
+  .pptx-export-frame {
     display: none;
   }
 

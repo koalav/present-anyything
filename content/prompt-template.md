@@ -10,6 +10,7 @@
 - 제목은 크고 결론형
 - 본문은 0~3개 항목
 - 섹션 구분 슬라이드는 `section` 클래스를 사용
+- 제목 아래 4~5개 핵심 항목과 짧은 부연이 필요하면 `key-list-slide`와 `key-list`를 사용
 - 강조색은 `accent-blue`, `accent-rose`, `accent-teal`, `accent-amber` 중 선택
 - 청중이 화면만 봐도 흐름을 이해할 수 있게 작성
 
@@ -27,6 +28,21 @@
   <ul class="list">
     <li>짧은 근거</li>
     <li>짧은 근거</li>
+  </ul>
+</section>
+
+<section class="slide surface key-list-slide accent-teal" data-part="핵심 정리">
+  <h2>제목은 상단에 둡니다</h2>
+  <ul class="key-list">
+    <li>
+      <span class="key-list-title">첫 번째 큰 항목</span>
+      <small>필요할 때만 짧은 부연 설명을 한 줄로 붙입니다.</small>
+    </li>
+    <li>
+      <span class="key-list-title">두 번째 큰 항목</span>
+      <small>4~5개 항목까지 한 화면에서 읽히도록 작성합니다.</small>
+    </li>
+    <li><span class="key-list-title">세 번째 큰 항목</span></li>
   </ul>
 </section>
 ```

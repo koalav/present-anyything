@@ -351,6 +351,54 @@ def render_two_cols(markdown: str) -> str:
     )
 
 
+def render_key_list(markdown: str) -> str:
+    items: list[tuple[str, list[str]]] = []
+    extra_lines: list[str] = []
+    current: tuple[str, list[str]] | None = None
+
+    def flush_item() -> None:
+        nonlocal current
+        if current:
+            items.append(current)
+            current = None
+
+    for line in markdown.replace("\r\n", "\n").splitlines():
+        stripped = line.strip()
+        if not stripped:
+            continue
+
+        bullet = re.match(r"^[-*]\s+(.+)$", stripped)
+        if bullet and line == line.lstrip():
+            flush_item()
+            title = bullet.group(1).strip()
+            detail: list[str] = []
+            split = re.match(r"^(.+?)(?:\s+--\s+|\s+::\s+|:\s+)(.+)$", title)
+            if split and len(clean_inline_text(split.group(1))) <= 48:
+                title = split.group(1).strip()
+                detail.append(split.group(2).strip())
+            current = (title, detail)
+            continue
+
+        if current:
+            detail_line = re.sub(r"^[-*]\s+", "", stripped)
+            current[1].append(detail_line)
+        else:
+            extra_lines.append(line)
+
+    flush_item()
+
+    if not items:
+        return render_markdown(markdown)
+
+    prefix = render_markdown("\n".join(extra_lines)) if extra_lines else ""
+    list_html = "".join(
+        f'<li><span class="key-list-title">{inline(title)}</span>'
+        f'{"<small>" + inline(" ".join(detail)) + "</small>" if detail else ""}</li>'
+        for title, detail in items
+    )
+    return (prefix + "\n" if prefix else "") + f'<ul class="key-list">{list_html}</ul>'
+
+
 def render_slide(slide: Slide, deck: Deck, index: int) -> str:
     accent = ACCENTS.get(deck.slug, "accent-blue")
     title, title_index = first_heading(slide.markdown)
@@ -358,6 +406,7 @@ def render_slide(slide: Slide, deck: Deck, index: int) -> str:
     is_cover = index == 0
     is_section = slide.meta.get("layout") == "section"
     is_two_cols = slide.meta.get("layout") == "two-cols"
+    is_key_list = slide.meta.get("layout") == "key-list"
     is_compact = slide.meta.get("class") == "text-sm"
 
     if is_cover:
@@ -388,11 +437,15 @@ def render_slide(slide: Slide, deck: Deck, index: int) -> str:
         )
 
     slide_classes = f"slide surface markdown-slide {accent}"
+    if is_key_list:
+        slide_classes += " key-list-slide"
     if is_compact:
         slide_classes += " compact"
     data_part = title or deck.title
     body = strip_first_title(slide.markdown, strip_subheading=bool(subheading))
-    if is_two_cols:
+    if is_key_list:
+        body_html = render_key_list(body)
+    elif is_two_cols:
         body_html = render_two_cols(body)
     else:
         body_html = render_markdown(body)

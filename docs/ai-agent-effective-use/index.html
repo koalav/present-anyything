@@ -149,8 +149,27 @@
       transform: translateY(-1%) scale(1.08);
     }
 
+    body[data-deck-label="AI Agent Use"] .section .diagram-frame {
+      max-height: 46vh;
+      padding: 16px 20px;
+      overflow: hidden;
+    }
+
+    body[data-deck-label="AI Agent Use"] .section .mermaid svg {
+      max-height: 40vh !important;
+    }
+
+    body[data-deck-label="AI Agent Use"] .section .mermaid svg > g {
+      transform: none;
+    }
+
+    body[data-deck-label="AI Agent Use"] .diagram-frame.role-flow {
+      max-height: 56vh;
+      overflow: hidden;
+    }
+
     body[data-deck-label="AI Agent Use"] .diagram-frame.role-flow .mermaid svg > g {
-      transform: translateY(-1%) scale(1.45);
+      transform: translateY(-1%) scale(1.14);
     }
 
     body[data-deck-label="AI Agent Use"] .diagram-frame.diagram-dense {
